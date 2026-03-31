@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PawRead – Versteh deinen Hund</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream: #F5F0E8;
+      --warm: #E8DCC8;
+      --brown: #6B4C2A;
+      --amber: #D4882A;
+      --dark: #1C1409;
+      --soft: #A0856A;
+      --green: #3D6B4C;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--dark);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    header { padding: 2rem 2rem 1rem; text-align: center; }
+    .paw-logo { font-size: 2.5rem; margin-bottom: 0.3rem; }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem; font-weight: 900;
+      color: var(--brown); letter-spacing: -0.5px; line-height: 1.1;
+    }
+    h1 span { color: var(--amber); }
+    .tagline { margin-top: 0.5rem; color: var(--soft); font-size: 0.95rem; font-weight: 300; }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: white; border-top: 1px solid var(--warm);
+      display: flex; z-index: 100;
+      box-shadow: 0 -4px 20px rgba(107,76,42,0.08);
+    }
+    .nav-btn {
+      flex: 1; padding: 0.9rem 0.5rem 0.7rem;
+      border: none; background: transparent; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.72rem; color: var(--soft);
+      transition: all 0.2s;
+    }
+    .nav-btn .nav-icon { font-size: 1.4rem; }
+    .nav-btn.active { color: var(--brown); font-weight: 600; }
+    .nav-btn.active .nav-icon { transform: scale(1.15); }
+
+    .page { display: none; }
+    .page.active { display: block; }
+    .main { max-width: 480px; margin: 0 auto; padding: 1.5rem 1.5rem 2rem; }
+
+    .upload-zone {
+      background: white; border: 2.5px dashed var(--warm);
+      border-radius: 24px; padding: 2.5rem 1.5rem;
+      text-align: center; cursor: pointer;
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .upload-zone:hover { border-color: var(--amber); background: #FFF8EE; transform: scale(1.01); }
+    .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .upload-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    .upload-zone h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--brown); margin-bottom: 0.4rem; }
+    .upload-zone p { font-size: 0.85rem; color: var(--soft); }
+
+    #preview-container {
+      display: none; margin-top: 1.5rem; border-radius: 20px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(107,76,42,0.15); position: relative;
+    }
+    #preview-img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+    .change-photo {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(255,255,255,0.9); border: none; border-radius: 20px;
+      padding: 6px 14px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem; color: var(--brown); cursor: pointer; font-weight: 500;
+    }
+
+    #analyze-btn {
+      display: none; width: 100%; margin-top: 1.2rem; padding: 1.1rem;
+      background: var(--brown); color: var(--cream); border: none;
+      border-radius: 16px; font-family: 'Playfair Display', serif;
+      font-size: 1.15rem; font-weight: 700; cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #analyze-btn:hover { background: var(--amber); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,136,42,0.35); }
+
+    #loading { display: none; text-align: center; padding: 2rem; margin-top: 1rem; }
+    .paw-loader { display: flex; justify-content: center; gap: 8px; margin-bottom: 1rem; }
+    .paw-loader span { font-size: 1.5rem; animation: bounce 0.6s ease-in-out infinite; }
+    .paw-loader span:nth-child(2) { animation-delay: 0.15s; }
+    .paw-loader span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-10px); opacity: 1; } }
+    #loading p { color: var(--soft); font-size: 0.9rem; font-style: italic; }
+
+    #result { display: none; margin-top: 1.5rem; animation: slideUp 0.5s ease; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .mood-badge {
+      background: var(--brown); color: var(--cream); border-radius: 50px;
+      padding: 0.5rem 1.2rem; display: inline-flex; align-items: center;
+      gap: 8px; font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem;
+    }
+    .result-card { background: white; border-radius: 24px; padding: 1.8rem; box-shadow: 0 4px 24px rgba(107,76,42,0.1); }
+    .result-card h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--brown); margin-bottom: 0.3rem; }
+    .mood-emoji { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+    .result-card .summary { color: var(--dark); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.3rem; }
+    .signals-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--soft); margin-bottom: 0.7rem; font-weight: 500; }
+    .signals { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.3rem; }
+    .signal { display: flex; align-items: flex-start; gap: 10px; background: var(--cream); border-radius: 12px; padding: 0.7rem 1rem; font-size: 0.88rem; line-height: 1.4; }
+    .signal-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .tip-box { background: #EEF5F1; border-left: 3px solid var(--green); border-radius: 12px; padding: 1rem 1.2rem; }
+    .tip-box .tip-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); font-weight: 500; margin-bottom: 0.4rem; }
+    .tip-box p { font-size: 0.9rem; color: var(--dark); line-height: 1.5; }
+    .retry-btn {
+      width: 100%; margin-top: 1.2rem; padding: 0.9rem;
+      background: transparent; color: var(--brown);
+      border: 2px solid var(--warm); border-radius: 14px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      font-weight: 500; cursor: pointer; transition: all 0.2s;
+    }
+    .retry-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+    .disclaimer {
+      margin-top: 1rem; padding: 0.8rem 1rem;
+      background: white; border-radius: 12px;
+      font-size: 0.78rem; color: var(--soft); text-align: center; line-height: 1.5;
+    }
+
+    .ratgeber-header { margin-bottom: 1.5rem; }
+    .ratgeber-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brown); margin-bottom: 0.3rem; }
+    .ratgeber-header p { color: var(--soft); font-size: 0.9rem; }
+    .category-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 1.2rem; scrollbar-width: none; }
+    .category-tabs::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      flex-shrink: 0; padding: 0.45rem 1rem; border-radius: 50px;
+      border: 2px solid var(--warm); background: white;
+      font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+      color: var(--soft); cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .cat-btn.active { background: var(--brown); border-color: var(--brown); color: var(--cream); font-weight: 500; }
+    .guide-card {
+      background: white; border-radius: 20px; margin-bottom: 1rem;
+      overflow: hidden; box-shadow: 0 2px 12px rgba(107,76,42,0.08);
+      cursor: pointer; transition: all 0.25s;
+    }
+    .guide-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(107,76,42,0.14); }
+    .guide-card-header { display: flex; align-items: center; gap: 14px; padding: 1.1rem 1.2rem; }
+    .guide-emoji { font-size: 2rem; flex-shrink: 0; }
+    .guide-card-header h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--brown); margin-bottom: 0.15rem; }
+    .guide-card-header p { font-size: 0.8rem; color: var(--soft); line-height: 1.4; }
+    .guide-tag { margin-left: auto; flex-shrink: 0; background: var(--cream); border-radius: 8px; padding: 3px 8px; font-size: 0.7rem; color: var(--soft); }
+    .guide-body { display: none; padding: 0 1.2rem 1.2rem; border-top: 1px solid var(--cream); }
+    .guide-body.open { display: block; animation: slideUp 0.3s ease; }
+    .guide-body p { font-size: 0.88rem; line-height: 1.65; color: var(--dark); margin-bottom: 0.8rem; }
+    .guide-signals { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.8rem; }
+    .guide-signal { display: flex; align-items: flex-start; gap: 10px; background: var(--cream); border-radius: 10px; padding: 0.6rem 0.9rem; font-size: 0.84rem; line-height: 1.4; }
+
+    footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75rem; opacity: 0.6; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="paw-logo">🐾</div>
+    <h1>Paw<span>Read</span></h1>
+    <p class="tagline">Versteh, was dein Hund dir sagt</p>
+  </header>
+
+  <div class="page active" id="page-analyse">
+    <div class="main">
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="file-input" accept="image/*" capture="environment" />
+        <span class="upload-icon">📸</span>
+        <h2>Foto aufnehmen oder hochladen</h2>
+        <p>Zeig uns deinen Hund – wir lesen seine Körpersprache</p>
+      </div>
+      <div class="disclaimer">
+        🔒 Dein Foto wird nur zur Analyse verwendet und nicht gespeichert.<br>
+        Dies ist eine KI-Einschätzung – kein Ersatz für Tierarzt oder Fachmann.
+      </div>
+      <div id="preview-container">
+        <img id="preview-img" src="" alt="Hund Vorschau" />
+        <button class="change-photo" id="change-photo">✕ Ändern</button>
+      </div>
+      <button id="analyze-btn">🔍 Jetzt analysieren</button>
+      <div id="loading">
+        <div class="paw-loader"><span>🐾</span><span>🐾</span><span>🐾</span></div>
+        <p>Lese die Körpersprache deines Hundes…</p>
+      </div>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-ratgeber">
+    <div class="main">
+      <div class="ratgeber-header">
+        <h2>Ratgeber 📖</h2>
+        <p>Lerne die Sprache deines Hundes zu verstehen</p>
+      </div>
+      <div class="category-tabs">
+        <button class="cat-btn active" onclick="filterGuides('alle', this)">Alle</button>
+        <button class="cat-btn" onclick="filterGuides('koerper', this)">🐕 Körpersprache</button>
+        <button class="cat-btn" onclick="filterGuides('emotion', this)">❤️ Emotionen</button>
+        <button class="cat-btn" onclick="filterGuides('alltag', this)">🏠 Alltag</button>
+        <button class="cat-btn" onclick="filterGuides('training', this)">🎓 Training</button>
+      </div>
+      <div id="guides-container"></div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showPage('analyse', this)">
+      <span class="nav-icon">📸</span>
+      Analysieren
+    </button>
+    <button class="nav-btn" onclick="showPage('ratgeber', this)">
+      <span class="nav-icon">📖</span>
+      Ratgeber
+    </button>
+  </nav>
+
+  <footer>PawRead · Powered by Claude AI</footer>
+
+  <script>
+    function showPage(name, btn) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    const guides = [
+      { id: 1, cat: 'koerper', emoji: '🐩', title: 'Der Schwanz lügt nicht', preview: 'Was die Schwanzhaltung wirklich bedeutet', content: 'Der Schwanz ist eines der ausdrucksstärksten Körperteile deines Hundes – aber viele Menschen interpretieren ihn falsch. Ein wedelnder Schwanz bedeutet nicht immer Freude!', signals: [{ icon: '⬆️', text: 'Schwanz hoch und steif: Dominanz oder Anspannung' }, { icon: '↔️', text: 'Schwanz locker wedelnd: Freude und Offenheit' }, { icon: '⬇️', text: 'Schwanz eingeklemmt: Angst oder Unterwerfung' }, { icon: '🔄', text: 'Kreisförmiges Wedeln: Echter Enthusiasmus' }], tag: 'Körpersprache' },
+      { id: 2, cat: 'emotion', emoji: '😰', title: 'Wenn dein Hund Stress hat', preview: 'Erkenne Stresssignale bevor sie eskalieren', content: 'Hunde kommunizieren Stress oft subtil. Wenn wir diese Signale ignorieren, kann sich Stress zu Angst oder Aggression entwickeln. Frühes Erkennen ist der Schlüssel.', signals: [{ icon: '👅', text: 'Häufiges Lecken der Nase: Unsicherheit oder Unwohlsein' }, { icon: '🥱', text: 'Gähnen in Anspannung: Beschwichtigungssignal, kein Müde' }, { icon: '💧', text: 'Pfoten schwitzen: Starker Stress sichtbar am Boden' }, { icon: '👁️', text: 'Whale Eye (weißes Auge sichtbar): Unbehagen oder Angst' }], tag: 'Emotionen' },
+      { id: 3, cat: 'koerper', emoji: '👂', title: 'Die Sprache der Ohren', preview: 'Ohrenstellung als Stimmungsbarometer', content: 'Die Ohren sind wie ein Kompass für die Gefühlswelt deines Hundes. Je nach Rasse sind sie unterschiedlich beweglich – aber das Grundprinzip bleibt gleich.', signals: [{ icon: '⬆️', text: 'Ohren aufgestellt nach vorne: Aufmerksamkeit und Interesse' }, { icon: '↔️', text: 'Ohren seitlich: Entspannung und Wohlbefinden' }, { icon: '⬇️', text: 'Ohren angelegt: Angst, Unterwerfung oder Schmerz' }, { icon: '🔀', text: 'Ein Ohr vor, eines zurück: Unsicherheit, prüft Situation' }], tag: 'Körpersprache' },
+      { id: 4, cat: 'alltag', emoji: '🛏️', title: 'Warum dreht er sich im Kreis?', preview: 'Alltägliche Verhaltensweisen erklärt', content: 'Manche Verhaltensweisen wirken seltsam, haben aber einen evolutionären Hintergrund. Dein Hund ist kein Rätsel – er folgt seinem Instinkt.', signals: [{ icon: '🔄', text: 'Kreisdrehen vor dem Schlafen: Instinkt aus der Wildnis (Nest bauen)' }, { icon: '🌿', text: 'Im Gras rollen: Duftmarkierung oder einfach Genuss' }, { icon: '🐾', text: 'Scharren nach dem Klo: Reviermarkierung durch Duftdrüsen in Pfoten' }, { icon: '🍑', text: 'Po zeigen beim Spielen: Einladung und Vertrauen' }], tag: 'Alltag' },
+      { id: 5, cat: 'emotion', emoji: '❤️', title: 'Zeigt dein Hund Liebe?', preview: 'So drücken Hunde Zuneigung aus', content: 'Hunde zeigen Liebe anders als Menschen – aber sie tun es intensiv und ehrlich. Lerne die Liebessprache deines Hundes kennen.', signals: [{ icon: '👀', text: 'Langer sanfter Blickkontakt: Vertrauen und Bindung' }, { icon: '😴', text: 'An dir lehnen oder auf dir liegen: Maximale Nähe und Sicherheit' }, { icon: '🎁', text: 'Spielzeug bringen: Ich teile mein Wertvollstes mit dir' }, { icon: '🐶', text: 'Bauch zeigen: Totales Vertrauen' }], tag: 'Emotionen' },
+      { id: 6, cat: 'training', emoji: '🎓', title: 'Richtig loben und belohnen', preview: 'Timing ist alles beim Hundetraining', content: 'Das größte Missverständnis im Hundetraining: Lob zu spät zu geben. Dein Hund verbindet Belohnung immer mit dem, was er gerade in diesem Moment tut.', signals: [{ icon: '⚡', text: 'Lob innerhalb von 1-2 Sekunden: Nur so entsteht echte Verknüpfung' }, { icon: '🎯', text: 'Konsequenz schlägt Intensität: Lieber oft kurz üben als selten lang' }, { icon: '😊', text: 'Deine Stimme ist Belohnung: Fröhlicher Ton wirkt oft besser als Leckerli' }, { icon: '🚫', text: 'Nie im Ärger trainieren: Hunde spüren deine Energie sofort' }], tag: 'Training' },
+    ];
+
+    let activeFilter = 'alle';
+
+    function filterGuides(cat, btn) {
+      activeFilter = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGuides();
+    }
+
+    function renderGuides() {
+      const container = document.getElementById('guides-container');
+      const filtered = activeFilter === 'alle' ? guides : guides.filter(g => g.cat === activeFilter);
+      container.innerHTML = filtered.map(g => `
+        <div class="guide-card" onclick="toggleGuide(${g.id})">
+          <div class="guide-card-header">
+            <span class="guide-emoji">${g.emoji}</span>
+            <div><h3>${g.title}</h3><p>${g.preview}</p></div>
+            <span class="guide-tag">${g.tag}</span>
+          </div>
+          <div class="guide-body" id="guide-${g.id}">
+            <p style="margin-top:0.8rem">${g.content}</p>
+            <div class="guide-signals">
+              ${g.signals.map(s => `<div class="guide-signal"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}
+            </div>
+          </div>
+        </div>`).join('');
+    }
+
+    function toggleGuide(id) {
+      document.getElementById('guide-' + id).classList.toggle('open');
+    }
+
+    renderGuides();
+
+    // Analyse
+    const fileInput = document.getElementById('file-input');
+    const previewContainer = document.getElementById('preview-container');
+    const previewImg = document.getElementById('preview-img');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const loading = document.getElementById('loading');
+    const result = document.getElementById('result');
+
+    let currentBase64 = null;
+    let currentMimeType = 'image/jpeg';
+
+    fileInput.addEventListener('change', handleFile);
+    document.getElementById('change-photo').addEventListener('click', () => { resetState(); fileInput.click(); });
+
+    function handleFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      currentMimeType = file.type || 'image/jpeg';
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        currentBase64 = ev.target.result.split(',')[1];
+        previewImg.src = ev.target.result;
+        previewContainer.style.display = 'block';
+        document.getElementById('upload-zone').style.display = 'none';
+        analyzeBtn.style.display = 'block';
+        result.style.display = 'none';
+        result.innerHTML = '';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetState() {
+      previewContainer.style.display = 'none';
+      analyzeBtn.style.display = 'none';
+      document.getElementById('upload-zone').style.display = 'block';
+      result.style.display = 'none';
+      result.innerHTML = '';
+      loading.style.display = 'none';
+      currentBase64 = null;
+      fileInput.value = '';
+    }
+
+    analyzeBtn.addEventListener('click', async () => {
+      if (!currentBase64) return;
+      analyzeBtn.style.display = 'none';
+      loading.style.display = 'block';
+      result.style.display = 'none';
+      try {
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageData: currentBase64, mimeType: currentMimeType })
+        });
+        const parsed = await response.json();
+        loading.style.display = 'none';
+        if (parsed.error && !parsed.mood) {
+          result.innerHTML = `<div class="result-card"><span class="mood-emoji">⚠️</span><h3>Fehler</h3><p class="summary">${parsed.error}</p></div><button class="retry-btn" onclick="resetState()">↩ Erneut versuchen</button>`;
+        } else if (parsed.error) {
+          result.innerHTML = `<div class="result-card"><span class="mood-emoji">🤔</span><h3>Kein Hund erkannt</h3><p class="summary">Bitte lade ein Foto hoch, auf dem ein Hund klar zu sehen ist.</p></div><button class="retry-btn" onclick="resetState()">↩ Anderes Foto</button>`;
+        } else {
+          result.innerHTML = `
+            <div class="mood-badge">🐶 Stimmungsanalyse</div>
+            <div class="result-card">
+              <span class="mood-emoji">${parsed.emoji}</span>
+              <h3>${parsed.mood}</h3>
+              <p class="summary">${parsed.summary}</p>
+              <p class="signals-title">Körpersignale</p>
+              <div class="signals">${parsed.signals.map(s => `<div class="signal"><span class="signal-icon">${s.icon}</span><span>${s.text}</span></div>`).join('')}</div>
+              <div class="tip-box"><p class="tip-label">💡 Dein Tipp</p><p>${parsed.tip}</p></div>
+            </div>
+            <button class="retry-btn" onclick="resetState()">📸 Neues Foto analysieren</button>`;
+        }
+        result.style.display = 'block';
+      } catch (err) {
+        loading.style.display = 'none';
+        result.innerHTML = `<div class="result-card"><span class="mood-emoji">⚠️</span><h3>Fehler bei der Analyse</h3><p class="summary">${err.message || 'Bitte erneut versuchen.'}</p></div><button class="retry-btn" onclick="resetState()">↩ Erneut versuchen</button>`;
+        result.style.display = 'block';
+        analyzeBtn.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

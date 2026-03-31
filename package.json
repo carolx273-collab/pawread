@@ -1,0 +1,12 @@
+{
+  "name": "pawread",
+  "version": "1.0.0",
+  "description": "PawRead – Versteh, was dein Hund dir sagt",
+  "main": "api/analyze.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
