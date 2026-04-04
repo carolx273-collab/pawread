@@ -745,6 +745,7 @@
               <p class="signals-title">Körpersignale</p>
               <div class="signals">${parsed.signals.map(s => `<div class="signal"><span class="signal-icon">${s.icon}</span><span>${s.text}</span></div>`).join('')}</div>
               <div class="tip-box"><p class="tip-label">💡 Dein Tipp</p><p>${parsed.tip}</p></div>
+              ${parsed.disclaimer ? `<p style="font-size:0.75rem;color:#A0856A;text-align:center;margin-top:1rem;line-height:1.5;font-style:italic;">ℹ️ ${parsed.disclaimer}</p>` : ''}
             </div>
             <button class="retry-btn" onclick="resetState()">📸 Neues Foto analysieren</button>`;
         }
