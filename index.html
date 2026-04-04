@@ -166,20 +166,25 @@
   <header>
     <div class="paw-logo">🐾</div>
     <h1>Paw<span>Read</span></h1>
-    <p class="tagline">Versteh, was dein Hund dir sagt</p>
+    <p class="tagline">Ist dein Hund entspannt, ängstlich oder neugierig?<br><small style="font-size:0.8rem;opacity:0.8">Erkenne in Sekunden wie sich dein Hund wirklich fühlt</small></p>
   </header>
 
   <div class="page active" id="page-analyse">
     <div class="main">
       <div class="upload-zone" id="upload-zone">
         <input type="file" id="file-input" accept="image/*" capture="environment" />
-        <span class="upload-icon">📸</span>
-        <h2>Foto aufnehmen oder hochladen</h2>
-        <p>Zeig uns deinen Hund – wir lesen seine Körpersprache</p>
+        <span class="upload-icon">🐶</span>
+        <h2>Zeig uns deinen Hund</h2>
+        <p>Ein Foto reicht – wir lesen seine Körpersprache in Sekunden</p>
       </div>
       <div class="disclaimer">
         🔒 Dein Foto wird nur zur Analyse verwendet und nicht gespeichert.<br>
         Dies ist eine KI-Einschätzung – kein Ersatz für Tierarzt oder Fachmann.
+      </div>
+      <div style="display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap;">
+        <div style="flex:1;min-width:120px;background:white;border-radius:14px;padding:0.7rem 0.9rem;font-size:0.8rem;color:#6B4C2A;text-align:center;box-shadow:0 2px 8px rgba(107,76,42,0.08);">👂 Ohren zurück<br><span style="color:#A0856A;font-size:0.75rem;">Unsicherheit</span></div>
+        <div style="flex:1;min-width:120px;background:white;border-radius:14px;padding:0.7rem 0.9rem;font-size:0.8rem;color:#6B4C2A;text-align:center;box-shadow:0 2px 8px rgba(107,76,42,0.08);">🐾 Lockere Haltung<br><span style="color:#A0856A;font-size:0.75rem;">Entspannung</span></div>
+        <div style="flex:1;min-width:120px;background:white;border-radius:14px;padding:0.7rem 0.9rem;font-size:0.8rem;color:#6B4C2A;text-align:center;box-shadow:0 2px 8px rgba(107,76,42,0.08);">🔄 Schwanz wedelt<br><span style="color:#A0856A;font-size:0.75rem;">Freude</span></div>
       </div>
       <div id="preview-container">
         <img id="preview-img" src="" alt="Hund Vorschau" />
