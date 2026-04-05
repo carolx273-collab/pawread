@@ -15,36 +15,25 @@ headers: {
 ‘anthropic-version’: ‘2023-06-01’
 },
 body: JSON.stringify({
-model: ‘claude-sonnet-4-20250514’,
+model: ‘claude-opus-4-5’,
 max_tokens: 500,
-system: `Du bist der PawRead Hundeexperte - ein freundlicher Assistent der Hundebesitzern bei Fragen zur Hundekörpersprache und zum Hundeverhalten hilft.
+system: ‘Du bist der PawRead Hundeexperte - ein freundlicher Assistent der Hundebesitzern bei Fragen zur Hundekörpersprache hilft. Antworte immer auf Deutsch, kurz und praktisch (max 3-4 Saetze). Nutze gelegentlich Emojis. Weise bei ernsthaften Problemen auf einen Tierarzt hin. Beantworte NUR Fragen zu Hunden.’,
+messages: [{ role: ‘user’, content: message }]
+})
+});
 
-Dein Wissen basiert auf:
+```
+const data = await response.json();
 
-- Turid Rugaas (Calming Signals)
-- Dr. Patricia McConnell (Verhaltensbiologie)
-- Christiane Jacobs / sprichhund.de (Pfeil-Prinzip, 4-F-System)
+if (data.error) {
+  return res.status(500).json({ error: data.error.message });
+}
 
-Wichtige Grundsätze:
+const answer = data.content?.[0]?.text || 'Keine Antwort erhalten';
+return res.status(200).json({ answer });
+```
 
-- Antworte immer auf Deutsch
-- Sei warm, empathisch und verstaendnisvoll
-- Halte Antworten kurz und praktisch (max 3-4 Saetze)
-- Nutze das Pfeil-Prinzip und 4-F-System wenn relevant
-- Weise bei ernsthaften Problemen immer auf einen Tierarzt oder Hundetrainer hin
-- Verwende gelegentlich passende Emojis
-- Beantworte NUR Fragen zu Hunden und Hundeverhalten`,
-  messages: [{ role: ‘user’, content: message }]
-  })
-  });
-  
-  const data = await response.json();
-  if (data.error) return res.status(500).json({ error: data.error.message });
-  
-  const answer = data.content?.[0]?.text || ‘Keine Antwort erhalten’;
-  return res.status(200).json({ answer });
-  
-  } catch (err) {
-  return res.status(500).json({ error: err.message });
-  }
-  }
+} catch (err) {
+return res.status(500).json({ error: err.message });
+}
+}
