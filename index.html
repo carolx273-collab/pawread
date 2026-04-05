@@ -507,16 +507,22 @@ footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75r
       <h2 id="impressum-title">Impressum</h2>
       <div id="impressum-content">
         <p><strong>Angaben gemäß § 5 TMG</strong></p>
-        <p>Carolin Laux<br>Flomersheimer Straße 34a<br>67227 Frankenthal<br>Deutschland</p>
+        <p>Carolin Laux<br>
+        <span id="adresse-impressum" style="display:none;">Flomersheimer Straße 34a<br>67227 Frankenthal<br>Deutschland</span>
+        <a onclick="document.getElementById('adresse-impressum').style.display='block';this.style.display='none';" style="font-size:0.8rem;color:var(--amber);cursor:pointer;text-decoration:underline;">Adresse anzeigen</a>
+        </p>
         <p><strong>Kontakt</strong><br>E-Mail: pawread@web.de</p>
-        <p><strong>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</strong><br>Carolin Laux<br>Flomersheimer Straße 34a<br>67227 Frankenthal</p>
+        <p><strong>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</strong><br>Carolin Laux</p>
         <p><strong>Haftung für Inhalte</strong><br>Die Inhalte unserer App wurden mit größter Sorgfalt erstellt. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte verantwortlich.</p>
         <p><strong>Hinweis zur Nutzung der App</strong><br>Die Analysen basieren auf KI und dienen ausschließlich der allgemeinen Orientierung. Sie ersetzen keine Einschätzung durch einen Tierarzt oder Verhaltensexperten.</p>
         <p><strong>Urheberrecht</strong><br>Die durch den Betreiber erstellten Inhalte unterliegen dem deutschen Urheberrecht.</p>
       </div>
       <div id="datenschutz-content" style="display:none;">
         <p><strong>1. Allgemeine Hinweise</strong><br>Der Schutz Ihrer persönlichen Daten ist uns wichtig. Die Nutzung dieser App ist grundsätzlich ohne Angabe personenbezogener Daten möglich.</p>
-        <p><strong>2. Verantwortliche Stelle</strong><br>Carolin Laux<br>Flomersheimer Straße 34a<br>67227 Frankenthal<br>E-Mail: pawread@web.de</p>
+        <p><strong>2. Verantwortliche Stelle</strong><br>Carolin Laux<br>
+        <span id="adresse-datenschutz" style="display:none;">Flomersheimer Straße 34a<br>67227 Frankenthal<br></span>
+        <a onclick="document.getElementById('adresse-datenschutz').style.display='block';this.style.display='none';" style="font-size:0.8rem;color:var(--amber);cursor:pointer;text-decoration:underline;">Adresse anzeigen</a><br>
+        E-Mail: pawread@web.de</p>
         <p><strong>3. Erhebung und Verarbeitung von Daten</strong><br>Beim Besuch werden automatisch IP-Adresse, Datum/Uhrzeit, Browsertyp und Betriebssystem durch den Hosting-Anbieter erfasst.</p>
         <p><strong>4. Analysefunktion</strong><br>Hochgeladene Bilder werden ausschließlich zur Analyse verwendet, nicht dauerhaft gespeichert und nicht an Dritte weitergegeben.</p>
         <p><strong>5. Künstliche Intelligenz</strong><br>Zur Analyse wird ein externer KI-Dienst genutzt. Die Verarbeitung erfolgt ausschließlich zum Analysezweck, nicht zur Profilbildung.</p>
