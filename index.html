@@ -576,20 +576,20 @@ footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75r
     </div>
   </div>
 
-  <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="showPage('analyse', this)">
-      <span class="nav-icon">📸</span>
+  <div style="position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #E8DCC8;display:flex;flex-direction:row;z-index:9999;box-shadow:0 -4px 20px rgba(107,76,42,0.08);">
+    <button class="nav-btn active" id="nav-analyse" onclick="showPage('analyse', this)" style="flex:1;padding:0.9rem 0.5rem 0.7rem;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#A0856A;">
+      <span style="font-size:1.4rem;">📸</span>
       Analysieren
     </button>
-    <button class="nav-btn" onclick="showPage('ratgeber', this)">
-      <span class="nav-icon">📖</span>
+    <button class="nav-btn" id="nav-ratgeber" onclick="showPage('ratgeber', this)" style="flex:1;padding:0.9rem 0.5rem 0.7rem;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#A0856A;">
+      <span style="font-size:1.4rem;">📖</span>
       Ratgeber
     </button>
-    <button class="nav-btn" onclick="showPage('notfall', this)">
-      <span class="nav-icon">🚨</span>
+    <button class="nav-btn" id="nav-notfall" onclick="showPage('notfall', this)" style="flex:1;padding:0.9rem 0.5rem 0.7rem;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#A0856A;">
+      <span style="font-size:1.4rem;">🚨</span>
       Notfall
     </button>
-  </nav>
+  </div>
 
   </div><!-- end app-wrapper -->
 
