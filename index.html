@@ -157,6 +157,100 @@
 }
 .retry-btn:hover { border-color: var(--amber); color: var(--amber); }
 
+/* ===== CHATBOT ===== */
+.chat-btn {
+  position: fixed;
+  bottom: 85px;
+  right: 16px;
+  width: 52px; height: 52px;
+  background: var(--brown);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 16px rgba(107,76,42,0.35);
+  z-index: 500;
+  transition: all 0.3s;
+}
+.chat-btn:hover { transform: scale(1.1); background: var(--amber); }
+
+.chat-window {
+  display: none;
+  position: fixed;
+  bottom: 150px;
+  right: 12px;
+  width: calc(100% - 24px);
+  max-width: 360px;
+  height: 420px;
+  background: var(--cream);
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(107,76,42,0.2);
+  z-index: 500;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+.chat-window.active { display: flex; }
+
+.chat-header {
+  background: var(--brown);
+  color: var(--cream);
+  padding: 1rem 1.2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.chat-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem; margin: 0;
+}
+.chat-header span { font-size: 0.75rem; opacity: 0.8; }
+.chat-close {
+  background: none; border: none; color: white;
+  font-size: 1.2rem; cursor: pointer; padding: 0;
+}
+.chat-messages {
+  flex: 1; overflow-y: auto;
+  padding: 1rem; display: flex;
+  flex-direction: column; gap: 0.8rem;
+}
+.chat-msg {
+  max-width: 85%; padding: 0.7rem 1rem;
+  border-radius: 16px; font-size: 0.85rem;
+  line-height: 1.5;
+}
+.chat-msg.bot {
+  background: white; color: var(--dark);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(107,76,42,0.08);
+  align-self: flex-start;
+}
+.chat-msg.user {
+  background: var(--brown); color: white;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+}
+.chat-msg.loading { opacity: 0.6; font-style: italic; }
+.chat-input-row {
+  display: flex; gap: 8px;
+  padding: 0.8rem; border-top: 1px solid var(--warm);
+  background: white;
+}
+.chat-input {
+  flex: 1; border: 2px solid var(--warm);
+  border-radius: 12px; padding: 0.6rem 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; outline: none;
+  transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: var(--amber); }
+.chat-send {
+  background: var(--brown); color: white;
+  border: none; border-radius: 12px;
+  padding: 0.6rem 1rem; cursor: pointer;
+  font-size: 1rem; transition: background 0.2s;
+}
+.chat-send:hover { background: var(--amber); }
+
 /* ===== IMPRESSUM ===== */
 .impressum-link {
   text-align: center;
@@ -500,6 +594,27 @@ footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75r
     </div>
   </div>
 
+  <!-- CHATBOT -->
+
+<button class="chat-btn" onclick="toggleChat()" title="Frag den Hundeexperten">💬</button>
+
+  <div class="chat-window" id="chat-window">
+    <div class="chat-header">
+      <div>
+        <h3>🐾 PawRead Assistent</h3>
+        <span>Dein Hundeexperte</span>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-msg bot">Hallo! Ich bin dein PawRead Assistent 🐾 Stell mir Fragen zur Körpersprache deines Hundes – ich helfe dir weiter!</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" class="chat-input" id="chat-input" placeholder="Frage stellen..." onkeydown="if(event.key==='Enter')sendChat()" />
+      <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+
   <!-- IMPRESSUM OVERLAY -->
 
   <div class="impressum-overlay" id="impressum-overlay">
@@ -651,6 +766,102 @@ footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75r
 
     function closePaywall() {
       document.getElementById('paywall-overlay').classList.remove('active');
+    }
+
+    // ===== CHATBOT LOGIC =====
+    let chatOpen = false;
+    const MAX_FREE_CHATS = 3;
+
+    function getChatCount() {
+      try { return parseInt(localStorage.getItem('pawread_chats') || '0'); } catch(e) { return 0; }
+    }
+
+    function incrementChatCount() {
+      try {
+        const d = new Date().toDateString();
+        const stored = JSON.parse(localStorage.getItem('pawread_chat_data') || '{"date":"","count":0}');
+        if (stored.date !== d) {
+          localStorage.setItem('pawread_chat_data', JSON.stringify({date: d, count: 1}));
+          return 1;
+        }
+        const newCount = stored.count + 1;
+        localStorage.setItem('pawread_chat_data', JSON.stringify({date: d, count: newCount}));
+        return newCount;
+      } catch(e) { return 1; }
+    }
+
+    function getTodayChatCount() {
+      try {
+        const d = new Date().toDateString();
+        const stored = JSON.parse(localStorage.getItem('pawread_chat_data') || '{"date":"","count":0}');
+        return stored.date === d ? stored.count : 0;
+      } catch(e) { return 0; }
+    }
+
+    function toggleChat() {
+      chatOpen = !chatOpen;
+      document.getElementById('chat-window').classList.toggle('active', chatOpen);
+      if (chatOpen) {
+        document.getElementById('chat-input').focus();
+        updateChatCounter();
+      }
+    }
+
+    function updateChatCounter() {
+      if (isPremium()) return;
+      const remaining = MAX_FREE_CHATS - getTodayChatCount();
+      const messages = document.getElementById('chat-messages');
+      const existing = document.getElementById('chat-limit-info');
+      if (existing) existing.remove();
+      if (remaining <= MAX_FREE_CHATS) {
+        messages.insertAdjacentHTML('afterbegin', 
+          `<div id="chat-limit-info" style="text-align:center;font-size:0.75rem;color:var(--soft);padding:0.3rem;background:#FFF8F0;border-radius:8px;">
+            ${remaining > 0 ? `✨ Noch <strong>${remaining}</strong> kostenlose Fragen heute` : '🔒 Tageslimit erreicht – <a onclick="showGuidePaywall()" style="color:var(--amber);cursor:pointer;text-decoration:underline;">Premium freischalten</a>'}
+          </div>`);
+      }
+    }
+
+    async function sendChat() {
+      const input = document.getElementById('chat-input');
+      const messages = document.getElementById('chat-messages');
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Check daily limit for non-premium
+      if (!isPremium() && getTodayChatCount() >= MAX_FREE_CHATS) {
+        showGuidePaywall();
+        return;
+      }
+
+      // Increment counter
+      if (!isPremium()) incrementChatCount();
+
+      // Add user message
+      messages.innerHTML += `<div class="chat-msg user">${text}</div>`;
+      input.value = '';
+      messages.scrollTop = messages.scrollHeight;
+
+      // Add loading
+      const loadingId = 'loading-' + Date.now();
+      messages.innerHTML += `<div class="chat-msg bot loading" id="${loadingId}">tippt...</div>`;
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await response.json();
+        document.getElementById(loadingId).remove();
+        const answer = data.answer || 'Entschuldigung, ich konnte keine Antwort finden.';
+        messages.innerHTML += `<div class="chat-msg bot">${answer}</div>`;
+        updateChatCounter();
+      } catch(err) {
+        document.getElementById(loadingId).remove();
+        messages.innerHTML += `<div class="chat-msg bot">Entschuldigung, ein Fehler ist aufgetreten. Bitte versuche es erneut.</div>`;
+      }
+      messages.scrollTop = messages.scrollHeight;
     }
 
     function showDatenschutz() {
