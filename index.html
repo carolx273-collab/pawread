@@ -36,7 +36,8 @@
 
 ```
 .bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 480px;
   background: white; border-top: 1px solid var(--warm);
   display: flex; z-index: 100;
   box-shadow: 0 -4px 20px rgba(107,76,42,0.08);
@@ -567,15 +568,14 @@ footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75r
     </button>
   </nav>
 
-  <footer>© 2026 PawRead by Carolin Laux · Powered by Claude AI</footer>
-
-  <!-- IMPRESSUM LINK -->
-
-  <div class="impressum-link">
-    <a onclick="document.getElementById('impressum-overlay').classList.add('active')">Impressum</a>
-    &nbsp;·&nbsp;
-    <a onclick="document.getElementById('impressum-overlay').classList.add('active')">Datenschutz</a>
-  </div>
+  <footer>
+    © 2026 PawRead by Carolin Laux · Powered by Claude AI<br>
+    <span style="font-size:0.7rem;opacity:0.8;">
+      <a onclick="document.getElementById('impressum-overlay').classList.add('active')" style="color:inherit;text-decoration:underline;cursor:pointer;">Impressum</a>
+      &nbsp;·&nbsp;
+      <a onclick="document.getElementById('impressum-overlay').classList.add('active')" style="color:inherit;text-decoration:underline;cursor:pointer;">Datenschutz</a>
+    </span>
+  </footer>
 
   <script>
     // ===== PAYWALL LOGIC =====
