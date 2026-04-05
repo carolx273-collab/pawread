@@ -321,6 +321,33 @@
     .guide-signals { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.8rem; }
     .guide-signal { display: flex; align-items: flex-start; gap: 10px; background: var(--cream); border-radius: 10px; padding: 0.6rem 0.9rem; font-size: 0.84rem; line-height: 1.4; }
 
+    .guide-card.locked { opacity: 0.85; }
+    .guide-card.locked .guide-card-header { position: relative; }
+    .lock-badge {
+      margin-left: auto; flex-shrink: 0;
+      background: var(--amber); color: white;
+      border-radius: 8px; padding: 3px 10px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .locked-overlay {
+      padding: 1rem 1.2rem;
+      text-align: center;
+      border-top: 1px solid var(--cream);
+    }
+    .locked-overlay p {
+      font-size: 0.85rem; color: var(--soft);
+      margin-bottom: 0.8rem; line-height: 1.5;
+    }
+    .unlock-btn {
+      display: inline-block; padding: 0.7rem 1.5rem;
+      background: var(--brown); color: var(--cream);
+      border-radius: 12px; font-size: 0.88rem;
+      font-weight: 600; cursor: pointer;
+      border: none; font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s; text-decoration: none;
+    }
+    .unlock-btn:hover { background: var(--amber); }
+
     footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75rem; opacity: 0.6; }
   </style>
 </head>
@@ -367,6 +394,14 @@
       <div class="ratgeber-header">
         <h2>Ratgeber 📖</h2>
         <p>Lerne die Sprache deines Hundes zu verstehen</p>
+        <div style="background:white;border-radius:14px;padding:0.8rem 1rem;margin-top:0.8rem;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(107,76,42,0.08);">
+          <span style="font-size:1.3rem;">🔒</span>
+          <div>
+            <p style="font-size:0.8rem;font-weight:600;color:var(--brown);margin-bottom:2px;">3 von 15 Artikeln kostenlos</p>
+            <p style="font-size:0.75rem;color:var(--soft);">Alle Artikel freischalten für 2,99€/Monat</p>
+          </div>
+          <button onclick="showGuidePaywall()" style="margin-left:auto;background:var(--amber);color:white;border:none;border-radius:10px;padding:0.4rem 0.8rem;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">Premium</button>
+        </div>
       </div>
       <div class="category-tabs">
         <button class="cat-btn active" onclick="filterGuides('alle', this)">Alle</button>
@@ -526,8 +561,11 @@
       document.getElementById('paywall-form-view').style.display = 'none';
       document.getElementById('paywall-success').style.display = 'block';
 
-      // Reset counter after signup
-      try { localStorage.setItem('pawread_count', '0'); } catch(e) {}
+      // Reset counter and set premium after signup
+      try {
+        localStorage.setItem('pawread_count', '0');
+        localStorage.setItem('pawread_premium', 'true');
+      } catch(e) {}
     }
 
     function showPage(name, btn) {
@@ -702,23 +740,43 @@
     renderNotfaelle();
     }
 
+    const FREE_GUIDES = 3;
+
+    function isPremium() {
+      try { return localStorage.getItem('pawread_owner') === 'true' || localStorage.getItem('pawread_premium') === 'true'; }
+      catch(e) { return false; }
+    }
+
     function renderGuides() {
       const container = document.getElementById('guides-container');
       const filtered = activeFilter === 'alle' ? guides : guides.filter(g => g.cat === activeFilter);
-      container.innerHTML = filtered.map(g => `
-        <div class="guide-card" onclick="toggleGuide(${g.id})">
+      const freeGuideIds = guides.slice(0, FREE_GUIDES).map(g => g.id);
+
+      container.innerHTML = filtered.map(g => {
+        const locked = !isPremium() && !freeGuideIds.includes(g.id);
+        return `
+        <div class="guide-card" onclick="${locked ? 'showGuidePaywall()' : `toggleGuide(${g.id})`}">
           <div class="guide-card-header">
-            <span class="guide-emoji">${g.emoji}</span>
-            <div><h3>${g.title}</h3><p>${g.preview}</p></div>
-            <span class="guide-tag">${g.tag}</span>
+            <span class="guide-emoji">${locked ? '🔒' : g.emoji}</span>
+            <div>
+              <h3 style="${locked ? 'color:var(--soft)' : ''}">${g.title}</h3>
+              <p>${locked ? 'Nur für Premium-Mitglieder 🐾' : g.preview}</p>
+            </div>
+            <span class="guide-tag" style="${locked ? 'background:#F5F0E8;color:var(--soft)' : ''}">${locked ? 'Premium' : g.tag}</span>
           </div>
+          ${!locked ? `
           <div class="guide-body" id="guide-${g.id}">
             <p style="margin-top:0.8rem">${g.content}</p>
             <div class="guide-signals">
               ${g.signals.map(s => `<div class="guide-signal"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}
             </div>
-          </div>
-        </div>`).join('');
+          </div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    function showGuidePaywall() {
+      document.getElementById('paywall-overlay').classList.add('active');
     }
 
     function toggleGuide(id) {
