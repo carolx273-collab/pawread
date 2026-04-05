@@ -15,9 +15,9 @@ headers: {
 ‘anthropic-version’: ‘2023-06-01’
 },
 body: JSON.stringify({
-model: ‘claude-opus-4-5’,
+model: ‘claude-haiku-4-5-20251001’,
 max_tokens: 500,
-system: ‘Du bist der PawRead Hundeexperte - ein freundlicher Assistent der Hundebesitzern bei Fragen zur Hundekörpersprache hilft. Antworte immer auf Deutsch, kurz und praktisch (max 3-4 Saetze). Nutze gelegentlich Emojis. Weise bei ernsthaften Problemen auf einen Tierarzt hin. Beantworte NUR Fragen zu Hunden.’,
+system: ‘Du bist der PawRead Hundeexperte. Beantworte Fragen zur Hundekörpersprache auf Deutsch, kurz und freundlich (max 3-4 Saetze). Nutze gelegentlich Emojis. Weise bei ernsthaften Problemen auf einen Tierarzt hin. Beantworte NUR Fragen zu Hunden.’,
 messages: [{ role: ‘user’, content: message }]
 })
 });
@@ -26,6 +26,7 @@ messages: [{ role: ‘user’, content: message }]
 const data = await response.json();
 
 if (data.error) {
+  console.error('Anthropic error:', data.error);
   return res.status(500).json({ error: data.error.message });
 }
 
@@ -34,6 +35,7 @@ return res.status(200).json({ answer });
 ```
 
 } catch (err) {
+console.error(‘Chat error:’, err);
 return res.status(500).json({ error: err.message });
 }
 }
