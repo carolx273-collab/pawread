@@ -17,12 +17,24 @@
       --green: #3D6B4C;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { box-sizing: border-box; }
     body {
-      background: var(--cream);
+      background: #E8E0D0;
       font-family: 'DM Sans', sans-serif;
       color: var(--dark);
       min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .app-wrapper {
+      background: var(--cream);
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      position: relative;
       padding-bottom: 80px;
+      overflow-x: hidden;
     }
     header { padding: 2rem 2rem 1rem; text-align: center; }
     .paw-logo { font-size: 2.5rem; margin-bottom: 0.3rem; }
@@ -36,14 +48,16 @@
 
 ```
 .bottom-nav {
-  position: fixed !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
   background: white;
   border-top: 1px solid var(--warm);
-  display: flex !important;
-  flex-direction: row !important;
+  display: flex;
+  flex-direction: row;
   z-index: 9999;
   box-shadow: 0 -4px 20px rgba(107,76,42,0.08);
 }
@@ -419,6 +433,7 @@ footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75r
   </style>
 </head>
 <body>
+  <div class="app-wrapper">
 
   <header>
     <div class="paw-logo">🐾</div>
@@ -581,6 +596,8 @@ footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75r
       <a onclick="document.getElementById('impressum-overlay').classList.add('active')" style="color:inherit;text-decoration:underline;cursor:pointer;">Datenschutz</a>
     </span>
   </footer>
+
+  </div><!-- end app-wrapper -->
 
   <script>
     // ===== PAYWALL LOGIC =====
