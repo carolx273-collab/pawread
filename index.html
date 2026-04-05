@@ -395,8 +395,13 @@
           <div class="paywall-feature">✅ Früh-Zugang zu neuen Features</div>
         </div>
         <div class="paywall-form">
-          <input type="email" class="paywall-input" id="paywall-email" placeholder="Deine E-Mail-Adresse" />
-          <button class="paywall-submit" onclick="submitPaywall()">🐶 Jetzt vormerken lassen</button>
+          <a class="paywall-submit" href="https://buy.stripe.com/28E8wPfmM1D69XX5asbZe00" target="_blank" style="text-decoration:none;display:block;text-align:center;">
+            🐾 Jetzt für 2,99€/Monat freischalten
+          </a>
+          <input type="email" class="paywall-input" id="paywall-email" placeholder="Oder E-Mail für später eintragen" style="margin-top:0.8rem"/>
+          <button class="paywall-submit" onclick="submitPaywall()" style="background:transparent;color:var(--brown);border:2px solid var(--warm);font-size:0.9rem;margin-top:0.3rem;">
+            📧 Später benachrichtigen
+          </button>
         </div>
         <button class="paywall-skip" onclick="closePaywall()">Nein danke, ich möchte keine weiteren Analysen</button>
       </div>
