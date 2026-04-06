@@ -32,3 +32,8 @@ if (data.error) {
 const answer = data.content?.[0]?.text || 'Keine Antwort erhalten';
 return res.status(200).json({ answer });
 ```
+
+} catch (err) {
+return res.status(500).json({ error: err.message });
+}
+}
