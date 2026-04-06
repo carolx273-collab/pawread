@@ -1,641 +1,1365 @@
-<script>
-  // ===== PAYWALL LOGIC =====
-  const MAX_FREE = 3;
-  const OWNER_CODE = 'Coco2026';
-  const MAX_FREE_CHATS = 3;
-  const FREE_GUIDES = 3;
+<!DOCTYPE html>
 
-  function getAnalysisCount() {
-    try {
-      return parseInt(localStorage.getItem('pawread_count') || '0', 10);
-    } catch (e) {
-      return 0;
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PawRead – Versteh deinen Hund</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream: #F5F0E8;
+      --warm: #E8DCC8;
+      --brown: #6B4C2A;
+      --amber: #D4882A;
+      --dark: #1C1409;
+      --soft: #A0856A;
+      --green: #3D6B4C;
     }
-  }
-
-  function isOwner() {
-    try {
-      return localStorage.getItem('pawread_owner') === 'true';
-    } catch (e) {
-      return false;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { box-sizing: border-box; }
+    body {
+      background: #E8E0D0;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
     }
-  }
-
-  function isPremium() {
-    try {
-      return (
-        localStorage.getItem('pawread_owner') === 'true' ||
-        localStorage.getItem('pawread_premium') === 'true'
-      );
-    } catch (e) {
-      return false;
+    .app-wrapper {
+      background: var(--cream);
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 80px;
+      overflow-x: hidden;
     }
-  }
-
-  function incrementAnalysisCount() {
-    try {
-      const count = getAnalysisCount() + 1;
-      localStorage.setItem('pawread_count', String(count));
-      return count;
-    } catch (e) {
-      return 1;
+    header { padding: 2rem 2rem 1rem; text-align: center; }
+    .paw-logo { font-size: 2.5rem; margin-bottom: 0.3rem; }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem; font-weight: 900;
+      color: var(--brown); letter-spacing: -0.5px; line-height: 1.1;
     }
-  }
+    h1 span { color: var(--amber); }
+    .tagline { margin-top: 0.5rem; color: var(--soft); font-size: 0.95rem; font-weight: 300; }
 
-  function checkPaywall() {
-    if (isOwner() || isPremium()) return false;
+```
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-top: 1px solid var(--warm);
+  display: flex;
+  flex-direction: row;
+  z-index: 9999;
+  box-shadow: 0 -4px 20px rgba(107,76,42,0.08);
+}
+.nav-btn {
+  flex: 1; padding: 0.9rem 0.5rem 0.7rem;
+  border: none; background: transparent; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.72rem; color: var(--soft);
+  transition: all 0.2s;
+}
+.nav-btn .nav-icon { font-size: 1.4rem; }
+.nav-btn.active { color: var(--brown); font-weight: 600; }
+.nav-btn.active .nav-icon { transform: scale(1.15); }
 
-    const count = getAnalysisCount();
-    if (count >= MAX_FREE) {
-      document.getElementById('paywall-overlay').classList.add('active');
-      return true;
+.page { display: none; }
+.page.active { display: block; }
+.main { max-width: 480px; margin: 0 auto; padding: 1.5rem 1.5rem 2rem; }
+
+.upload-zone {
+  background: white; border: 2.5px dashed var(--warm);
+  border-radius: 24px; padding: 2.5rem 1.5rem;
+  text-align: center; cursor: pointer;
+  transition: all 0.3s ease; position: relative; overflow: hidden;
+}
+.upload-zone:hover { border-color: var(--amber); background: #FFF8EE; transform: scale(1.01); }
+.upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.upload-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.upload-zone h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--brown); margin-bottom: 0.4rem; }
+.upload-zone p { font-size: 0.85rem; color: var(--soft); }
+
+#preview-container {
+  display: none; margin-top: 1.5rem; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(107,76,42,0.15); position: relative;
+}
+#preview-img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+.change-photo {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(255,255,255,0.9); border: none; border-radius: 20px;
+  padding: 6px 14px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem; color: var(--brown); cursor: pointer; font-weight: 500;
+}
+
+#analyze-btn {
+  display: none; width: 100%; margin-top: 1.2rem; padding: 1.1rem;
+  background: var(--brown); color: var(--cream); border: none;
+  border-radius: 16px; font-family: 'Playfair Display', serif;
+  font-size: 1.15rem; font-weight: 700; cursor: pointer;
+  transition: all 0.3s ease;
+}
+#analyze-btn:hover { background: var(--amber); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,136,42,0.35); }
+
+#loading { display: none; text-align: center; padding: 2rem; margin-top: 1rem; }
+.paw-loader { display: flex; justify-content: center; gap: 8px; margin-bottom: 1rem; }
+.paw-loader span { font-size: 1.5rem; animation: bounce 0.6s ease-in-out infinite; }
+.paw-loader span:nth-child(2) { animation-delay: 0.15s; }
+.paw-loader span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-10px); opacity: 1; } }
+#loading p { color: var(--soft); font-size: 0.9rem; font-style: italic; }
+
+#result { display: none; margin-top: 1.5rem; animation: slideUp 0.5s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.mood-badge {
+  background: var(--brown); color: var(--cream); border-radius: 50px;
+  padding: 0.5rem 1.2rem; display: inline-flex; align-items: center;
+  gap: 8px; font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem;
+}
+.result-card { background: white; border-radius: 24px; padding: 1.8rem; box-shadow: 0 4px 24px rgba(107,76,42,0.1); }
+.result-card h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--brown); margin-bottom: 0.3rem; }
+.mood-emoji { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+.result-card .summary { color: var(--dark); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.3rem; }
+.signals-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--soft); margin-bottom: 0.7rem; font-weight: 500; }
+.signals { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.3rem; }
+.signal { display: flex; align-items: flex-start; gap: 10px; background: var(--cream); border-radius: 12px; padding: 0.7rem 1rem; font-size: 0.88rem; line-height: 1.4; }
+.signal-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.tip-box { background: #EEF5F1; border-left: 3px solid var(--green); border-radius: 12px; padding: 1rem 1.2rem; }
+.tip-box .tip-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); font-weight: 500; margin-bottom: 0.4rem; }
+.tip-box p { font-size: 0.9rem; color: var(--dark); line-height: 1.5; }
+.ampel-box { border-radius: 14px; padding: 0.9rem 1.2rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 12px; }
+.ampel-gruen { background: #E8F5E9; border-left: 4px solid #4CAF50; }
+.ampel-gelb { background: #FFF8E1; border-left: 4px solid #FFC107; }
+.ampel-orange { background: #FFF3E0; border-left: 4px solid #FF9800; }
+.ampel-rot { background: #FFEBEE; border-left: 4px solid #F44336; }
+.ampel-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+.ampel-gruen .ampel-dot { background: #4CAF50; }
+.ampel-gelb .ampel-dot { background: #FFC107; }
+.ampel-orange .ampel-dot { background: #FF9800; }
+.ampel-rot .ampel-dot { background: #F44336; }
+.ampel-text { font-size: 0.88rem; color: var(--dark); line-height: 1.4; }
+.ampel-label { font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.retry-btn {
+  width: 100%; margin-top: 1.2rem; padding: 0.9rem;
+  background: transparent; color: var(--brown);
+  border: 2px solid var(--warm); border-radius: 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.retry-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ===== CHATBOT ===== */
+.chat-btn {
+  position: fixed;
+  bottom: 85px;
+  right: 16px;
+  width: 52px; height: 52px;
+  background: var(--brown);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 16px rgba(107,76,42,0.35);
+  z-index: 500;
+  transition: all 0.3s;
+}
+.chat-btn:hover { transform: scale(1.1); background: var(--amber); }
+
+.chat-window {
+  display: none;
+  position: fixed;
+  bottom: 150px;
+  right: 12px;
+  width: calc(100% - 24px);
+  max-width: 360px;
+  height: 420px;
+  background: var(--cream);
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(107,76,42,0.2);
+  z-index: 500;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+.chat-window.active { display: flex; }
+
+.chat-header {
+  background: var(--brown);
+  color: var(--cream);
+  padding: 1rem 1.2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.chat-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem; margin: 0;
+}
+.chat-header span { font-size: 0.75rem; opacity: 0.8; }
+.chat-close {
+  background: none; border: none; color: white;
+  font-size: 1.2rem; cursor: pointer; padding: 0;
+}
+.chat-messages {
+  flex: 1; overflow-y: auto;
+  padding: 1rem; display: flex;
+  flex-direction: column; gap: 0.8rem;
+}
+.chat-msg {
+  max-width: 85%; padding: 0.7rem 1rem;
+  border-radius: 16px; font-size: 0.85rem;
+  line-height: 1.5;
+}
+.chat-msg.bot {
+  background: white; color: var(--dark);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(107,76,42,0.08);
+  align-self: flex-start;
+}
+.chat-msg.user {
+  background: var(--brown); color: white;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+}
+.chat-msg.loading { opacity: 0.6; font-style: italic; }
+.chat-input-row {
+  display: flex; gap: 8px;
+  padding: 0.8rem; border-top: 1px solid var(--warm);
+  background: white;
+}
+.chat-input {
+  flex: 1; border: 2px solid var(--warm);
+  border-radius: 12px; padding: 0.6rem 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; outline: none;
+  transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: var(--amber); }
+.chat-send {
+  background: var(--brown); color: white;
+  border: none; border-radius: 12px;
+  padding: 0.6rem 1rem; cursor: pointer;
+  font-size: 1rem; transition: background 0.2s;
+}
+.chat-send:hover { background: var(--amber); }
+
+/* ===== IMPRESSUM ===== */
+.impressum-link {
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+.impressum-link a {
+  color: var(--soft);
+  font-size: 0.75rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.impressum-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(28,20,9,0.85);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.impressum-overlay.active { display: flex; }
+.impressum-card {
+  background: var(--cream);
+  border-radius: 28px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+}
+.impressum-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: var(--brown);
+  margin-bottom: 1rem;
+}
+.impressum-card p {
+  font-size: 0.85rem;
+  color: var(--dark);
+  line-height: 1.8;
+  margin-bottom: 0.5rem;
+}
+.impressum-close {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--brown);
+  color: var(--cream);
+  border: none;
+  border-radius: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* ===== PAYWALL ===== */
+.paywall-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(28,20,9,0.85);
+  backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.paywall-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.paywall-card {
+  background: var(--cream); border-radius: 28px;
+  padding: 2rem 1.8rem; max-width: 400px; width: 100%;
+  text-align: center; position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: slideUp 0.4s ease;
+}
+.paywall-paw { font-size: 3rem; margin-bottom: 0.5rem; display: block; }
+.paywall-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem; color: var(--brown);
+  margin-bottom: 0.5rem; line-height: 1.2;
+}
+.paywall-card h2 span { color: var(--amber); }
+.paywall-card p {
+  color: var(--soft); font-size: 0.9rem;
+  line-height: 1.6; margin-bottom: 1.5rem;
+}
+.paywall-form { display: flex; flex-direction: column; gap: 0.8rem; }
+.paywall-input {
+  width: 100%; padding: 0.9rem 1.1rem;
+  border: 2px solid var(--warm); border-radius: 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  color: var(--dark); background: white; outline: none;
+  transition: border-color 0.2s;
+}
+.paywall-input:focus { border-color: var(--amber); }
+.paywall-submit {
+  width: 100%; padding: 1rem;
+  background: var(--brown); color: var(--cream);
+  border: none; border-radius: 14px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem; font-weight: 700;
+  cursor: pointer; transition: all 0.3s;
+}
+.paywall-submit:hover { background: var(--amber); transform: translateY(-2px); }
+.paywall-skip {
+  margin-top: 0.8rem; background: none; border: none;
+  color: var(--soft); font-size: 0.82rem;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  text-decoration: underline;
+}
+.paywall-features {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  margin-bottom: 1.5rem; text-align: left;
+}
+.paywall-feature {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.85rem; color: var(--dark);
+}
+.paywall-success { display: none; }
+.paywall-success h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; color: var(--brown); margin: 0.5rem 0;
+}
+.paywall-success p { color: var(--soft); font-size: 0.9rem; }
+.paywall-counter {
+  background: var(--amber); color: white;
+  border-radius: 50px; padding: 0.3rem 1rem;
+  font-size: 0.78rem; font-weight: 600;
+  display: inline-block; margin-bottom: 1rem;
+}
+
+/* ===== NOTFALL ===== */
+.notfall-disclaimer {
+  background: #FFF3E0; border-left: 4px solid #FF9800;
+  border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 1.5rem;
+  font-size: 0.85rem; color: #5D4037; line-height: 1.5;
+}
+.notfall-disclaimer strong { display: block; margin-bottom: 0.3rem; color: #E65100; }
+
+.notfall-grid { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem; }
+
+.notfall-card {
+  background: white; border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(107,76,42,0.08);
+  cursor: pointer; transition: all 0.25s; overflow: hidden;
+}
+.notfall-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(107,76,42,0.14); }
+
+.notfall-card-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 1.1rem 1.2rem;
+}
+.notfall-icon {
+  font-size: 2rem; flex-shrink: 0;
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.notfall-icon.red { background: #FFEBEE; }
+.notfall-icon.orange { background: #FFF3E0; }
+.notfall-icon.yellow { background: #FFF8E1; }
+
+.notfall-card-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem; color: var(--brown); margin-bottom: 0.15rem;
+}
+.notfall-card-header p { font-size: 0.8rem; color: var(--soft); line-height: 1.4; }
+
+.notfall-arrow { margin-left: auto; font-size: 1.2rem; color: var(--soft); flex-shrink: 0; }
+
+.notfall-detail {
+  display: none; padding: 0 1.2rem 1.2rem;
+  border-top: 1px solid var(--cream);
+}
+.notfall-detail.open { display: block; animation: slideUp 0.3s ease; }
+
+.notfall-desc {
+  font-size: 0.88rem; line-height: 1.65;
+  color: var(--dark); margin: 0.8rem 0 1rem;
+}
+
+.notfall-section-title {
+  font-size: 0.72rem; text-transform: uppercase;
+  letter-spacing: 1.5px; font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+.notfall-section-title.gruen { color: var(--green); }
+.notfall-section-title.rot { color: #E53935; }
+
+.notfall-steps { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+.notfall-step {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--cream); border-radius: 10px;
+  padding: 0.6rem 0.9rem; font-size: 0.84rem; line-height: 1.4;
+}
+.notfall-step.warn { background: #FFEBEE; }
+
+.tierarzt-btn {
+  width: 100%; margin-top: 1rem; padding: 1rem;
+  background: var(--brown); color: var(--cream);
+  border: none; border-radius: 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  font-weight: 600; cursor: pointer; transition: all 0.3s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  text-decoration: none;
+}
+.tierarzt-btn:hover { background: var(--amber); transform: translateY(-1px); }
+
+.disclaimer {
+  margin-top: 1rem; padding: 0.8rem 1rem;
+  background: white; border-radius: 12px;
+  font-size: 0.78rem; color: var(--soft); text-align: center; line-height: 1.5;
+}
+
+.ratgeber-header { margin-bottom: 1.5rem; }
+.ratgeber-header h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brown); margin-bottom: 0.3rem; }
+.ratgeber-header p { color: var(--soft); font-size: 0.9rem; }
+.category-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 1.2rem; scrollbar-width: none; }
+.category-tabs::-webkit-scrollbar { display: none; }
+.cat-btn {
+  flex-shrink: 0; padding: 0.45rem 1rem; border-radius: 50px;
+  border: 2px solid var(--warm); background: white;
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+  color: var(--soft); cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.cat-btn.active { background: var(--brown); border-color: var(--brown); color: var(--cream); font-weight: 500; }
+.guide-card {
+  background: white; border-radius: 20px; margin-bottom: 1rem;
+  overflow: hidden; box-shadow: 0 2px 12px rgba(107,76,42,0.08);
+  cursor: pointer; transition: all 0.25s;
+}
+.guide-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(107,76,42,0.14); }
+.guide-card-header { display: flex; align-items: center; gap: 14px; padding: 1.1rem 1.2rem; }
+.guide-emoji { font-size: 2rem; flex-shrink: 0; }
+.guide-card-header h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--brown); margin-bottom: 0.15rem; }
+.guide-card-header p { font-size: 0.8rem; color: var(--soft); line-height: 1.4; }
+.guide-tag { margin-left: auto; flex-shrink: 0; background: var(--cream); border-radius: 8px; padding: 3px 8px; font-size: 0.7rem; color: var(--soft); }
+.guide-body { display: none; padding: 0 1.2rem 1.2rem; border-top: 1px solid var(--cream); }
+.guide-body.open { display: block; animation: slideUp 0.3s ease; }
+.guide-body p { font-size: 0.88rem; line-height: 1.65; color: var(--dark); margin-bottom: 0.8rem; }
+.guide-signals { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.8rem; }
+.guide-signal { display: flex; align-items: flex-start; gap: 10px; background: var(--cream); border-radius: 10px; padding: 0.6rem 0.9rem; font-size: 0.84rem; line-height: 1.4; }
+
+.guide-card.locked { opacity: 0.85; }
+.guide-card.locked .guide-card-header { position: relative; }
+.lock-badge {
+  margin-left: auto; flex-shrink: 0;
+  background: var(--amber); color: white;
+  border-radius: 8px; padding: 3px 10px;
+  font-size: 0.75rem; font-weight: 600;
+}
+.locked-overlay {
+  padding: 1rem 1.2rem;
+  text-align: center;
+  border-top: 1px solid var(--cream);
+}
+.locked-overlay p {
+  font-size: 0.85rem; color: var(--soft);
+  margin-bottom: 0.8rem; line-height: 1.5;
+}
+.unlock-btn {
+  display: inline-block; padding: 0.7rem 1.5rem;
+  background: var(--brown); color: var(--cream);
+  border-radius: 12px; font-size: 0.88rem;
+  font-weight: 600; cursor: pointer;
+  border: none; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s; text-decoration: none;
+}
+.unlock-btn:hover { background: var(--amber); }
+
+footer { text-align: center; padding: 1rem; color: var(--soft); font-size: 0.75rem; opacity: 0.6; }
+```
+
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+
+  <header>
+    <div class="paw-logo">🐾</div>
+    <h1>Paw<span>Read</span></h1>
+    <p class="tagline">Ist dein Hund entspannt, ängstlich oder neugierig?<br><small style="font-size:0.8rem;opacity:0.8">Erkenne in Sekunden wie sich dein Hund wirklich fühlt</small></p>
+  </header>
+
+  <div class="page active" id="page-analyse">
+    <div class="main">
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="file-input" accept="image/*" />
+        <span class="upload-icon">🐶</span>
+        <h2>Zeig uns deinen Hund</h2>
+        <p>Ein Foto reicht – wir lesen seine Körpersprache in Sekunden</p>
+      </div>
+      <div class="disclaimer">
+        🔒 Dein Foto wird nur zur Analyse verwendet und nicht gespeichert.<br>
+        Dies ist eine KI-Einschätzung – kein Ersatz für Tierarzt oder Fachmann.
+      </div>
+      <div style="display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap;">
+        <div style="flex:1;min-width:120px;background:white;border-radius:14px;padding:0.7rem 0.9rem;font-size:0.8rem;color:#6B4C2A;text-align:center;box-shadow:0 2px 8px rgba(107,76,42,0.08);">👂 Ohren zurück<br><span style="color:#A0856A;font-size:0.75rem;">Unsicherheit</span></div>
+        <div style="flex:1;min-width:120px;background:white;border-radius:14px;padding:0.7rem 0.9rem;font-size:0.8rem;color:#6B4C2A;text-align:center;box-shadow:0 2px 8px rgba(107,76,42,0.08);">🐾 Lockere Haltung<br><span style="color:#A0856A;font-size:0.75rem;">Entspannung</span></div>
+        <div style="flex:1;min-width:120px;background:white;border-radius:14px;padding:0.7rem 0.9rem;font-size:0.8rem;color:#6B4C2A;text-align:center;box-shadow:0 2px 8px rgba(107,76,42,0.08);">🔄 Schwanz wedelt<br><span style="color:#A0856A;font-size:0.75rem;">Freude</span></div>
+      </div>
+      <div id="preview-container">
+        <img id="preview-img" src="" alt="Hund Vorschau" />
+        <button class="change-photo" id="change-photo">✕ Ändern</button>
+      </div>
+      <button id="analyze-btn">🔍 Jetzt analysieren</button>
+      <div id="loading">
+        <div class="paw-loader"><span>🐾</span><span>🐾</span><span>🐾</span></div>
+        <p>Lese die Körpersprache deines Hundes…</p>
+      </div>
+      <div id="result"></div>
+      <div style="text-align:center;padding:2rem 1rem 1rem;color:var(--soft);font-size:0.72rem;">
+        © 2026 PawRead · <a onclick="document.getElementById('impressum-overlay').classList.add('active')" style="color:var(--soft);text-decoration:underline;cursor:pointer;">Impressum</a> · <a onclick="showDatenschutz()" style="color:var(--soft);text-decoration:underline;cursor:pointer;">Datenschutz</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-ratgeber">
+    <div class="main">
+      <div class="ratgeber-header">
+        <h2>Ratgeber 📖</h2>
+        <p>Lerne die Sprache deines Hundes zu verstehen</p>
+        <div style="background:white;border-radius:14px;padding:0.8rem 1rem;margin-top:0.8rem;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(107,76,42,0.08);">
+          <span style="font-size:1.3rem;">🔒</span>
+          <div>
+            <p style="font-size:0.8rem;font-weight:600;color:var(--brown);margin-bottom:2px;">3 von 15 Artikeln kostenlos</p>
+            <p style="font-size:0.75rem;color:var(--soft);">Alle Artikel freischalten für 2,99€/Monat</p>
+          </div>
+          <button onclick="showGuidePaywall()" style="margin-left:auto;background:var(--amber);color:white;border:none;border-radius:10px;padding:0.4rem 0.8rem;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">Premium</button>
+        </div>
+      </div>
+      <div class="category-tabs">
+        <button class="cat-btn active" onclick="filterGuides('alle', this)">Alle</button>
+        <button class="cat-btn" onclick="filterGuides('koerper', this)">🏹 Körpersprache</button>
+        <button class="cat-btn" onclick="filterGuides('calming', this)">🌿 Calming Signals</button>
+        <button class="cat-btn" onclick="filterGuides('emotion', this)">❤️ Emotionen</button>
+        <button class="cat-btn" onclick="filterGuides('alltag', this)">🏠 Alltag</button>
+        <button class="cat-btn" onclick="filterGuides('training', this)">🎓 Training</button>
+      </div>
+      <div id="guides-container"></div>
+    </div>
+  </div>
+
+  <!-- CHATBOT -->
+
+<button class="chat-btn" onclick="toggleChat()" title="Frag den Hundeexperten">💬</button>
+
+  <div class="chat-window" id="chat-window">
+    <div class="chat-header">
+      <div>
+        <h3>🐾 PawRead Assistent</h3>
+        <span>Dein Hundeexperte</span>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-msg bot">Hallo! Ich bin dein PawRead Assistent 🐾 Stell mir Fragen zur Körpersprache deines Hundes – ich helfe dir weiter!</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" class="chat-input" id="chat-input" placeholder="Frage stellen..." onkeydown="if(event.key==='Enter')sendChat()" />
+      <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+
+  <!-- IMPRESSUM OVERLAY -->
+
+  <div class="impressum-overlay" id="impressum-overlay">
+    <div class="impressum-card" style="max-height:85vh;overflow-y:auto;">
+      <h2 id="impressum-title">Impressum</h2>
+      <div id="impressum-content">
+        <p><strong>Angaben gemäß § 5 TMG</strong></p>
+        <p>Carolin Laux<br>
+        <span id="adresse-impressum" style="display:none;">Flomersheimer Straße 34a<br>67227 Frankenthal<br>Deutschland</span>
+        <a onclick="document.getElementById('adresse-impressum').style.display='block';this.style.display='none';" style="font-size:0.8rem;color:var(--amber);cursor:pointer;text-decoration:underline;">Adresse anzeigen</a>
+        </p>
+        <p><strong>Kontakt</strong><br>E-Mail: pawread@web.de</p>
+        <p><strong>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</strong><br>Carolin Laux</p>
+        <p><strong>Haftung für Inhalte</strong><br>Die Inhalte unserer App wurden mit größter Sorgfalt erstellt. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte verantwortlich.</p>
+        <p><strong>Hinweis zur Nutzung der App</strong><br>Die Analysen basieren auf KI und dienen ausschließlich der allgemeinen Orientierung. Sie ersetzen keine Einschätzung durch einen Tierarzt oder Verhaltensexperten.</p>
+        <p><strong>Urheberrecht</strong><br>Die durch den Betreiber erstellten Inhalte unterliegen dem deutschen Urheberrecht.</p>
+      </div>
+      <div id="datenschutz-content" style="display:none;">
+        <p><strong>1. Allgemeine Hinweise</strong><br>Der Schutz Ihrer persönlichen Daten ist uns wichtig. Die Nutzung dieser App ist grundsätzlich ohne Angabe personenbezogener Daten möglich.</p>
+        <p><strong>2. Verantwortliche Stelle</strong><br>Carolin Laux<br>
+        <span id="adresse-datenschutz" style="display:none;">Flomersheimer Straße 34a<br>67227 Frankenthal<br></span>
+        <a onclick="document.getElementById('adresse-datenschutz').style.display='block';this.style.display='none';" style="font-size:0.8rem;color:var(--amber);cursor:pointer;text-decoration:underline;">Adresse anzeigen</a><br>
+        E-Mail: pawread@web.de</p>
+        <p><strong>3. Erhebung und Verarbeitung von Daten</strong><br>Beim Besuch werden automatisch IP-Adresse, Datum/Uhrzeit, Browsertyp und Betriebssystem durch den Hosting-Anbieter erfasst.</p>
+        <p><strong>4. Analysefunktion</strong><br>Hochgeladene Bilder werden ausschließlich zur Analyse verwendet, nicht dauerhaft gespeichert und nicht an Dritte weitergegeben.</p>
+        <p><strong>5. Künstliche Intelligenz</strong><br>Zur Analyse wird ein externer KI-Dienst genutzt. Die Verarbeitung erfolgt ausschließlich zum Analysezweck, nicht zur Profilbildung.</p>
+        <p><strong>6. Hosting</strong><br>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA</p>
+        <p><strong>7. Lokale Datenspeicherung</strong><br>Nutzungsdaten (z.B. Anzahl Analysen) werden ausschließlich lokal im Browser gespeichert.</p>
+        <p><strong>8. Ihre Rechte</strong><br>Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung Ihrer Daten. Kontakt: pawread@web.de</p>
+        <p><strong>9. Haftungsausschluss</strong><br>Die Analysen basieren auf KI und dienen der allgemeinen Orientierung. Sie ersetzen keine tierärztliche oder fachliche Beratung.</p>
+      </div>
+      <button class="impressum-close" onclick="document.getElementById('impressum-overlay').classList.remove('active')">Schließen</button>
+    </div>
+  </div>
+
+  <!-- PAYWALL OVERLAY -->
+
+  <div class="paywall-overlay" id="paywall-overlay">
+    <div class="paywall-card">
+      <div id="paywall-form-view">
+        <span class="paywall-paw">🐾</span>
+        <div class="paywall-counter">✨ 3 kostenlose Analysen genutzt</div>
+        <h2>Du liebst dein <span>Tier</span>.</h2>
+        <p>Bleib informiert wenn PawRead Premium startet – mit unbegrenzten Analysen, Verlauf und exklusiven Hundeexperten-Tipps.</p>
+        <div class="paywall-features">
+          <div class="paywall-feature">✅ Unbegrenzte Analysen</div>
+          <div class="paywall-feature">✅ Analyse-Verlauf speichern</div>
+          <div class="paywall-feature">✅ Exklusive Experten-Tipps</div>
+          <div class="paywall-feature">✅ Früh-Zugang zu neuen Features</div>
+        </div>
+        <div class="paywall-form">
+          <a class="paywall-submit" href="https://buy.stripe.com/28E8wPfmM1D69XX5asbZe00" target="_blank" style="text-decoration:none;display:block;text-align:center;">
+            🐾 Jetzt für 2,99€/Monat freischalten
+          </a>
+          <input type="email" class="paywall-input" id="paywall-email" placeholder="Oder E-Mail für später eintragen" style="margin-top:0.8rem"/>
+          <button class="paywall-submit" onclick="submitPaywall()" style="background:transparent;color:var(--brown);border:2px solid var(--warm);font-size:0.9rem;margin-top:0.3rem;">
+            📧 Später benachrichtigen
+          </button>
+          <a href="https://buy.stripe.com/28E8wPfmM1D69XX5asbZe00" target="_blank" style="display:block;width:100%;margin-top:0.8rem;padding:1rem;background:#3D6B4C;color:white;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;text-align:center;text-decoration:none;">💳 Jetzt 2,99€/Monat freischalten</a>
+        </div>
+        <button class="paywall-skip" onclick="closePaywall()">Nein danke, ich möchte keine weiteren Analysen</button>
+        <div style="margin-top:1rem;display:flex;gap:8px;">
+          <input type="password" id="owner-code-input" class="paywall-input" placeholder="Freischalt-Code eingeben" style="font-size:0.8rem;padding:0.6rem 0.9rem;" />
+          <button onclick="tryOwnerCode()" style="padding:0.6rem 1rem;background:var(--soft);color:white;border:none;border-radius:12px;cursor:pointer;font-size:0.8rem;white-space:nowrap;">OK</button>
+        </div>
+      </div>
+      <div class="paywall-success" id="paywall-success">
+        <span class="paywall-paw">🎉</span>
+        <h3>Danke, du bist dabei!</h3>
+        <p>Wir melden uns sobald PawRead Premium verfügbar ist. Coco wird begeistert sein! 🐾</p>
+        <button class="paywall-submit" style="margin-top:1rem" onclick="closePaywall()">Weiter zur App</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: Notfall -->
+
+  <div class="page" id="page-notfall">
+    <div class="main">
+      <div class="ratgeber-header">
+        <h2>Notfallhilfe 🚨</h2>
+        <p>Schnelle Orientierung in kritischen Situationen</p>
+      </div>
+      <div class="notfall-disclaimer">
+        <strong>⚠️ Wichtiger Hinweis</strong>
+        Diese Hinweise ersetzen keine tierärztliche Behandlung. Im Zweifel immer sofort einen Tierarzt kontaktieren.
+      </div>
+      <div class="notfall-grid" id="notfall-grid"></div>
+    </div>
+  </div>
+
+  <div style="position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #E8DCC8;display:flex;flex-direction:row;z-index:9999;box-shadow:0 -4px 20px rgba(107,76,42,0.08);">
+    <button class="nav-btn active" id="nav-analyse" onclick="showPage('analyse', this)" style="flex:1;padding:0.9rem 0.5rem 0.7rem;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#A0856A;">
+      <span style="font-size:1.4rem;">📸</span>
+      Analysieren
+    </button>
+    <button class="nav-btn" id="nav-ratgeber" onclick="showPage('ratgeber', this)" style="flex:1;padding:0.9rem 0.5rem 0.7rem;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#A0856A;">
+      <span style="font-size:1.4rem;">📖</span>
+      Ratgeber
+    </button>
+    <button class="nav-btn" id="nav-notfall" onclick="showPage('notfall', this)" style="flex:1;padding:0.9rem 0.5rem 0.7rem;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#A0856A;">
+      <span style="font-size:1.4rem;">🚨</span>
+      Notfall
+    </button>
+  </div>
+
+  </div><!-- end app-wrapper -->
+
+  <script>
+    // ===== PAYWALL LOGIC =====
+    const MAX_FREE = 3;
+    const OWNER_CODE = 'Coco2026';
+
+    function getAnalysisCount() {
+      try { return parseInt(localStorage.getItem('pawread_count') || '0'); }
+      catch(e) { return 0; }
     }
-    return false;
-  }
 
-  function checkOwnerCode(code) {
-    if (code === OWNER_CODE) {
+    function isOwner() {
+      try { return localStorage.getItem('pawread_owner') === 'true'; }
+      catch(e) { return false; }
+    }
+
+    function incrementAnalysisCount() {
       try {
-        localStorage.setItem('pawread_owner', 'true');
-      } catch (e) {}
-      return true;
+        const count = getAnalysisCount() + 1;
+        localStorage.setItem('pawread_count', count.toString());
+        return count;
+      } catch(e) { return 1; }
     }
-    return false;
-  }
 
-  function closePaywall() {
-    document.getElementById('paywall-overlay').classList.remove('active');
-  }
+    function checkPaywall() {
+      if (isOwner()) return false;
+      const count = getAnalysisCount();
+      if (count >= MAX_FREE) {
+        document.getElementById('paywall-overlay').classList.add('active');
+        return true;
+      }
+      return false;
+    }
 
-  function showGuidePaywall() {
-    document.getElementById('paywall-overlay').classList.add('active');
-  }
+    function checkOwnerCode(code) {
+      if (code === OWNER_CODE) {
+        try { localStorage.setItem('pawread_owner', 'true'); } catch(e) {}
+        return true;
+      }
+      return false;
+    }
 
-  function tryOwnerCode() {
-    const input = document.getElementById('owner-code-input');
-    if (checkOwnerCode(input.value)) {
-      closePaywall();
+    function closePaywall() {
+      document.getElementById('paywall-overlay').classList.remove('active');
+    }
+
+    // ===== CHATBOT LOGIC =====
+    let chatOpen = false;
+    const MAX_FREE_CHATS = 3;
+
+    function getChatCount() {
+      try { return parseInt(localStorage.getItem('pawread_chats') || '0'); } catch(e) { return 0; }
+    }
+
+    function incrementChatCount() {
+      try {
+        const d = new Date().toDateString();
+        const stored = JSON.parse(localStorage.getItem('pawread_chat_data') || '{"date":"","count":0}');
+        if (stored.date !== d) {
+          localStorage.setItem('pawread_chat_data', JSON.stringify({date: d, count: 1}));
+          return 1;
+        }
+        const newCount = stored.count + 1;
+        localStorage.setItem('pawread_chat_data', JSON.stringify({date: d, count: newCount}));
+        return newCount;
+      } catch(e) { return 1; }
+    }
+
+    function getTodayChatCount() {
+      try {
+        const d = new Date().toDateString();
+        const stored = JSON.parse(localStorage.getItem('pawread_chat_data') || '{"date":"","count":0}');
+        return stored.date === d ? stored.count : 0;
+      } catch(e) { return 0; }
+    }
+
+    function toggleChat() {
+      chatOpen = !chatOpen;
+      document.getElementById('chat-window').classList.toggle('active', chatOpen);
+      if (chatOpen) {
+        document.getElementById('chat-input').focus();
+        updateChatCounter();
+      }
+    }
+
+    function updateChatCounter() {
+      if (isPremium()) return;
+      const remaining = MAX_FREE_CHATS - getTodayChatCount();
+      const messages = document.getElementById('chat-messages');
+      const existing = document.getElementById('chat-limit-info');
+      if (existing) existing.remove();
+      if (remaining <= MAX_FREE_CHATS) {
+        messages.insertAdjacentHTML('afterbegin', 
+          `<div id="chat-limit-info" style="text-align:center;font-size:0.75rem;color:var(--soft);padding:0.3rem;background:#FFF8F0;border-radius:8px;">
+            ${remaining > 0 ? `✨ Noch <strong>${remaining}</strong> kostenlose Fragen heute` : '🔒 Tageslimit erreicht – <a onclick="showGuidePaywall()" style="color:var(--amber);cursor:pointer;text-decoration:underline;">Premium freischalten</a>'}
+          </div>`);
+      }
+    }
+
+    async function sendChat() {
+      const input = document.getElementById('chat-input');
+      const messages = document.getElementById('chat-messages');
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Check daily limit for non-premium
+      if (!isPremium() && getTodayChatCount() >= MAX_FREE_CHATS) {
+        showGuidePaywall();
+        return;
+      }
+
+      // Increment counter
+      if (!isPremium()) incrementChatCount();
+
+      // Add user message
+      messages.innerHTML += `<div class="chat-msg user">${text}</div>`;
+      input.value = '';
+      messages.scrollTop = messages.scrollHeight;
+
+      // Add loading
+      const loadingId = 'loading-' + Date.now();
+      messages.innerHTML += `<div class="chat-msg bot loading" id="${loadingId}">tippt...</div>`;
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await response.json();
+        document.getElementById(loadingId).remove();
+        const answer = data.answer || 'Entschuldigung, ich konnte keine Antwort finden.';
+        messages.innerHTML += `<div class="chat-msg bot">${answer}</div>`;
+        updateChatCounter();
+      } catch(err) {
+        document.getElementById(loadingId).remove();
+        messages.innerHTML += `<div class="chat-msg bot">Entschuldigung, ein Fehler ist aufgetreten. Bitte versuche es erneut.</div>`;
+      }
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function showDatenschutz() {
+      document.getElementById('impressum-title').textContent = 'Datenschutzerklärung';
+      document.getElementById('impressum-content').style.display = 'none';
+      document.getElementById('datenschutz-content').style.display = 'block';
+      document.getElementById('impressum-overlay').classList.add('active');
+    }
+
+    function showImpressum() {
+      document.getElementById('impressum-title').textContent = 'Impressum';
+      document.getElementById('impressum-content').style.display = 'block';
+      document.getElementById('datenschutz-content').style.display = 'none';
+      document.getElementById('impressum-overlay').classList.add('active');
+    }
+
+    function tryOwnerCode() {
+      const input = document.getElementById('owner-code-input');
+      if (checkOwnerCode(input.value)) {
+        closePaywall();
+        try { localStorage.setItem('pawread_count', '0'); } catch(e) {}
+        alert('🐾 Willkommen Carolin! Unbegrenzte Analysen freigeschaltet!');
+      } else {
+        input.style.borderColor = '#F44336';
+        input.value = '';
+        input.placeholder = 'Falscher Code...';
+      }
+    }
+
+    function submitPaywall() {
+      const email = document.getElementById('paywall-email').value;
+      if (!email || !email.includes('@')) {
+        document.getElementById('paywall-email').style.borderColor = '#F44336';
+        document.getElementById('paywall-email').placeholder = 'Bitte gültige E-Mail eingeben';
+        return;
+      }
+      // Save email locally for now
+      try {
+        const emails = JSON.parse(localStorage.getItem('pawread_emails') || '[]');
+        emails.push({ email, date: new Date().toISOString() });
+        localStorage.setItem('pawread_emails', JSON.stringify(emails));
+      } catch(e) {}
+
+      document.getElementById('paywall-form-view').style.display = 'none';
+      document.getElementById('paywall-success').style.display = 'block';
+
+      // Reset counter and set premium after signup
       try {
         localStorage.setItem('pawread_count', '0');
-      } catch (e) {}
-      alert('🐾 Willkommen Carolin! Unbegrenzte Analysen freigeschaltet!');
-    } else {
-      input.style.borderColor = '#F44336';
-      input.value = '';
-      input.placeholder = 'Falscher Code...';
-    }
-  }
-
-  function submitPaywall() {
-    const emailInput = document.getElementById('paywall-email');
-    const email = emailInput.value.trim();
-
-    if (!email || !email.includes('@')) {
-      emailInput.style.borderColor = '#F44336';
-      emailInput.placeholder = 'Bitte gültige E-Mail eingeben';
-      return;
+        localStorage.setItem('pawread_premium', 'true');
+      } catch(e) {}
     }
 
-    try {
-      const emails = JSON.parse(localStorage.getItem('pawread_emails') || '[]');
-      emails.push({ email, date: new Date().toISOString() });
-      localStorage.setItem('pawread_emails', JSON.stringify(emails));
-    } catch (e) {}
-
-    document.getElementById('paywall-form-view').style.display = 'none';
-    document.getElementById('paywall-success').style.display = 'block';
-
-    try {
-      localStorage.setItem('pawread_count', '0');
-      localStorage.setItem('pawread_premium', 'true');
-    } catch (e) {}
-  }
-
-  // ===== CHATBOT LOGIC =====
-  let chatOpen = false;
-
-  function getTodayChatCount() {
-    try {
-      const d = new Date().toDateString();
-      const stored = JSON.parse(localStorage.getItem('pawread_chat_data') || '{"date":"","count":0}');
-      return stored.date === d ? stored.count : 0;
-    } catch (e) {
-      return 0;
+    function showPage(name, btn) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      btn.classList.add('active');
     }
-  }
 
-  function incrementChatCount() {
-    try {
-      const d = new Date().toDateString();
-      const stored = JSON.parse(localStorage.getItem('pawread_chat_data') || '{"date":"","count":0}');
+    const guides = [
+      { id: 1, cat: 'koerper', emoji: '🏹', title: 'Das Pfeil-Prinzip', preview: 'Die wichtigste Methode um Hundekörpersprache zu lesen', content: 'Das Pfeil-Prinzip ist das wichtigste Werkzeug um Hundekörpersprache schnell einzuschaetzen: Wohin zeigen die Koerperteile des Hundes? Vorne und oben bedeutet Selbstsicherheit und Annaeherung. Hinten und unten bedeutet Rueckzug, Angst oder Unterwerfung. Erst wenn du das Gesamtbild aller Pfeile betrachtest erkennst du die wahre Stimmung.', signals: [{ icon: '⬆️', text: 'Pfeile nach vorne/oben: Kopf hoch, Ohren vor, Rute hoch, Gewicht nach vorne - Selbstsicherheit' }, { icon: '⬇️', text: 'Pfeile nach hinten/unten: Kopf gesenkt, Ohren angelegt, Rute unten, Gewicht zurueck - Angst/Rueckzug' }, { icon: '🔀', text: 'Gemischte Pfeile: Einige nach vorne, andere nach hinten - Hund ist im inneren Konflikt' }, { icon: '👁️', text: 'Immer das Gesamtbild bewerten - niemals ein einzelnes Signal isoliert deuten!' }], tag: 'Grundlagen' },
+      { id: 2, cat: 'koerper', emoji: '😌', title: 'Der entspannte Hund', preview: 'So sieht echte Entspannung aus - die wichtige Basis', content: 'Um Veraenderungen in der Koerpersprache zu erkennen musst du zuerst wissen wie dein Hund entspannt aussieht. Diese Grundhaltung ist bei jedem Hund individuell und wird von Rasse und Erfahrungen beeinflusst. Mache Fotos von deinem entspannten Hund als Referenz!', signals: [{ icon: '💫', text: 'Geringe Koerperspannung - weiche fluessige Bewegungen, kein staksiger Gang' }, { icon: '👀', text: 'Weiches mandelfoermiges Auge - leicht geblinzelt, kein Starren' }, { icon: '👄', text: 'Fang locker leicht geoeffnet oder entspannt geschlossen - keine Anspannung sichtbar' }, { icon: '🐾', text: 'Rute locker in Grundstellung - bei Spitz/Pudel/Akita anatomisch bedingt hoch - kein Stresszeichen!' }], tag: 'Körpersprache' },
+      { id: 3, cat: 'koerper', emoji: '🔍', title: 'Aufmerksam und neugierig', preview: 'Wenn dein Hund etwas Interessantes entdeckt', content: 'Aufmerksam durch die Welt zu gehen ist fuer Hunde voellig normal. Es ist ein wesentlicher Teil ihrer Neugier. Im Gegensatz zum entspannten Ausdruck fokussiert sich der Hund jetzt staerker auf das was sein Interesse geweckt hat. Achte darauf dass er dabei weniger auf seine Umgebung achtet - z.B. heranfahrende Autos.', signals: [{ icon: '👂', text: 'Ohren leicht nach vorne/oben ausgerichtet - aktives Zuhoeren und Interesse' }, { icon: '👀', text: 'Augen etwas weiter geoeffnet auf das Objekt gerichtet - aber noch weich' }, { icon: '🫱', text: 'Koerper leicht nach vorne geneigt, ausgeglichen - Rute leicht ueber Rueckenlinie' }, { icon: '👃', text: 'Beginnt zu schnueffeln am Boden oder in der Luft - sammelt Informationen' }], tag: 'Körpersprache' },
+      { id: 4, cat: 'koerper', emoji: '🎮', title: 'Play Bow vs. Prey Bow', preview: 'Zwei aehnliche Haltungen mit sehr unterschiedlicher Bedeutung', content: 'Der Play Bow (Spielaufforderung) und der Prey Bow (Beuteinstinkt/Lauern) sehen aehnlich aus aber bedeuten etwas voellig anderes. Diesen Unterschied zu kennen kann in Hundebegegnungen sehr wichtig sein!', signals: [{ icon: '🎯', text: 'PLAY BOW: Vorderkörper tief, Ellenbogen fast am Boden, Kopf vom Gegenueber ABGEWANDT, Wirbelsaeule kurvig' }, { icon: '🏹', text: 'PREY BOW: Wirbelsaeule GERADE, Ellenbogen NICHT am Boden, Blick DIREKT auf Gegenueber fixiert' }, { icon: '🐕', text: 'Play Bow: Rute mit Bogen unterhalb Rueckenlinie, Mundwinkel nach hinten, wirkt "verrueckt" - das ist positiv!' }, { icon: '⚠️', text: 'Prey Bow: Rute OBERHALB Rueckenlinie zeigt auf Gegenueber - Hund belauert, kein Spiel!' }], tag: 'Körpersprache' },
+      { id: 5, cat: 'calming', emoji: '🌿', title: 'Calming Signals - die Friedenssprache', preview: 'Die subtilste und haeufig uebersehene Kommunikation', content: 'Calming Signals sind die subtilste Kommunikationsform von Hunden. Sie dienen dazu Konflikte zu vermeiden und Stress abzubauen. Viele Hundebesitzer ignorieren oder bestrafen diese Signale unwissentlich - das kann ernsthafte Folgen haben. Was man nicht kennt sieht man auch nicht!', signals: [{ icon: '🥱', text: 'Gaehnen ohne Muedigkeit: Aktives Beschwichtigungssignal - kein Zeichen von Langeweile!' }, { icon: '👅', text: 'Nasenlecken ohne Futter in der Naehe: Unsicherheit oder Unwohlsein - bitte ernst nehmen' }, { icon: '👁️', text: 'Blick abwenden oder wegschauen: Aktive Deeskalation - sehr friedliches und wichtiges Signal' }, { icon: '🐛', text: 'Schuetteln ohne nass zu sein: Stress buchstaeblich abschuetteln nach Anspannung' }], tag: 'Calming' },
+      { id: 6, cat: 'calming', emoji: '🚶', title: 'Weitere Calming Signals', preview: 'Diese Signale werden besonders haeufig uebersehen', content: 'Hunde haben etwa 30 Calming Signals. Wenn wir diese ignorieren oder den Hund dafuer bestrafen riskieren wir ernsthaften Schaden. Manche Hunde hoeren einfach auf Calming Signals zu verwenden - auch gegenueber anderen Hunden. Das kann zu Aggression fuehren.', signals: [{ icon: '🐌', text: 'Langsam werden oder stoppen: Hund deeskaliert aktiv die Situation' }, { icon: '🔄', text: 'Bogenlaufen statt gerader Annaeherung: Freundliche hoefliche Annaeherung an andere Hunde' }, { icon: '🪨', text: 'Einfrieren kurz: Kann Calming Signal sein - immer Kontext beachten!' }, { icon: '👃', text: 'Plotzliches Schnueffeln am Boden (Fiddle About): Ablenkungsverhalten um Stress abzubauen' }], tag: 'Calming' },
+      { id: 7, cat: 'emotion', emoji: '😰', title: 'Stress erkennen bevor es eskaliert', preview: 'Ampel Gelb - jetzt handeln', content: 'Stress zeigt sich oft subtil und viele Signale laufen im Inneren des Hundes ab bevor man sie aeusserlich sieht. Siehst du sehr oft viele Stressanzeichen bei deinem Hund und er kommt nicht zur Ruhe kann das auf Dauer krank machen. Nimm dir dann einen guten Trainer zur Seite.', signals: [{ icon: '😤', text: 'Hecheln ohne Hitze oder Anstrengung: Innere Anspannung - Stresshormon erhoht' }, { icon: '💪', text: 'Hohe Koerperspannung sichtbar: Muskeln angespannt, kein weicher fluessiger Gang mehr' }, { icon: '👁️', text: 'Augen schlitzfoermig, Mundwinkel spitz nach hinten: Klassische Stressgesichts-Signale' }, { icon: '🐕', text: 'Rute kraftlos haengend, staksiger steifer Gang: Koerper unter Anspannung' }], tag: 'Emotionen' },
+      { id: 8, cat: 'emotion', emoji: '😨', title: 'Angst verstehen und richtig reagieren', preview: 'Ampel Orange - so hilfst du deinem Hund wirklich', content: 'Angst zeigt sich nicht immer so deutlich wie man denkt. Manchmal sieht man nur wenige feine Anzeichen. Wichtig: Einen aengstlichen Hund nicht durch Situationen zu zwingen macht es schlimmer - die Angst kann staerker werden! Steh ihm bei und sucht gemeinsam einen Weg.', signals: [{ icon: '⬇️', text: 'Alle Koerperteile nach hinten/unten: Kopf gesenkt, Ohren angelegt, Laufe eingeknickt' }, { icon: '👁️', text: 'White-Eye-Response: Weisses im Auge sichtbar - Reflex bei starker Angst oder Bedrohung' }, { icon: '🔒', text: 'Rute fest zwischen die Hinterlaeufe eingeklemmt: Starke Angst oder extreme Unterwerfung' }, { icon: '🧊', text: 'Freeze/Einfrieren: Hund ist handlungsunfaehig - NIEMALS jetzt anfassen oder ziehen!' }], tag: 'Emotionen' },
+      { id: 9, cat: 'emotion', emoji: '⚠️', title: 'Unsicher drohend - Angst-Aggression', preview: 'Ampel Rot - dieser Hund braucht Hilfe, nicht Strafe', content: 'Ein unsicher drohender Hund ist nicht boes - er hat Angst! Er will Abstand und hat gelernt dass nach vorne gehen die einzige Strategie ist die funktioniert. Dieser Hund ist so im Tunnel dass er auch nachsetzen kann wenn der andere sich entfernt. Er braucht dringend deine Hilfe.', signals: [{ icon: '😬', text: 'Zaehne sichtbar aber Mundwinkel nach HINTEN gezogen: Unsicher-defensiv, nicht offensiv' }, { icon: '⬇️', text: 'Koerperschwerpunkt nach hinten obwohl Hund nach vorne geht: Konflikt sichtbar' }, { icon: '🔊', text: 'Lautaeusserungen hochtoenig: Angst hinter der Bedrohung erkennbar' }, { icon: '🚨', text: 'WICHTIG: Abstand aufbauen, nicht bestrafen, Trainer hinzuziehen - Angst ist die Ursache!' }], tag: 'Emotionen' },
+      { id: 10, cat: 'emotion', emoji: '🔴', title: 'Sicher drohend - offensives Drohen', preview: 'Ampel Rot - so erkennst du den Unterschied', content: 'Im Gegensatz zum unsicher drohenden Hund zeigt der sicher drohende Hund alle Koerperteile nach vorne und oben. Er ist bereit zur Auseinandersetzung. WICHTIG: Wenn du deeskalierst und Abstand aufbaust zieht sich dieser Hund in der Regel zurueck - das ist der grosse Unterschied zum unsicher drohenden Hund.', signals: [{ icon: '😤', text: 'Mundwinkel nach VORNE geschoben, Nasenruecken kraeuselnd: Offensiv, selbstsicher' }, { icon: '⬆️', text: 'Alle Pfeile nach vorne/oben: Kopf hoch, Ohren vor, Rute hoch, Gewicht nach vorne' }, { icon: '🔊', text: 'Knurren tief und gerauschhaft: Klare Warnung - bitte immer ernst nehmen!' }, { icon: '↩️', text: 'Zieht sich zurueck wenn du deeskalierst: Deswegen Abstand aufbauen und ruhig bleiben' }], tag: 'Emotionen' },
+      { id: 11, cat: 'alltag', emoji: '🛏️', title: 'Schlafposition verrät Wohlbefinden', preview: 'Was die Schlafposition ueber Sicherheitsgefuehl verrät', content: 'Die Schlafposition zeigt wie sicher sich dein Hund in seiner Umgebung fuehlt. Ein Hund der auf dem Ruecken schlaeft zeigt maximales Vertrauen - er ist in der verletzlichsten Position moeglich. Das ist das groesste Kompliment das er dir machen kann!', signals: [{ icon: '🙃', text: 'Auf dem Ruecken mit Pfoten in der Luft: Maximales Vertrauen und Sicherheit - top!' }, { icon: '🦁', text: 'Auf der Seite ausgestreckt: Tiefe Entspannung, fuehlt sich sicher' }, { icon: '🍩', text: 'Zusammengerollt: Waerme sparen, Organe schuetzen - leicht wachsam aber okay' }, { icon: '🦸', text: 'Flach auf dem Bauch (Superman): Bereit sofort aufzuspringen - halbwach' }], tag: 'Alltag' },
+      { id: 12, cat: 'alltag', emoji: '🌿', title: 'Seltsame Verhaltensweisen erklaert', preview: 'Warum Hunde tun was sie tun - Instinkt hat Gruende', content: 'Viele Verhaltensweisen wirken auf uns komisch haben aber einen tiefen evolutionaeren Hintergrund. Dein Hund ist kein Raetsel - er folgt uraltem Instinkt. Das Verstaendnis dieser Verhaltensweisen staerkt eure Beziehung.', signals: [{ icon: '🔄', text: 'Kreisdrehen vor dem Schlafen: Aus der Wildnis - Nest bauen und Gefahren pruefen' }, { icon: '🌿', text: 'Im Gras rollen: Duftmarkierung oder Ueberdecken fremder Gerueche - voellig normal' }, { icon: '🐾', text: 'Scharren nach dem Klo: Reviermarkierung durch Duftdruesen in den Pfoten' }, { icon: '🐕', text: 'Po zeigen beim Spielen: Einladung und totales Vertrauen - grosses Kompliment!' }], tag: 'Alltag' },
+      { id: 13, cat: 'training', emoji: '⚡', title: 'Timing ist alles', preview: 'Der wichtigste Grundsatz im Hundetraining', content: 'Das groesste Missverstaendnis im Hundetraining: Lob zu spaet zu geben. Dein Hund verbindet Belohnung immer mit dem was er JETZT gerade tut - nicht was er vor 3 Sekunden getan hat. Lob innerhalb von 1-2 Sekunden nach dem erswuenschten Verhalten!', signals: [{ icon: '⚡', text: 'Lob innerhalb 1-2 Sekunden: Nur so entsteht echte Verknuepfung im Gehirn' }, { icon: '🎯', text: 'Konsequenz schlaegt Intensitaet: Taeglich 5 Min. besser als einmal pro Woche 1 Stunde' }, { icon: '😊', text: 'Deine Energie ist Belohnung: Froehlicher Ton wirkt oft staerker als Leckerli' }, { icon: '🚫', text: 'Nie im Aerger trainieren: Hunde lernen nur in entspannter positiver Atmosphaere' }], tag: 'Training' },
+      { id: 14, cat: 'training', emoji: '🤝', title: 'Bindung - die Basis fuer alles', preview: 'Wie echtes Vertrauen zwischen Mensch und Hund entsteht', content: 'Eine starke Bindung entsteht nicht durch grosse Gesten sondern durch taegliche kleine Momente. Je besser du die Koerpersprache deines Hundes verstehst desto tiefer wird eure Verbindung. Dein Hund will gesehen werden - genau das macht PawRead moeglich.', signals: [{ icon: '⏰', text: 'Routinen schaffen: Hunde lieben Vorhersehbarkeit - sie gibt Sicherheit' }, { icon: '📖', text: 'Koerpersprache lernen: Verstehen ist der Anfang von Vertrauen' }, { icon: '🛡️', text: 'Da sein bei Angst: Nicht ignorieren - Schutz bieten und beruhigen' }, { icon: '🌟', text: 'Kleine Momente zaehlen: Ein ruhiger Blick ein Streicheln ein gemeinsames Sitzen' }], tag: 'Training' },
+      { id: 15, cat: 'training', emoji: '🏥', title: 'Verhalten als Gesundheitssignal', preview: 'Wann zum Tierarzt? Schmerz erkennen bevor es zu spaet ist', content: 'Hunde koennen nicht sagen wenn sie Schmerzen haben. Aber ihr Verhalten veraendert sich. Eine ploetzliche Wesensveraenderung ohne erklaerbaren Grund ist fast immer ein Zeichen dass etwas nicht stimmt - koerperlich oder emotional.', signals: [{ icon: '😶', text: 'Ploetzliche Wesensveraenderung ohne Grund: Haeufig erstes Zeichen von Schmerz' }, { icon: '🦶', text: 'Lecken an einer Stelle oder Hinken: Lokaler Schmerz - Tierarzt aufsuchen' }, { icon: '😬', text: 'Aggressiv bei Beruehrung einer Stelle: Schmerz an dieser Stelle sehr wahrscheinlich' }, { icon: '🍽️', text: 'Futter- oder Wasserverweigerung ueber 24h: Immer ernst nehmen und abklaeren lassen' }], tag: 'Training' },
+    ];
 
-      if (stored.date !== d) {
-        localStorage.setItem('pawread_chat_data', JSON.stringify({ date: d, count: 1 }));
-        return 1;
+    let activeFilter = 'alle';
+
+    function filterGuides(cat, btn) {
+      activeFilter = cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGuides();
+
+    // ===== NOTFALL DATA =====
+    const notfaelle = [
+      {
+        id: 1, icon: '☠️', iconColor: 'red',
+        title: 'Giftköder gefressen',
+        preview: 'Verdacht auf Vergiftung – keine Zeit verlieren',
+        desc: 'Wenn dein Hund etwas Verdächtiges gefressen hat oder Vergiftungszeichen zeigt, zählt jede Minute. Ruhig bleiben und sofort handeln.',
+        steps: [
+          { icon: '📞', text: 'Sofort Tierarzt oder Tiergiftzentrale anrufen: 0900 1 99 2 99 0' },
+          { icon: '🕐', text: 'Zeit und Menge notieren: Wann und wie viel könnte er gefressen haben?' },
+          { icon: '🚫', text: 'NICHT selbst erbrechen auslösen – nur auf Anweisung des Tierarztes' },
+          { icon: '📸', text: 'Wenn möglich Foto des Giftköders machen und mitnehmen' },
+          { icon: '🚗', text: 'Sofort in die nächste Tierarztpraxis oder Tierklinik fahren' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Zittern, Krämpfe oder Bewusstlosigkeit' },
+          { icon: '⚠️', text: 'Erbrechen, starker Speichelfluss oder Schaum' },
+          { icon: '⚠️', text: 'Taumeln, Schwäche oder Kollaps' },
+        ]
+      },
+      {
+        id: 2, icon: '🤢', iconColor: 'orange',
+        title: 'Hund erbricht ständig',
+        preview: 'Wann ist Erbrechen ein Notfall?',
+        desc: 'Einmaliges Erbrechen ist oft harmlos. Aber anhaltendes Erbrechen kann auf etwas Ernstes hinweisen und dehydriert deinen Hund schnell.',
+        steps: [
+          { icon: '💧', text: 'Wasser anbieten aber nicht erzwingen – kleine Mengen häufig' },
+          { icon: '🍖', text: 'Futter für 2-4 Stunden weglassen um den Magen zu entlasten' },
+          { icon: '👀', text: 'Beobachten: Wie oft? Blut? Fremdkörper im Erbrochenen?' },
+          { icon: '😴', text: 'Für Ruhe sorgen – keinen Stress und keine Aufregung' },
+          { icon: '📞', text: 'Nach 2-3x Erbrechen oder bei Blut sofort Tierarzt anrufen' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Blut im Erbrochenen – sofort zum Tierarzt' },
+          { icon: '⚠️', text: 'Mehr als 3x in einer Stunde erbrochen' },
+          { icon: '⚠️', text: 'Aufgeblähter harter Bauch – kann lebensbedrohlich sein' },
+        ]
+      },
+      {
+        id: 3, icon: '😮‍💨', iconColor: 'red',
+        title: 'Atemprobleme',
+        preview: 'Atemnot ist immer ein Notfall',
+        desc: 'Atemprobleme beim Hund sind immer ernst zu nehmen. Hecheln nach Anstrengung ist normal – ungewöhnliche Atemnot in Ruhe nicht.',
+        steps: [
+          { icon: '😌', text: 'Hund beruhigen und in kühle frische Luft bringen' },
+          { icon: '🚫', text: 'Keinen Stress machen – Aufregung verschlimmert Atemnot' },
+          { icon: '🌡️', text: 'Bei Hitze sofort kühlen: nasse Tücher auf Pfoten und Bauch' },
+          { icon: '🐕', text: 'Halsband lockern oder abnehmen falls zu eng' },
+          { icon: '🚗', text: 'Sofort zum Tierarzt – Atemnot ist immer ein Notfall' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Blaue oder weiße Zunge oder Zahnfleisch – sofort Notfall' },
+          { icon: '⚠️', text: 'Hecheln in Ruhe ohne vorherige Anstrengung' },
+          { icon: '⚠️', text: 'Streckung des Halses um Luft zu bekommen' },
+        ]
+      },
+      {
+        id: 4, icon: '⚡', iconColor: 'red',
+        title: 'Krampfanfall',
+        preview: 'Was tun wenn dein Hund einen Anfall hat?',
+        desc: 'Ein Krampfanfall sieht erschreckend aus aber in den meisten Fällen hört er von selbst auf. Das Wichtigste: Ruhe bewahren und deinen Hund schützen.',
+        steps: [
+          { icon: '🛡️', text: 'Hund vor Verletzungen schützen: Möbel wegräumen, Kopf polstern' },
+          { icon: '🚫', text: 'NICHT in den Mund greifen – Hunde verschlucken die Zunge NICHT' },
+          { icon: '🤫', text: 'Ruhe bewahren – nicht schreien oder anfassen während des Anfalls' },
+          { icon: '⏱️', text: 'Dauer des Anfalls messen – wichtig für den Tierarzt' },
+          { icon: '📞', text: 'Nach dem Anfall sofort Tierarzt anrufen und hinfahren' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Anfall dauert länger als 5 Minuten – sofortiger Notfall' },
+          { icon: '⚠️', text: 'Mehrere Anfälle hintereinander ohne Erholung dazwischen' },
+          { icon: '⚠️', text: 'Hund kommt nach dem Anfall nicht zu sich' },
+        ]
+      },
+      {
+        id: 5, icon: '🩸', iconColor: 'red',
+        title: 'Verletzung / Blutung',
+        preview: 'Erste Hilfe bei Wunden und Blutungen',
+        desc: 'Kleine Schnitte und Schürfwunden kann man erstversorgen. Bei starken Blutungen oder tiefen Wunden ist der Tierarzt gefragt.',
+        steps: [
+          { icon: '🤲', text: 'Ruhe ausstrahlen – ein ruhiger Hund lässt sich besser behandeln' },
+          { icon: '🩹', text: 'Sauberes Tuch auf die Wunde drücken und Druck halten' },
+          { icon: '🚫', text: 'KEIN Desinfektionsmittel für Menschen – hautreizend für Hunde' },
+          { icon: '🔍', text: 'Fremdkörper in der Wunde NICHT selbst entfernen' },
+          { icon: '🚗', text: 'Bei tiefen Wunden oder starker Blutung sofort zum Tierarzt' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Blutung lässt nach 5 Minuten Druck nicht nach' },
+          { icon: '⚠️', text: 'Wunde ist tief oder klafft auseinander' },
+          { icon: '⚠️', text: 'Fremdkörper steckt in der Wunde' },
+        ]
+      },
+    ];
+
+    function renderNotfaelle() {
+      const container = document.getElementById('notfall-grid');
+      container.innerHTML = notfaelle.map(n => `
+        <div class="notfall-card" onclick="toggleNotfall(${n.id})">
+          <div class="notfall-card-header">
+            <div class="notfall-icon ${n.iconColor}">${n.icon}</div>
+            <div>
+              <h3>${n.title}</h3>
+              <p>${n.preview}</p>
+            </div>
+            <span class="notfall-arrow" id="arrow-${n.id}">›</span>
+          </div>
+          <div class="notfall-detail" id="notfall-${n.id}">
+            <p class="notfall-desc">${n.desc}</p>
+            <p class="notfall-section-title gruen">✅ Was du tun kannst</p>
+            <div class="notfall-steps">
+              ${n.steps.map(s => `<div class="notfall-step"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}
+            </div>
+            <p class="notfall-section-title rot">🚨 Sofort zum Tierarzt wenn:</p>
+            <div class="notfall-steps">
+              ${n.warn.map(w => `<div class="notfall-step warn"><span>${w.icon}</span><span>${w.text}</span></div>`).join('')}
+            </div>
+            <a class="tierarzt-btn" href="https://www.google.com/maps/search/tierarzt+notdienst+in+der+nähe" target="_blank">
+              📍 Tierarzt in der Nähe finden
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleNotfall(id) {
+      const detail = document.getElementById('notfall-' + id);
+      const arrow = document.getElementById('arrow-' + id);
+      const isOpen = detail.classList.contains('open');
+      document.querySelectorAll('.notfall-detail').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.notfall-arrow').forEach(a => a.style.transform = '');
+      if (!isOpen) {
+        detail.classList.add('open');
+        arrow.style.transform = 'rotate(90deg)';
       }
-
-      const newCount = stored.count + 1;
-      localStorage.setItem('pawread_chat_data', JSON.stringify({ date: d, count: newCount }));
-      return newCount;
-    } catch (e) {
-      return 1;
-    }
-  }
-
-  function toggleChat() {
-    chatOpen = !chatOpen;
-    document.getElementById('chat-window').classList.toggle('active', chatOpen);
-
-    if (chatOpen) {
-      document.getElementById('chat-input').focus();
-      updateChatCounter();
-    }
-  }
-
-  function updateChatCounter() {
-    if (isPremium()) return;
-
-    const remaining = MAX_FREE_CHATS - getTodayChatCount();
-    const messages = document.getElementById('chat-messages');
-    const existing = document.getElementById('chat-limit-info');
-
-    if (existing) existing.remove();
-
-    messages.insertAdjacentHTML(
-      'afterbegin',
-      `<div id="chat-limit-info" style="text-align:center;font-size:0.75rem;color:var(--soft);padding:0.3rem;background:#FFF8F0;border-radius:8px;">
-        ${
-          remaining > 0
-            ? `✨ Noch <strong>${remaining}</strong> kostenlose Fragen heute`
-            : '🔒 Tageslimit erreicht – <a onclick="showGuidePaywall()" style="color:var(--amber);cursor:pointer;text-decoration:underline;">Premium freischalten</a>'
-        }
-      </div>`
-    );
-  }
-
-  async function sendChat() {
-    const input = document.getElementById('chat-input');
-    const messages = document.getElementById('chat-messages');
-    const text = input.value.trim();
-
-    if (!text) return;
-
-    if (!isPremium() && getTodayChatCount() >= MAX_FREE_CHATS) {
-      showGuidePaywall();
-      return;
     }
 
-    if (!isPremium()) incrementChatCount();
-
-    messages.innerHTML += `<div class="chat-msg user">${text}</div>`;
-    input.value = '';
-    messages.scrollTop = messages.scrollHeight;
-
-    const loadingId = 'loading-' + Date.now();
-    messages.innerHTML += `<div class="chat-msg bot loading" id="${loadingId}">tippt...</div>`;
-    messages.scrollTop = messages.scrollHeight;
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Chat-Fehler: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const loadingEl = document.getElementById(loadingId);
-      if (loadingEl) loadingEl.remove();
-
-      const answer = data.answer || 'Entschuldigung, ich konnte keine Antwort finden.';
-      messages.innerHTML += `<div class="chat-msg bot">${answer}</div>`;
-      updateChatCounter();
-    } catch (err) {
-      const loadingEl = document.getElementById(loadingId);
-      if (loadingEl) loadingEl.remove();
-
-      messages.innerHTML += `<div class="chat-msg bot">Entschuldigung, ein Fehler ist aufgetreten. Bitte versuche es erneut.</div>`;
-      console.error('Chatfehler:', err);
+    renderNotfaelle();
     }
 
-    messages.scrollTop = messages.scrollHeight;
-  }
+    const FREE_GUIDES = 3;
 
-  // ===== IMPRESSUM / DATENSCHUTZ =====
-  function showDatenschutz() {
-    document.getElementById('impressum-title').textContent = 'Datenschutzerklärung';
-    document.getElementById('impressum-content').style.display = 'none';
-    document.getElementById('datenschutz-content').style.display = 'block';
-    document.getElementById('impressum-overlay').classList.add('active');
-  }
-
-  function showImpressum() {
-    document.getElementById('impressum-title').textContent = 'Impressum';
-    document.getElementById('impressum-content').style.display = 'block';
-    document.getElementById('datenschutz-content').style.display = 'none';
-    document.getElementById('impressum-overlay').classList.add('active');
-  }
-
-  // ===== NAVIGATION =====
-  function showPage(name, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-
-    document.getElementById('page-' + name).classList.add('active');
-    btn.classList.add('active');
-  }
-
-  // ===== RATGEBER =====
-  const guides = [
-    { id: 1, cat: 'koerper', emoji: '🏹', title: 'Das Pfeil-Prinzip', preview: 'Die wichtigste Methode um Hundekörpersprache zu lesen', content: 'Das Pfeil-Prinzip ist das wichtigste Werkzeug um Hundekörpersprache schnell einzuschaetzen: Wohin zeigen die Koerperteile des Hundes? Vorne und oben bedeutet Selbstsicherheit und Annaeherung. Hinten und unten bedeutet Rueckzug, Angst oder Unterwerfung. Erst wenn du das Gesamtbild aller Pfeile betrachtest erkennst du die wahre Stimmung.', signals: [{ icon: '⬆️', text: 'Pfeile nach vorne/oben: Kopf hoch, Ohren vor, Rute hoch, Gewicht nach vorne. Selbstsicherheit' }, { icon: '⬇️', text: 'Pfeile nach hinten/unten: Kopf gesenkt, Ohren angelegt, Rute unten, Gewicht zurueck. Angst/Rueckzug' }, { icon: '🔀', text: 'Gemischte Pfeile: Einige nach vorne, andere nach hinten. Hund ist im inneren Konflikt' }, { icon: '👁️', text: 'Immer das Gesamtbild bewerten. Niemals ein einzelnes Signal isoliert deuten' }], tag: 'Grundlagen' },
-    { id: 2, cat: 'koerper', emoji: '😌', title: 'Der entspannte Hund', preview: 'So sieht echte Entspannung aus. Die wichtige Basis', content: 'Um Veraenderungen in der Koerpersprache zu erkennen musst du zuerst wissen wie dein Hund entspannt aussieht. Diese Grundhaltung ist bei jedem Hund individuell und wird von Rasse und Erfahrungen beeinflusst. Mache Fotos von deinem entspannten Hund als Referenz.', signals: [{ icon: '💫', text: 'Geringe Koerperspannung. Weiche fluessige Bewegungen, kein staksiger Gang' }, { icon: '👀', text: 'Weiches mandelfoermiges Auge. Leicht geblinzelt, kein Starren' }, { icon: '👄', text: 'Fang locker leicht geoeffnet oder entspannt geschlossen. Keine Anspannung sichtbar' }, { icon: '🐾', text: 'Rute locker in Grundstellung. Bei Spitz, Pudel oder Akita anatomisch bedingt hoch. Kein Stresszeichen' }], tag: 'Körpersprache' },
-    { id: 3, cat: 'koerper', emoji: '🔍', title: 'Aufmerksam und neugierig', preview: 'Wenn dein Hund etwas Interessantes entdeckt', content: 'Aufmerksam durch die Welt zu gehen ist fuer Hunde voellig normal. Es ist ein wesentlicher Teil ihrer Neugier. Im Gegensatz zum entspannten Ausdruck fokussiert sich der Hund jetzt staerker auf das was sein Interesse geweckt hat. Achte darauf dass er dabei weniger auf seine Umgebung achtet.', signals: [{ icon: '👂', text: 'Ohren leicht nach vorne oder oben ausgerichtet. Aktives Zuhoeren und Interesse' }, { icon: '👀', text: 'Augen etwas weiter geoeffnet auf das Objekt gerichtet, aber noch weich' }, { icon: '🫱', text: 'Koerper leicht nach vorne geneigt, ausgeglichen. Rute leicht ueber Rueckenlinie' }, { icon: '👃', text: 'Beginnt zu schnueffeln am Boden oder in der Luft. Sammelt Informationen' }], tag: 'Körpersprache' },
-    { id: 4, cat: 'koerper', emoji: '🎮', title: 'Play Bow vs. Prey Bow', preview: 'Zwei aehnliche Haltungen mit sehr unterschiedlicher Bedeutung', content: 'Der Play Bow und der Prey Bow sehen aehnlich aus aber bedeuten etwas voellig anderes. Diesen Unterschied zu kennen kann in Hundebegegnungen sehr wichtig sein.', signals: [{ icon: '🎯', text: 'Play Bow: Vorderkörper tief, Ellenbogen fast am Boden, Kopf abgewandt, Wirbelsaeule kurvig' }, { icon: '🏹', text: 'Prey Bow: Wirbelsaeule gerade, Ellenbogen nicht am Boden, Blick direkt fixiert' }, { icon: '🐕', text: 'Play Bow: Rute mit Bogen unterhalb Rueckenlinie, Mundwinkel nach hinten, positiv verspielt' }, { icon: '⚠️', text: 'Prey Bow: Rute oberhalb Rueckenlinie zeigt auf Gegenueber. Hund belauert, kein Spiel' }], tag: 'Körpersprache' },
-    { id: 5, cat: 'calming', emoji: '🌿', title: 'Calming Signals. Die Friedenssprache', preview: 'Die subtilste und haeufig uebersehene Kommunikation', content: 'Calming Signals sind die subtilste Kommunikationsform von Hunden. Sie dienen dazu Konflikte zu vermeiden und Stress abzubauen.', signals: [{ icon: '🥱', text: 'Gaehnen ohne Muedigkeit. Aktives Beschwichtigungssignal' }, { icon: '👅', text: 'Nasenlecken ohne Futter in der Naehe. Unsicherheit oder Unwohlsein' }, { icon: '👁️', text: 'Blick abwenden oder wegschauen. Aktive Deeskalation' }, { icon: '🐛', text: 'Schuetteln ohne nass zu sein. Stress abschaetteln nach Anspannung' }], tag: 'Calming' },
-    { id: 6, cat: 'calming', emoji: '🚶', title: 'Weitere Calming Signals', preview: 'Diese Signale werden besonders haeufig uebersehen', content: 'Hunde haben viele Calming Signals. Wenn wir diese ignorieren oder bestrafen riskieren wir Missverstaendnisse und Konflikte.', signals: [{ icon: '🐌', text: 'Langsam werden oder stoppen. Hund deeskaliert aktiv' }, { icon: '🔄', text: 'Bogenlaufen statt gerader Annaeherung. Freundliche hoefliche Annaeherung' }, { icon: '🪨', text: 'Einfrieren kurz. Kann Calming Signal sein. Immer Kontext beachten' }, { icon: '👃', text: 'Plotzliches Schnueffeln am Boden. Ablenkungsverhalten um Stress abzubauen' }], tag: 'Calming' },
-    { id: 7, cat: 'emotion', emoji: '😰', title: 'Stress erkennen bevor es eskaliert', preview: 'Ampel Gelb. Jetzt handeln', content: 'Stress zeigt sich oft subtil. Nimm wiederkehrende Stressanzeichen ernst und hole dir bei Bedarf Unterstuetzung.', signals: [{ icon: '😤', text: 'Hecheln ohne Hitze oder Anstrengung. Innere Anspannung' }, { icon: '💪', text: 'Hohe Koerperspannung sichtbar. Muskeln angespannt' }, { icon: '👁️', text: 'Augen schlitzfoermig, Mundwinkel spitz nach hinten' }, { icon: '🐕', text: 'Rute kraftlos haengend, staksiger steifer Gang' }], tag: 'Emotionen' },
-    { id: 8, cat: 'emotion', emoji: '😨', title: 'Angst verstehen und richtig reagieren', preview: 'Ampel Orange. So hilfst du deinem Hund wirklich', content: 'Angst zeigt sich nicht immer deutlich. Einen aengstlichen Hund durch Situationen zu zwingen macht es meist schlimmer.', signals: [{ icon: '⬇️', text: 'Alle Koerperteile nach hinten oder unten' }, { icon: '👁️', text: 'White Eye Response. Weisses im Auge sichtbar' }, { icon: '🔒', text: 'Rute fest zwischen die Hinterlaeufe eingeklemmt' }, { icon: '🧊', text: 'Freeze oder Einfrieren. Jetzt nicht ziehen oder bedrängen' }], tag: 'Emotionen' },
-    { id: 9, cat: 'emotion', emoji: '⚠️', title: 'Unsicher drohend. Angst-Aggression', preview: 'Ampel Rot. Dieser Hund braucht Hilfe, nicht Strafe', content: 'Ein unsicher drohender Hund hat oft Angst und versucht Abstand herzustellen.', signals: [{ icon: '😬', text: 'Zaehne sichtbar, Mundwinkel nach hinten gezogen' }, { icon: '⬇️', text: 'Koerperschwerpunkt nach hinten trotz Vorwaertsbewegung' }, { icon: '🔊', text: 'Lautaeusserungen eher hochtoenig' }, { icon: '🚨', text: 'Abstand aufbauen, nicht bestrafen, Trainer hinzuziehen' }], tag: 'Emotionen' },
-    { id: 10, cat: 'emotion', emoji: '🔴', title: 'Sicher drohend. Offensives Drohen', preview: 'Ampel Rot. So erkennst du den Unterschied', content: 'Der sicher drohende Hund zeigt Koerperteile klar nach vorne und oben. Er ist konfliktbereit.', signals: [{ icon: '😤', text: 'Mundwinkel nach vorne geschoben, Nasenruecken kraeuselt' }, { icon: '⬆️', text: 'Alle Pfeile nach vorne oder oben' }, { icon: '🔊', text: 'Knurren tief und geraeuschhaft' }, { icon: '↩️', text: 'Zieht sich oft zurueck wenn du deeskalierst und Abstand schaffst' }], tag: 'Emotionen' },
-    { id: 11, cat: 'alltag', emoji: '🛏️', title: 'Schlafposition verrät Wohlbefinden', preview: 'Was die Schlafposition ueber Sicherheitsgefuehl verrät', content: 'Die Schlafposition zeigt oft wie sicher sich dein Hund in seiner Umgebung fuehlt.', signals: [{ icon: '🙃', text: 'Auf dem Ruecken mit Pfoten in der Luft. Maximales Vertrauen' }, { icon: '🦁', text: 'Auf der Seite ausgestreckt. Tiefe Entspannung' }, { icon: '🍩', text: 'Zusammengerollt. Waerme sparen und Organe schuetzen' }, { icon: '🦸', text: 'Flach auf dem Bauch. Bereit schnell aufzuspringen' }], tag: 'Alltag' },
-    { id: 12, cat: 'alltag', emoji: '🌿', title: 'Seltsame Verhaltensweisen erklaert', preview: 'Warum Hunde tun was sie tun', content: 'Viele Verhaltensweisen wirken auf uns komisch, haben aber einen nachvollziehbaren Hintergrund.', signals: [{ icon: '🔄', text: 'Kreisdrehen vor dem Schlafen. Nest bauen und Umgebung pruefen' }, { icon: '🌿', text: 'Im Gras rollen. Duftmarkierung oder Gerueche ueberdecken' }, { icon: '🐾', text: 'Scharren nach dem Klo. Reviermarkierung' }, { icon: '🐕', text: 'Po zeigen beim Spielen. Einladung und Vertrauen' }], tag: 'Alltag' },
-    { id: 13, cat: 'training', emoji: '⚡', title: 'Timing ist alles', preview: 'Der wichtigste Grundsatz im Hundetraining', content: 'Lob sollte moeglichst direkt nach dem gewuenschten Verhalten kommen.', signals: [{ icon: '⚡', text: 'Lob innerhalb von 1 bis 2 Sekunden' }, { icon: '🎯', text: 'Konsequenz schlaegt Intensitaet' }, { icon: '😊', text: 'Deine Energie ist oft selbst schon Belohnung' }, { icon: '🚫', text: 'Nicht im Aerger trainieren' }], tag: 'Training' },
-    { id: 14, cat: 'training', emoji: '🤝', title: 'Bindung. Die Basis fuer alles', preview: 'Wie Vertrauen zwischen Mensch und Hund entsteht', content: 'Eine starke Bindung entsteht durch viele kleine alltaegliche Momente.', signals: [{ icon: '⏰', text: 'Routinen schaffen Sicherheit' }, { icon: '📖', text: 'Koerpersprache lernen vertieft Vertrauen' }, { icon: '🛡️', text: 'Bei Angst Schutz und Ruhe geben' }, { icon: '🌟', text: 'Kleine Momente zaehlen' }], tag: 'Training' },
-    { id: 15, cat: 'training', emoji: '🏥', title: 'Verhalten als Gesundheitssignal', preview: 'Wann zum Tierarzt', content: 'Ploetzliche Verhaltensaenderungen koennen auf Schmerzen oder Beschwerden hinweisen.', signals: [{ icon: '😶', text: 'Ploetzliche Wesensveraenderung ohne erkennbaren Grund' }, { icon: '🦶', text: 'Lecken an einer Stelle oder Hinken' }, { icon: '😬', text: 'Aggressiv bei Beruehrung einer Stelle' }, { icon: '🍽️', text: 'Futter oder Wasserverweigerung ueber 24 Stunden' }], tag: 'Training' }
-  ];
-
-  let activeFilter = 'alle';
-
-  function filterGuides(cat, btn) {
-    activeFilter = cat;
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderGuides();
-  }
-
-  function toggleGuide(id) {
-    const element = document.getElementById('guide-' + id);
-    if (element) {
-      element.classList.toggle('open');
+    function isPremium() {
+      try { return localStorage.getItem('pawread_owner') === 'true' || localStorage.getItem('pawread_premium') === 'true'; }
+      catch(e) { return false; }
     }
-  }
 
-  function renderGuides() {
-    const container = document.getElementById('guides-container');
-    const filtered = activeFilter === 'alle' ? guides : guides.filter(g => g.cat === activeFilter);
-    const freeGuideIds = guides.slice(0, FREE_GUIDES).map(g => g.id);
+    function renderGuides() {
+      const container = document.getElementById('guides-container');
+      const filtered = activeFilter === 'alle' ? guides : guides.filter(g => g.cat === activeFilter);
+      const freeGuideIds = guides.slice(0, FREE_GUIDES).map(g => g.id);
 
-    container.innerHTML = filtered.map(g => {
-      const locked = !isPremium() && !freeGuideIds.includes(g.id);
-
-      return `
-        <div class="guide-card ${locked ? 'locked' : ''}" onclick="${locked ? 'showGuidePaywall()' : `toggleGuide(${g.id})`}">
+      container.innerHTML = filtered.map(g => {
+        const locked = !isPremium() && !freeGuideIds.includes(g.id);
+        return `
+        <div class="guide-card" onclick="${locked ? 'showGuidePaywall()' : `toggleGuide(${g.id})`}">
           <div class="guide-card-header">
             <span class="guide-emoji">${locked ? '🔒' : g.emoji}</span>
             <div>
               <h3 style="${locked ? 'color:var(--soft)' : ''}">${g.title}</h3>
               <p>${locked ? 'Nur für Premium-Mitglieder 🐾' : g.preview}</p>
             </div>
-            <span class="${locked ? 'lock-badge' : 'guide-tag'}">${locked ? 'Premium' : g.tag}</span>
+            <span class="guide-tag" style="${locked ? 'background:#F5F0E8;color:var(--soft)' : ''}">${locked ? 'Premium' : g.tag}</span>
           </div>
-          ${
-            !locked
-              ? `
-                <div class="guide-body" id="guide-${g.id}">
-                  <p style="margin-top:0.8rem">${g.content}</p>
-                  <div class="guide-signals">
-                    ${g.signals.map(s => `<div class="guide-signal"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}
-                  </div>
-                </div>
-              `
-              : `
-                <div class="locked-overlay">
-                  <p>Schalte Premium frei und erhalte Zugriff auf alle Ratgeberartikel.</p>
-                  <button class="unlock-btn" onclick="event.stopPropagation(); showGuidePaywall();">Premium freischalten</button>
-                </div>
-              `
-          }
-        </div>
-      `;
-    }).join('');
-  }
-
-  // ===== NOTFALL =====
-  const notfaelle = [
-    {
-      id: 1, icon: '☠️', iconColor: 'red',
-      title: 'Giftköder gefressen',
-      preview: 'Verdacht auf Vergiftung. Keine Zeit verlieren',
-      desc: 'Wenn dein Hund etwas Verdaechtiges gefressen hat oder Vergiftungszeichen zeigt, zaehlt jede Minute.',
-      steps: [
-        { icon: '📞', text: 'Sofort Tierarzt oder Tiergiftzentrale anrufen: 0900 1 99 2 99 0' },
-        { icon: '🕐', text: 'Zeit und Menge notieren' },
-        { icon: '🚫', text: 'Nicht selbst Erbrechen ausloesen. Nur auf Anweisung des Tierarztes' },
-        { icon: '📸', text: 'Wenn moeglich Foto des Giftkoeders machen' },
-        { icon: '🚗', text: 'Sofort in die naechste Tierarztpraxis oder Tierklinik fahren' }
-      ],
-      warn: [
-        { icon: '⚠️', text: 'Zittern, Kraempfe oder Bewusstlosigkeit' },
-        { icon: '⚠️', text: 'Erbrechen, starker Speichelfluss oder Schaum' },
-        { icon: '⚠️', text: 'Taumeln, Schwaeche oder Kollaps' }
-      ]
-    },
-    {
-      id: 2, icon: '🤢', iconColor: 'orange',
-      title: 'Hund erbricht ständig',
-      preview: 'Wann ist Erbrechen ein Notfall?',
-      desc: 'Einmaliges Erbrechen ist oft harmlos. Wiederholtes Erbrechen sollte ernst genommen werden.',
-      steps: [
-        { icon: '💧', text: 'Wasser in kleinen Mengen anbieten' },
-        { icon: '🍖', text: 'Futter kurz pausieren um den Magen zu entlasten' },
-        { icon: '👀', text: 'Beobachten: Wie oft, Blut, Fremdkoerper?' },
-        { icon: '😴', text: 'Fuer Ruhe sorgen' },
-        { icon: '📞', text: 'Nach mehreren Episoden oder bei Blut Tierarzt kontaktieren' }
-      ],
-      warn: [
-        { icon: '⚠️', text: 'Blut im Erbrochenen' },
-        { icon: '⚠️', text: 'Mehr als 3 Mal in kurzer Zeit erbrochen' },
-        { icon: '⚠️', text: 'Aufgeblaehter harter Bauch' }
-      ]
-    },
-    {
-      id: 3, icon: '😮‍💨', iconColor: 'red',
-      title: 'Atemprobleme',
-      preview: 'Atemnot ist immer ein Notfall',
-      desc: 'Atemprobleme beim Hund sind immer ernst zu nehmen.',
-      steps: [
-        { icon: '😌', text: 'Hund beruhigen und an kuehle frische Luft bringen' },
-        { icon: '🚫', text: 'Keinen Stress machen' },
-        { icon: '🌡️', text: 'Bei Hitze vorsichtig kuehlen' },
-        { icon: '🐕', text: 'Halsband lockern oder abnehmen' },
-        { icon: '🚗', text: 'Sofort zum Tierarzt' }
-      ],
-      warn: [
-        { icon: '⚠️', text: 'Blaue oder weisse Zunge oder Schleimhaut' },
-        { icon: '⚠️', text: 'Hecheln in Ruhe ohne Anstrengung' },
-        { icon: '⚠️', text: 'Hals wird ausgestreckt um Luft zu bekommen' }
-      ]
-    },
-    {
-      id: 4, icon: '⚡', iconColor: 'red',
-      title: 'Krampfanfall',
-      preview: 'Was tun wenn dein Hund einen Anfall hat?',
-      desc: 'Ein Krampfanfall sieht erschreckend aus. Wichtig ist, Verletzungen zu vermeiden und Ruhe zu bewahren.',
-      steps: [
-        { icon: '🛡️', text: 'Hund vor Verletzungen schuetzen' },
-        { icon: '🚫', text: 'Nicht in den Mund greifen' },
-        { icon: '🤫', text: 'Ruhe bewahren' },
-        { icon: '⏱️', text: 'Dauer des Anfalls messen' },
-        { icon: '📞', text: 'Nach dem Anfall Tierarzt kontaktieren' }
-      ],
-      warn: [
-        { icon: '⚠️', text: 'Anfall dauert laenger als 5 Minuten' },
-        { icon: '⚠️', text: 'Mehrere Anfaelle hintereinander' },
-        { icon: '⚠️', text: 'Hund erholt sich danach nicht' }
-      ]
-    },
-    {
-      id: 5, icon: '🩸', iconColor: 'red',
-      title: 'Verletzung / Blutung',
-      preview: 'Erste Hilfe bei Wunden und Blutungen',
-      desc: 'Kleine Wunden kann man erstversorgen. Tiefe oder stark blutende Wunden gehoeren in tieraerztliche Behandlung.',
-      steps: [
-        { icon: '🤲', text: 'Ruhe ausstrahlen' },
-        { icon: '🩹', text: 'Sauberes Tuch aufdruecken und Druck halten' },
-        { icon: '🚫', text: 'Kein Desinfektionsmittel fuer Menschen verwenden' },
-        { icon: '🔍', text: 'Fremdkoerper nicht selbst entfernen' },
-        { icon: '🚗', text: 'Bei starker Blutung oder tiefer Wunde zum Tierarzt' }
-      ],
-      warn: [
-        { icon: '⚠️', text: 'Blutung stoppt trotz Druck nicht' },
-        { icon: '⚠️', text: 'Wunde ist tief oder klafft' },
-        { icon: '⚠️', text: 'Fremdkoerper steckt in der Wunde' }
-      ]
+          ${!locked ? `
+          <div class="guide-body" id="guide-${g.id}">
+            <p style="margin-top:0.8rem">${g.content}</p>
+            <div class="guide-signals">
+              ${g.signals.map(s => `<div class="guide-signal"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}
+            </div>
+          </div>` : ''}
+        </div>`;
+      }).join('');
     }
-  ];
 
-  function renderNotfaelle() {
-    const container = document.getElementById('notfall-grid');
-
-    container.innerHTML = notfaelle.map(n => `
-      <div class="notfall-card" onclick="toggleNotfall(${n.id})">
-        <div class="notfall-card-header">
-          <div class="notfall-icon ${n.iconColor}">${n.icon}</div>
-          <div>
-            <h3>${n.title}</h3>
-            <p>${n.preview}</p>
-          </div>
-          <span class="notfall-arrow" id="arrow-${n.id}">›</span>
-        </div>
-        <div class="notfall-detail" id="notfall-${n.id}">
-          <p class="notfall-desc">${n.desc}</p>
-          <p class="notfall-section-title gruen">✅ Was du tun kannst</p>
-          <div class="notfall-steps">
-            ${n.steps.map(s => `<div class="notfall-step"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}
-          </div>
-          <p class="notfall-section-title rot">🚨 Sofort zum Tierarzt wenn:</p>
-          <div class="notfall-steps">
-            ${n.warn.map(w => `<div class="notfall-step warn"><span>${w.icon}</span><span>${w.text}</span></div>`).join('')}
-          </div>
-          <a class="tierarzt-btn" href="https://www.google.com/maps/search/tierarzt+notdienst+in+der+nähe" target="_blank">
-            📍 Tierarzt in der Nähe finden
-          </a>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  function toggleNotfall(id) {
-    const detail = document.getElementById('notfall-' + id);
-    const arrow = document.getElementById('arrow-' + id);
-    if (!detail || !arrow) return;
-
-    const isOpen = detail.classList.contains('open');
-
-    document.querySelectorAll('.notfall-detail').forEach(d => d.classList.remove('open'));
-    document.querySelectorAll('.notfall-arrow').forEach(a => {
-      a.style.transform = '';
-    });
-
-    if (!isOpen) {
-      detail.classList.add('open');
-      arrow.style.transform = 'rotate(90deg)';
+    function showGuidePaywall() {
+      document.getElementById('paywall-overlay').classList.add('active');
     }
-  }
 
-  // ===== ANALYSE =====
-  const fileInput = document.getElementById('file-input');
-  const previewContainer = document.getElementById('preview-container');
-  const previewImg = document.getElementById('preview-img');
-  const analyzeBtn = document.getElementById('analyze-btn');
-  const loading = document.getElementById('loading');
-  const result = document.getElementById('result');
-  const uploadZone = document.getElementById('upload-zone');
-  const changePhotoBtn = document.getElementById('change-photo');
+    function toggleGuide(id) {
+      document.getElementById('guide-' + id).classList.toggle('open');
+    }
 
-  let currentBase64 = null;
-  let currentMimeType = 'image/jpeg';
+    renderGuides();
 
-  function resetState() {
-    previewContainer.style.display = 'none';
-    analyzeBtn.style.display = 'none';
-    uploadZone.style.display = 'block';
-    result.style.display = 'none';
-    result.innerHTML = '';
-    loading.style.display = 'none';
-    currentBase64 = null;
-    currentMimeType = 'image/jpeg';
-    fileInput.value = '';
-  }
+    // ===== NOTFALL DATA =====
+    const notfaelle = [
+      {
+        id: 1, icon: '☠️', iconColor: 'red',
+        title: 'Giftköder gefressen',
+        preview: 'Verdacht auf Vergiftung – keine Zeit verlieren',
+        desc: 'Wenn dein Hund etwas Verdächtiges gefressen hat oder Vergiftungszeichen zeigt, zählt jede Minute. Ruhig bleiben und sofort handeln.',
+        steps: [
+          { icon: '📞', text: 'Sofort Tierarzt oder Tiergiftzentrale anrufen: 0900 1 99 2 99 0' },
+          { icon: '🕐', text: 'Zeit und Menge notieren: Wann und wie viel könnte er gefressen haben?' },
+          { icon: '🚫', text: 'NICHT selbst erbrechen auslösen – nur auf Anweisung des Tierarztes' },
+          { icon: '📸', text: 'Wenn möglich Foto des Giftköders machen und mitnehmen' },
+          { icon: '🚗', text: 'Sofort in die nächste Tierarztpraxis oder Tierklinik fahren' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Zittern, Krämpfe oder Bewusstlosigkeit' },
+          { icon: '⚠️', text: 'Erbrechen, starker Speichelfluss oder Schaum' },
+          { icon: '⚠️', text: 'Taumeln, Schwäche oder Kollaps' },
+        ]
+      },
+      {
+        id: 2, icon: '🤢', iconColor: 'orange',
+        title: 'Hund erbricht ständig',
+        preview: 'Wann ist Erbrechen ein Notfall?',
+        desc: 'Einmaliges Erbrechen ist oft harmlos. Aber anhaltendes Erbrechen kann auf etwas Ernstes hinweisen und dehydriert deinen Hund schnell.',
+        steps: [
+          { icon: '💧', text: 'Wasser anbieten aber nicht erzwingen – kleine Mengen häufig' },
+          { icon: '🍖', text: 'Futter für 2-4 Stunden weglassen um den Magen zu entlasten' },
+          { icon: '👀', text: 'Beobachten: Wie oft? Blut? Fremdkörper im Erbrochenen?' },
+          { icon: '😴', text: 'Für Ruhe sorgen – keinen Stress und keine Aufregung' },
+          { icon: '📞', text: 'Nach 2-3x Erbrechen oder bei Blut sofort Tierarzt anrufen' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Blut im Erbrochenen – sofort zum Tierarzt' },
+          { icon: '⚠️', text: 'Mehr als 3x in einer Stunde erbrochen' },
+          { icon: '⚠️', text: 'Aufgeblähter harter Bauch – kann lebensbedrohlich sein' },
+        ]
+      },
+      {
+        id: 3, icon: '😮‍💨', iconColor: 'red',
+        title: 'Atemprobleme',
+        preview: 'Atemnot ist immer ein Notfall',
+        desc: 'Atemprobleme beim Hund sind immer ernst zu nehmen. Hecheln nach Anstrengung ist normal – ungewöhnliche Atemnot in Ruhe nicht.',
+        steps: [
+          { icon: '😌', text: 'Hund beruhigen und in kühle frische Luft bringen' },
+          { icon: '🚫', text: 'Keinen Stress machen – Aufregung verschlimmert Atemnot' },
+          { icon: '🌡️', text: 'Bei Hitze sofort kühlen: nasse Tücher auf Pfoten und Bauch' },
+          { icon: '🐕', text: 'Halsband lockern oder abnehmen falls zu eng' },
+          { icon: '🚗', text: 'Sofort zum Tierarzt – Atemnot ist immer ein Notfall' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Blaue oder weiße Zunge oder Zahnfleisch – sofort Notfall' },
+          { icon: '⚠️', text: 'Hecheln in Ruhe ohne vorherige Anstrengung' },
+          { icon: '⚠️', text: 'Streckung des Halses um Luft zu bekommen' },
+        ]
+      },
+      {
+        id: 4, icon: '⚡', iconColor: 'red',
+        title: 'Krampfanfall',
+        preview: 'Was tun wenn dein Hund einen Anfall hat?',
+        desc: 'Ein Krampfanfall sieht erschreckend aus aber in den meisten Fällen hört er von selbst auf. Das Wichtigste: Ruhe bewahren und deinen Hund schützen.',
+        steps: [
+          { icon: '🛡️', text: 'Hund vor Verletzungen schützen: Möbel wegräumen, Kopf polstern' },
+          { icon: '🚫', text: 'NICHT in den Mund greifen – Hunde verschlucken die Zunge NICHT' },
+          { icon: '🤫', text: 'Ruhe bewahren – nicht schreien oder anfassen während des Anfalls' },
+          { icon: '⏱️', text: 'Dauer des Anfalls messen – wichtig für den Tierarzt' },
+          { icon: '📞', text: 'Nach dem Anfall sofort Tierarzt anrufen und hinfahren' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Anfall dauert länger als 5 Minuten – sofortiger Notfall' },
+          { icon: '⚠️', text: 'Mehrere Anfälle hintereinander ohne Erholung dazwischen' },
+          { icon: '⚠️', text: 'Hund kommt nach dem Anfall nicht zu sich' },
+        ]
+      },
+      {
+        id: 5, icon: '🩸', iconColor: 'red',
+        title: 'Verletzung / Blutung',
+        preview: 'Erste Hilfe bei Wunden und Blutungen',
+        desc: 'Kleine Schnitte und Schürfwunden kann man erstversorgen. Bei starken Blutungen oder tiefen Wunden ist der Tierarzt gefragt.',
+        steps: [
+          { icon: '🤲', text: 'Ruhe ausstrahlen – ein ruhiger Hund lässt sich besser behandeln' },
+          { icon: '🩹', text: 'Sauberes Tuch auf die Wunde drücken und Druck halten' },
+          { icon: '🚫', text: 'KEIN Desinfektionsmittel für Menschen – hautreizend für Hunde' },
+          { icon: '🔍', text: 'Fremdkörper in der Wunde NICHT selbst entfernen' },
+          { icon: '🚗', text: 'Bei tiefen Wunden oder starker Blutung sofort zum Tierarzt' },
+        ],
+        warn: [
+          { icon: '⚠️', text: 'Blutung lässt nach 5 Minuten Druck nicht nach' },
+          { icon: '⚠️', text: 'Wunde ist tief oder klafft auseinander' },
+          { icon: '⚠️', text: 'Fremdkörper steckt in der Wunde' },
+        ]
+      },
+    ];
 
-  function handleFile(e) {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
+    function renderNotfaelle() {
+      const container = document.getElementById('notfall-grid');
+      container.innerHTML = notfaelle.map(n => `
+        <div class="notfall-card" onclick="toggleNotfall(${n.id})">
+          <div class="notfall-card-header">
+            <div class="notfall-icon ${n.iconColor}">${n.icon}</div>
+            <div>
+              <h3>${n.title}</h3>
+              <p>${n.preview}</p>
+            </div>
+            <span class="notfall-arrow" id="arrow-${n.id}">›</span>
+          </div>
+          <div class="notfall-detail" id="notfall-${n.id}">
+            <p class="notfall-desc">${n.desc}</p>
+            <p class="notfall-section-title gruen">✅ Was du tun kannst</p>
+            <div class="notfall-steps">
+              ${n.steps.map(s => `<div class="notfall-step"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}
+            </div>
+            <p class="notfall-section-title rot">🚨 Sofort zum Tierarzt wenn:</p>
+            <div class="notfall-steps">
+              ${n.warn.map(w => `<div class="notfall-step warn"><span>${w.icon}</span><span>${w.text}</span></div>`).join('')}
+            </div>
+            <a class="tierarzt-btn" href="https://www.google.com/maps/search/tierarzt+notdienst+in+der+nähe" target="_blank">
+              📍 Tierarzt in der Nähe finden
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
 
-    currentMimeType = file.type || 'image/jpeg';
+    function toggleNotfall(id) {
+      const detail = document.getElementById('notfall-' + id);
+      const arrow = document.getElementById('arrow-' + id);
+      const isOpen = detail.classList.contains('open');
+      document.querySelectorAll('.notfall-detail').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.notfall-arrow').forEach(a => a.style.transform = '');
+      if (!isOpen) {
+        detail.classList.add('open');
+        arrow.style.transform = 'rotate(90deg)';
+      }
+    }
 
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const fileResult = ev.target?.result;
-      if (!fileResult || typeof fileResult !== 'string') return;
+    renderNotfaelle();
 
-      const parts = fileResult.split(',');
-      currentBase64 = parts.length > 1 ? parts[1] : null;
+    // Analyse
+    const fileInput = document.getElementById('file-input');
+    const previewContainer = document.getElementById('preview-container');
+    const previewImg = document.getElementById('preview-img');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const loading = document.getElementById('loading');
+    const result = document.getElementById('result');
 
-      previewImg.src = fileResult;
-      previewContainer.style.display = 'block';
-      uploadZone.style.display = 'none';
-      analyzeBtn.style.display = 'block';
+    let currentBase64 = null;
+    let currentMimeType = 'image/jpeg';
+
+    fileInput.addEventListener('change', handleFile);
+    document.getElementById('change-photo').addEventListener('click', () => { resetState(); fileInput.click(); });
+
+    function handleFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      currentMimeType = file.type || 'image/jpeg';
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        currentBase64 = ev.target.result.split(',')[1];
+        previewImg.src = ev.target.result;
+        previewContainer.style.display = 'block';
+        document.getElementById('upload-zone').style.display = 'none';
+        analyzeBtn.style.display = 'block';
+        result.style.display = 'none';
+        result.innerHTML = '';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetState() {
+      previewContainer.style.display = 'none';
+      analyzeBtn.style.display = 'none';
+      document.getElementById('upload-zone').style.display = 'block';
       result.style.display = 'none';
       result.innerHTML = '';
-    };
-
-    reader.readAsDataURL(file);
-  }
-
-  async function runAnalysis() {
-    if (!currentBase64) return;
-
-    if (checkPaywall()) return;
-
-    analyzeBtn.style.display = 'none';
-    loading.style.display = 'block';
-    result.style.display = 'none';
-
-    try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageData: currentBase64,
-          mimeType: currentMimeType
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Serverfehler: ${response.status}`);
-      }
-
-      const parsed = await response.json();
-      const signals = Array.isArray(parsed.signals) ? parsed.signals : [];
-
       loading.style.display = 'none';
-
-      if (parsed.error && !parsed.mood) {
-        result.innerHTML = `
-          <div class="result-card">
-            <span class="mood-emoji">⚠️</span>
-            <h3>Fehler</h3>
-            <p class="summary">${parsed.error}</p>
-          </div>
-          <button class="retry-btn" onclick="resetState()">↩ Erneut versuchen</button>
-        `;
-      } else if (parsed.error) {
-        result.innerHTML = `
-          <div class="result-card">
-            <span class="mood-emoji">🤔</span>
-            <h3>Kein Hund erkannt</h3>
-            <p class="summary">Bitte lade ein Foto hoch, auf dem ein Hund klar zu sehen ist.</p>
-          </div>
-          <button class="retry-btn" onclick="resetState()">↩ Anderes Foto</button>
-        `;
-      } else {
-        const ampelClass = parsed.ampel ? 'ampel-' + parsed.ampel.toLowerCase() : 'ampel-gruen';
-        const ampelEmoji =
-          parsed.ampel === 'GRUEN' ? '🟢' :
-          parsed.ampel === 'GELB' ? '🟡' :
-          parsed.ampel === 'ORANGE' ? '🟠' :
-          parsed.ampel === 'ROT' ? '🔴' : '🟢';
-
-        result.innerHTML = `
-          <div class="mood-badge">🐶 Stimmungsanalyse</div>
-          <div class="result-card">
-            <span class="mood-emoji">${parsed.emoji || '🐶'}</span>
-            <h3>${parsed.mood || 'Analyse'}</h3>
-            ${parsed.ampel ? `
-              <div class="ampel-box ${ampelClass}">
-                <div class="ampel-dot"></div>
-                <div class="ampel-text">
-                  <div class="ampel-label">${ampelEmoji} ${parsed.ampel}</div>
-                  ${parsed.ampelText || ''}
-                </div>
-              </div>
-            ` : ''}
-            <p class="summary">${parsed.summary || 'Keine Zusammenfassung verfügbar.'}</p>
-            <p class="signals-title">Körpersignale</p>
-            <div class="signals">
-              ${signals.map(s => `
-                <div class="signal">
-                  <span class="signal-icon">${s.icon || '🐾'}</span>
-                  <span>${s.text || ''}</span>
-                </div>
-              `).join('')}
-            </div>
-            <div class="tip-box">
-              <p class="tip-label">💡 Dein Tipp</p>
-              <p>${parsed.tip || 'Bitte beobachte deinen Hund weiter im Gesamtkontext.'}</p>
-            </div>
-            ${parsed.disclaimer ? `
-              <p style="font-size:0.75rem;color:#A0856A;text-align:center;margin-top:1rem;line-height:1.5;font-style:italic;">
-                ℹ️ ${parsed.disclaimer}
-              </p>
-            ` : ''}
-          </div>
-          <button class="retry-btn" onclick="resetState()">📸 Neues Foto analysieren</button>
-        `;
-
-        incrementAnalysisCount();
-      }
-
-      result.style.display = 'block';
-    } catch (err) {
-      console.error('Analysefehler:', err);
-      loading.style.display = 'none';
-      result.innerHTML = `
-        <div class="result-card">
-          <span class="mood-emoji">⚠️</span>
-          <h3>Fehler bei der Analyse</h3>
-          <p class="summary">${err.message || 'Bitte erneut versuchen.'}</p>
-        </div>
-        <button class="retry-btn" onclick="resetState()">↩ Erneut versuchen</button>
-      `;
-      result.style.display = 'block';
-      analyzeBtn.style.display = 'block';
+      currentBase64 = null;
+      fileInput.value = '';
     }
-  }
 
-  // ===== EVENTS =====
-  fileInput.addEventListener('change', handleFile);
-  changePhotoBtn.addEventListener('click', () => {
-    resetState();
-    fileInput.click();
-  });
-  analyzeBtn.addEventListener('click', runAnalysis);
+    analyzeBtn.addEventListener('click', async () => {
+      if (!currentBase64) return;
 
-  // ===== INIT =====
-  renderGuides();
-  renderNotfaelle();
-</script>
+      // Check paywall BEFORE analyzing
+      if (checkPaywall()) return;
+
+      analyzeBtn.style.display = 'none';
+      loading.style.display = 'block';
+      result.style.display = 'none';
+      try {
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageData: currentBase64, mimeType: currentMimeType })
+        });
+        const parsed = await response.json();
+        loading.style.display = 'none';
+        if (parsed.error && !parsed.mood) {
+          result.innerHTML = `<div class="result-card"><span class="mood-emoji">⚠️</span><h3>Fehler</h3><p class="summary">${parsed.error}</p></div><button class="retry-btn" onclick="resetState()">↩ Erneut versuchen</button>`;
+        } else if (parsed.error) {
+          result.innerHTML = `<div class="result-card"><span class="mood-emoji">🤔</span><h3>Kein Hund erkannt</h3><p class="summary">Bitte lade ein Foto hoch, auf dem ein Hund klar zu sehen ist.</p></div><button class="retry-btn" onclick="resetState()">↩ Anderes Foto</button>`;
+        } else {
+          const ampelClass = parsed.ampel ? 'ampel-' + parsed.ampel.toLowerCase() : 'ampel-gruen';
+          const ampelEmoji = parsed.ampel === 'GRUEN' ? '🟢' : parsed.ampel === 'GELB' ? '🟡' : parsed.ampel === 'ORANGE' ? '🟠' : parsed.ampel === 'ROT' ? '🔴' : '🟢';
+          result.innerHTML = `
+            <div class="mood-badge">🐶 Stimmungsanalyse</div>
+            <div class="result-card">
+              <span class="mood-emoji">${parsed.emoji}</span>
+              <h3>${parsed.mood}</h3>
+              ${parsed.ampel ? `<div class="ampel-box ${ampelClass}"><div class="ampel-dot"></div><div class="ampel-text"><div class="ampel-label">${ampelEmoji} ${parsed.ampel}</div>${parsed.ampelText || ''}</div></div>` : ''}
+              <p class="summary">${parsed.summary}</p>
+              <p class="signals-title">Körpersignale</p>
+              <div class="signals">${parsed.signals.map(s => `<div class="signal"><span class="signal-icon">${s.icon}</span><span>${s.text}</span></div>`).join('')}</div>
+              <div class="tip-box"><p class="tip-label">💡 Dein Tipp</p><p>${parsed.tip}</p></div>
+              ${parsed.disclaimer ? `<p style="font-size:0.75rem;color:#A0856A;text-align:center;margin-top:1rem;line-height:1.5;font-style:italic;">ℹ️ ${parsed.disclaimer}</p>` : ''}
+            </div>
+            <button class="retry-btn" onclick="resetState()">📸 Neues Foto analysieren</button>`;
+        }
+        result.style.display = 'block';
+        incrementAnalysisCount();
+      } catch (err) {
+        loading.style.display = 'none';
+        result.innerHTML = `<div class="result-card"><span class="mood-emoji">⚠️</span><h3>Fehler bei der Analyse</h3><p class="summary">${err.message || 'Bitte erneut versuchen.'}</p></div><button class="retry-btn" onclick="resetState()">↩ Erneut versuchen</button>`;
+        result.style.display = 'block';
+        analyzeBtn.style.display = 'block';
+      }
+    });
+  </script>
+
+</body>
+</html>
