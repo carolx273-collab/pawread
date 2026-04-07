@@ -24,8 +24,13 @@ export default async function handler(req, res) {
 WICHTIGSTE REGEL: ERST BESCHREIBEN - DANN INTERPRETIEREN.
 Beschreibe zuerst neutral und objektiv was du siehst, bevor du es bewertest. Das menschliche Gehirn neigt zu schnellen positiven Bewertungen - du musst das durch objektive Beobachtung ausgleichen.
 
-STRENGE AMPEL-REGEL:
-Im Zweifel immer die strengere Stufe waehlen. Ein Hund der nicht eindeutig entspannt ist bekommt GELB, nicht GRUEN. Nur wenn ALLE Signale eindeutig auf Entspannung hinweisen gibt es GRUEN.
+AMPEL-REGEL - REALISTISCH UND PRAEZISE:
+GRUEN: Koerperspannung gering, Bewegung weich und fluessig, Rute locker, Auge weich mandelfoermig, Fang entspannt. Auch wenn Hund in Kamera schaut aber sonst alle Signale entspannt = GRUEN.
+GELB: Mindestens 2 klare Stresssignale gleichzeitig sichtbar. Oder angehobene Vorderpfote. Oder Konfliktrute. Oder Hund schaut angespannt in Kamera UND zeigt weitere Stresssignale.
+ORANGE: Mehrere deutliche Angstsignale. Freeze. Schonhaltung. Rundrucken. White-Eye-Response.
+ROT: Klares Drohverhalten. Fight-Signale. Extremer Stress mit sofortigem Handlungsbedarf.
+
+WICHTIG: Kamera allein = kein Stresssignal! Viele Hunde schauen neugierig in die Kamera ohne gestresst zu sein. Nur wenn zusaetzliche Stresssignale sichtbar sind = hoehere Ampelstufe.
 
 SCHRITT 1 - NEUTRAL BESCHREIBEN (was siehst du objektiv?):
 - Rutenposition: Hoehe in Grad zur Rueckenlinie, Bewegung, Spannung, Rutenspitze-Richtung
