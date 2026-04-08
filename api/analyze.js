@@ -1,34 +1,35 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+if (req.method !== ‘POST’) {
+return res.status(405).json({ error: ‘Method not allowed’ });
+}
 
-  const { imageData, mimeType } = req.body;
+const { imageData, mimeType } = req.body;
 
-  if (!imageData || !mimeType) {
-    return res.status(400).json({ error: 'Kein Bild übermittelt' });
-  }
+if (!imageData || !mimeType) {
+return res.status(400).json({ error: ‘Kein Bild übermittelt’ });
+}
 
-  const systemPrompt = `Du bist PawRead, ein hochspezialisierter KI-Assistent fuer Hunde-Koerpersprache-Analyse.
+const systemPrompt = `Du bist PawRead, ein hochspezialisierter KI-Assistent fuer Hunde-Koerpersprache-Analyse.
 Du analysierst Fotos von Hunden und bewertest deren emotionalen Zustand anhand eines wissenschaftlich fundierten Frameworks aus vier Expertenquellen.
 
-EXPERTENQUELLEN:
-1. TURID RUGAAS - Calming Signals (Beschwichtigungssignale)
+WISSENSCHAFTLICHES FUNDAMENT (basierend auf anerkannten Methoden der Hundekörpersprache-Forschung):
+
+CALMING SIGNALS (Beschwichtigungssignale):
 Ueber 30 dokumentierte Signale: Gaehnen, Zuengeln, Blinzeln, Wegschauen, Kopf wegdrehen, langsames Bewegen, Einfrieren, Bogenlaeufe, Schnueffeln am Boden, Pfote heben u.a.
 WICHTIG: Beschwichtigungssignale richten sich an ein Gegenueber und sind aktive Kommunikation um Konflikte zu verhindern.
 
-2. DR. PATRICIA McCONNELL - Verhaltensbiologie & emotionale Zustaende
+VERHALTENSBIOLOGIE & EMOTIONALE ZUSTAENDE:
 4-F-System: FIGHT (Kaempfen), FLIGHT (Fluechten), FREEZE (Einfrieren), FIDGET (Beschwichtigen/Zappeln)
 Koerperspannung ist der zuverlaessigste Stressindikator.
 
-3. CHRISTIANE JACOBS / sprichhund.de - Pfeil-Prinzip & Drohverhalten
+PFEIL-PRINZIP & DROHVERHALTEN:
 Pfeil-Prinzip: Koerper auf Objekt ausgerichtet = Interesse/Fokus. Koerper abgewandt = Entspannung/Beschwichtigung.
 UNSICHER DROHEND: Koerper zurueckgezogen, angelegte Ohren, geduckt, eingezogene Rute - Motivation ist Angst.
 SICHER DROHEND: Koerper aufgerichtet und nach vorne, direkter Blick, steife Haltung, hoch getragene Rute.
 Play Bow: lockere Koerperhaltung, weiche Mimik, wackelnde Rute = Spieleinladung.
 Prey Bow: starre Mimik, fixierender Blick, angespannte Muskulatur = Beutefangmotivation, KEIN Spiel!
 
-4. DR. DORIT FEDDERSEN-PETERSEN - Ausdrucksverhalten & Rassenbesonderheiten (Uni Kiel)
+RASSENBESONDERHEITEN & AUSDRUCKSVERHALTEN:
 LANGES FELL: Verdeckt viele Signale.
 SCHLAPPOHR-RASSEN: Ohrsignale eingeschraenkt.
 BRACHYZEPHALE RASSEN (Mops, Bulldogge): Reduzierte mimische Ausdrucksmoeglichkeiten.
@@ -54,70 +55,74 @@ ORANGE: Mehrere deutliche Angstsignale, Freeze, Schmerzsignale, defensives Drohv
 ROT: Offensives Drohverhalten, extremer Stress, kombinierte Kampf- und Angstreaktionen.
 WICHTIG: Im Zweifel immer die STRENGERE Stufe - lieber GELB statt GRUEN.
 
+WICHTIG: Nenne in der Ausgabe KEINE Expertennamen, Quellen oder Methodennamen. Keine Klammern mit Namen wie (McConnell) oder (Feddersen-Petersen). Schreibe die Signale in einfacher verstaendlicher Sprache fuer Hundebesitzer.
+
 Antworte NUR mit reinem JSON ohne Markdown:
 {
-  "mood": "Praezise Stimmung auf Deutsch",
-  "emoji": "Passendes Emoji",
-  "ampel": "GRUEN oder GELB oder ORANGE oder ROT",
-  "ampelText": "Konkrete Begruendung mit den objektiv beobachteten Signalen",
-  "summary": "3-4 Saetze: Rasse + rassebedingte Besonderheiten + neutrale Beobachtung + Interpretation nach Pfeil-Prinzip",
-  "signals": [
-    {"icon": "Emoji", "text": "Konkretes Signal mit Bedeutung und Quelle"},
-    {"icon": "Emoji", "text": "Signal 2"},
-    {"icon": "Emoji", "text": "Signal 3"},
-    {"icon": "Emoji", "text": "Signal 4"}
-  ],
-  "tip": "Konkrete praktische Handlungsempfehlung fuer den Hundehalter",
-  "disclaimer": "Diese KI-Einschaetzung basiert auf einem einzelnen Foto und ersetzt keine Einschaetzung durch einen Tierarzt oder Verhaltensexperten."
+“mood”: “Praezise Stimmung auf Deutsch”,
+“emoji”: “Passendes Emoji”,
+“ampel”: “GRUEN oder GELB oder ORANGE oder ROT”,
+“ampelText”: “Konkrete Begruendung mit den objektiv beobachteten Signalen”,
+“summary”: “3-4 Saetze: Rasse + rassebedingte Besonderheiten + neutrale Beobachtung + Interpretation nach Pfeil-Prinzip”,
+“signals”: [
+{“icon”: “Emoji”, “text”: “Konkretes Signal mit Bedeutung und Quelle”},
+{“icon”: “Emoji”, “text”: “Signal 2”},
+{“icon”: “Emoji”, “text”: “Signal 3”},
+{“icon”: “Emoji”, “text”: “Signal 4”}
+],
+“tip”: “Konkrete praktische Handlungsempfehlung fuer den Hundehalter”,
+“disclaimer”: “Diese KI-Einschaetzung basiert auf einem einzelnen Foto und ersetzt keine Einschaetzung durch einen Tierarzt oder Verhaltensexperten.”
 }
-Falls kein Hund erkennbar: {"error": "Kein Hund erkannt"}`;
+Falls kein Hund erkennbar: {“error”: “Kein Hund erkannt”}`;
 
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
-        system: systemPrompt,
-        messages: [{
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: mimeType,
-                data: imageData
-              }
-            },
-            {
-              type: 'text',
-              text: 'Analysiere die Koerpersprache dieses Hundes nach dem PawRead-Protokoll. Fuehre die Analyse streng nach dem vorgegebenen Protokoll durch und antworte nur mit dem JSON.'
-            }
-          ]
-        }]
-      })
-    });
+try {
+const response = await fetch(‘https://api.anthropic.com/v1/messages’, {
+method: ‘POST’,
+headers: {
+‘Content-Type’: ‘application/json’,
+‘x-api-key’: process.env.ANTHROPIC_API_KEY,
+‘anthropic-version’: ‘2023-06-01’
+},
+body: JSON.stringify({
+model: ‘claude-sonnet-4-20250514’,
+max_tokens: 1024,
+system: systemPrompt,
+messages: [{
+role: ‘user’,
+content: [
+{
+type: ‘image’,
+source: {
+type: ‘base64’,
+media_type: mimeType,
+data: imageData
+}
+},
+{
+type: ‘text’,
+text: ‘Analysiere die Koerpersprache dieses Hundes nach dem PawRead-Protokoll. Fuehre die Analyse streng nach dem vorgegebenen Protokoll durch und antworte nur mit dem JSON.’
+}
+]
+}]
+})
+});
 
-    const data = await response.json();
+```
+const data = await response.json();
 
-    if (!response.ok) {
-      return res.status(500).json({ error: data?.error?.message || 'KI-Analyse fehlgeschlagen' });
-    }
+if (!response.ok) {
+  return res.status(500).json({ error: data?.error?.message || 'KI-Analyse fehlgeschlagen' });
+}
 
-    const text = data.content?.[0]?.text || '';
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) return res.status(500).json({ error: 'Ungültiges Antwortformat' });
+const text = data.content?.[0]?.text || '';
+const match = text.match(/\{[\s\S]*\}/);
+if (!match) return res.status(500).json({ error: 'Ungültiges Antwortformat' });
 
-    const parsed = JSON.parse(match[0]);
-    return res.status(200).json(parsed);
+const parsed = JSON.parse(match[0]);
+return res.status(200).json(parsed);
+```
 
-  } catch (err) {
-    return res.status(500).json({ error: err.message || 'Serverfehler' });
-  }
+} catch (err) {
+return res.status(500).json({ error: err.message || ‘Serverfehler’ });
+}
 }
