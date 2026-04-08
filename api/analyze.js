@@ -114,7 +114,20 @@ Falls kein Hund erkennbar: {"error": "Kein Hund erkannt"}`;
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) return res.status(500).json({ error: 'Ungültiges Antwortformat' });
 
-    const parsed = JSON.parse(match[0]);
+    let cleanText = match[0];
+
+    cleanText = cleanText.replace(/\([^)]*(Turid Rugaas|Rugaas|Patricia McConnell|McConnell|Christiane Jacobs|Jacobs|Dorit Feddersen-Petersen|Feddersen-Petersen|Feddersen|sprichhund\.de|sprichhund)[^)]*\)/gi, '');
+
+    cleanText = cleanText.replace(/Turid Rugaas|Rugaas|Patricia McConnell|McConnell|Christiane Jacobs|Jacobs|Dorit Feddersen-Petersen|Feddersen-Petersen|Feddersen|sprichhund\.de|sprichhund/gi, '');
+
+    cleanText = cleanText
+      .replace(/\(\s*\)/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/ \./g, '.')
+      .replace(/ ,/g, ',')
+      .trim();
+
+    const parsed = JSON.parse(cleanText);
     return res.status(200).json(parsed);
 
   } catch (err) {
