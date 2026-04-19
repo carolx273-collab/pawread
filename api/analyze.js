@@ -34,174 +34,53 @@ KONTEXTBASIERTE STRESSVERSTÄRKUNG:
 • Zuhause / vertraute Umgebung → Normale Bewertung möglich
 • Spiel / Freilauf → Positive Erregung möglich, lockere Signale ok
 
-Ein Hund der beim Tierarzt "entspannt" wirkt ist mit sehr hoher Wahrscheinlichkeit im FREEZE – nicht entspannt!
-
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-EXPERTENQUELLEN – DEIN WISSENSFUNDAMENT
+EXPERTENQUELLEN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. TURID RUGAAS – Calming Signals (Beschwichtigungssignale)
-Über 30 dokumentierte Signale: Gähnen, Züngeln (kurzes Lecken über die Schnauze), Blinzeln, Wegschauen, Kopf wegdrehen, langsames Bewegen, Einfrieren (Freeze), Bogenläufe, Schnüffeln am Boden, Sitzen/Hinlegen bei Annäherung, Spielverbeugung als Beschwichtigung, Schwanzwedeln in tiefer Position, Pfote heben, u.a.
-WICHTIG: Beschwichtigungssignale richten sich an ein Gegenüber (anderen Hund, Person) und sind aktive Kommunikation – sie sollen Konflikte verhindern.
-
-2. DR. PATRICIA McCONNELL – Verhaltensbiologie & emotionale Zustände
-4-F-System der Stressreaktionen:
-• FIGHT (Kämpfen): Drohverhalten, Aggression
-• FLIGHT (Flüchten): Rückzug, Ausweichen, Fluchtversuche
-• FREEZE (Einfrieren): Bewegungslosigkeit, Erstarrung als Schutzmechanismus – SIEHT AUF FOTOS OFT WIE ENTSPANNUNG AUS!
-• FAWN/FIDGET (Beschwichtigen/Zappeln): Unterwerfungsgesten, überaktives Verhalten
-Emotionale Signale: Körperspannung ist der zuverlässigste Stressindikator. Entspannte Muskeln zeigen Wohlbefinden; steife, angespannte Muskulatur zeigt Stress oder Drohbereitschaft.
-
+1. TURID RUGAAS – Calming Signals
+2. DR. PATRICIA McCONNELL – 4-F-System (Fight/Flight/Freeze/Fawn)
 3. CHRISTIANE JACOBS / sprichhund.de – Pfeil-Prinzip & Drohverhalten
-Pfeil-Prinzip (Körperachse als Kompass):
-• Körper/Kopf ausgerichtet auf Objekt/Person = Interesse/Fokus/potenzielle Bedrohung
-• Körper/Kopf abgewandt = Entspannung, Desinteresse, Beschwichtigung
-• Seitliche Körperhaltung = soziale Entspannung, kein Konfrontationswille
-
-Drohverhalten-Typen:
-• UNSICHER DROHEND: Körper leicht zurückgezogen, Bellen aus Abstand, angelegte Ohren, tief geduckte Körperhaltung, eingezogene Rute – Motivation ist Angst
-• SICHER DROHEND: Körper aufgerichtet und nach vorne gelehnt, direkter Blick, steife Körperhaltung, hoch getragene Rute, gesträubtes Nackenfell – Motivation ist Selbstsicherheit/Dominanz
-
-Play Bow (Spielverbeugung) vs. Prey Bow (Beutestellung):
-• Play Bow: Vorderkörper tief, Hinterteil hoch, lockere Körperhaltung, weiche Mimik, wackelnde Rute, offenes "Spielgesicht" – Einladung zum Spielen
-• Prey Bow: Vorderkörper tief, Hinterteil hoch, ABER starre Mimik, fixierender Blick, angespannte Muskulatur, keine Rutenbewegung oder Rute gestreckt – Beutefangmotivation, kein Spiel!
-
-4. DR. DORIT FEDDERSEN-PETERSEN – Ausdrucksverhalten & Rassenbesonderheiten (Uni Kiel, Ethologin)
-Rassenbedingte Einschränkungen der Körpersprache – KRITISCH für korrekte Analyse:
-• LANGES FELL: Verdeckt Körperspannung, Ohrhaltung bei Schlappohren, gesträubtes Nackenfell, manchmal sogar die Augen → viele Signale sind nicht oder schwer sichtbar
-• SCHLAPPOHR-RASSEN: Ohren können nicht vollständig aufgestellt werden → Ohrsignale stark eingeschränkt oder nicht auswertbar
-• KURZE/GERINGELTE RUTE: Rutenhaltung als Signal eingeschränkt oder nicht erkennbar (z.B. Husky, Spitz, Mops)
-• BRACHYZEPHALE RASSEN (Mops, Bulldogge, Französische Bulldogge): Durch Brachyzephalie stark reduzierte mimische Ausdrucksmöglichkeiten; viele Droh- und Stresssignale im Gesicht nicht erkennbar
-• DUNKLES FELL: Reduziert Kontrastwahrnehmung, Mimik schwerer ablesbar
-• WINDHUNDE: Tragen Rute häufig auch in entspannter Stimmung zwischen den Hinterbeinen → tief getragene Rute bedeutet bei ihnen NICHT automatisch Angst
-• TERRIER: Tragen Rute oft ständig hoch oder senkrecht → hoch getragene Rute bedeutet bei ihnen NICHT automatisch Dominanz oder Stress
-
-Offensives vs. defensives Drohverhalten (Feddersen-Petersen):
-• OFFENSIV: Direktes Fixieren, Zähneblecken mit kurzen runden Mundwinkeln, gerunzelte Stirn, aufgestellte Ohren (rassetypisch), nach vorne gestreckte Körperhaltung, erhobener Kopf, gesträubte Rückenhaare, tiefes Knurren
-• DEFENSIV: Zähneblecken mit weit zurückgezogenen Mundwinkeln (Angstgrinsen), angelegte Ohren, Körper tief/geduckt, Rute eingezogen, weite Pupillen
-
-Piloerektion:
-• Nur am Nacken = mäßige Erregung
-• Nacken + Rutenansatz = hohe Erregung
-• Ganzer Rücken = sehr hohe Erregung
-• Dauerhaft an einer Stelle = möglicher Schmerzpunkt → Tierarzt aufsuchen!
-
-Schmerzsignale (häufig übersehen!):
-Steifer Gang, verändertes Körpergewicht auf einzelne Beine, angespannte Bauchmuskulatur, verkrampfte Haltung, gesenkter Kopf bei gleichzeitig normalem Kontext, veränderte Rutenposition ohne anderen Stressor, verengte Pupillen, eingefallene Schläfenmuskulatur, veränderte Atemfrequenz
-
-Walauge (Whale Eye):
-Hund dreht Kopf weg aber Augen bleiben auf Bedrohung fixiert = innerer Konflikt. Kopf und Augen zeigen in verschiedene Richtungen = Hund will Abstand aber behält Situation im Blick.
+4. DR. DORIT FEDDERSEN-PETERSEN – Ausdrucksverhalten & Rassenbesonderheiten
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ANALYSE-PROTOKOLL (STRENGE REIHENFOLGE)
+AMPELBEWERTUNG
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Führe die Analyse IMMER in dieser Reihenfolge durch:
+GRUEN – Entspannt & wohl: Lockere Körperhaltung, weiche Augen, keine Stresssignale. NUR in vertrauter ruhiger Umgebung.
+GELB – Leicht angespannt: Mindestens 2 Stresssignale ODER Stresssituation bekannt aber keine klaren Signale sichtbar (Freeze möglich).
+ORANGE – Deutlicher Stress: Mehrere Angstsignale, Freeze in Stresssituation sehr wahrscheinlich, Schmerzsignale, defensives Drohverhalten.
+ROT – Hohes Stressniveau: Offensives Drohverhalten, Extremstress mit mehreren Hochstress-Signalen.
 
-SCHRITT 1 – KONTEXT AUSWERTEN:
-Berücksichtige zuerst den angegebenen Kontext: ${situationContext}
-• Welchen Grundstress bringt diese Situation mit sich?
-• Wie hoch ist die Freeze-Wahrscheinlichkeit in dieser Situation?
-• Passe die Ampelbewertung entsprechend an – im Zweifel IMMER strenger!
-
-SCHRITT 2 – NEUTRALE BEOBACHTUNG (Beschreibe was du siehst, noch keine Bewertung):
-Gehe systematisch durch ALLE sichtbaren Körperbereiche:
-□ Rutenposition & -bewegung (hoch/mittel/tief/eingeklemmt/Bewegung)
-□ Ohrenstellung (aufgestellt/angelegt/seitlich/neutral – je nach Rasse bewertbar?)
-□ Körperachse & -ausrichtung (Pfeil-Prinzip: auf was ausgerichtet?)
-□ Gesamtkörperspannung (locker/angespannt/steif/zitternd)
-□ Augen (weich/starr/Walauge/Pupillengröße soweit erkennbar)
-□ Fang/Schnauze (offen/geschlossen/Züngeln/Zähneblecken/Lefzen)
-□ Angehobene Pfote (ja/nein)
-□ Rundrücken / Körperhaltung (aufrecht/geduckt/seitlich/zusammengezogen)
-□ Piloerektion (nur Nacken / Nacken+Rutenansatz / ganzer Rücken / nicht erkennbar)
-□ Sichtbare Muskeln (angespannt/locker)
-
-SCHRITT 3 – RASSENANALYSE:
-Berücksichtige die Rasse: ${breedContext}
-• Welche Signale sind bei dieser Rasse anatomisch eingeschränkt oder nicht aussagekräftig?
-• Welche Normvarianten gibt es bei dieser Rasse (z.B. Rutengrundstellung)?
-• Passe deine Interpretation entsprechend an und weise explizit auf rassebedingte Einschränkungen hin.
-
-SCHRITT 4 – SIGNALMUSTER ERKENNEN:
-• Welche Signale aus Rugaas' Calming Signals sind erkennbar?
-• Handelt es sich um Beschwichtigungssignale (an Gegenüber gerichtet) oder Stresssignale (selbstregulierend)?
-• Welche 4-F-Reaktion ist erkennbar (McConnell)? Könnte FREEZE vorliegen?
-• Wie ist die Körperachse ausgerichtet (Pfeil-Prinzip)?
-• Liegt Play Bow oder Prey Bow vor (wenn zutreffend)?
-• Gibt es Hinweise auf Schmerz (Feddersen-Petersen)?
-
-SCHRITT 5 – AMPELBEWERTUNG:
-Vergib eine der vier Stufen nach diesen STRENGEN Kriterien:
-
-🟢 GRÜN – Entspannt & wohl:
-• Lockere Körperhaltung, weiche Augen, entspannte Schnauze
-• Neutrale bis leicht wedelnde Rute (rassekorrigiert)
-• Keine Stresssignale erkennbar
-• NUR in vertrauter, ruhiger Umgebung möglich
-• Kamera/Fotosituation allein ist KEIN Stresssignal
-
-🟡 GELB – Leicht angespannt / aufmerksam:
-• Mindestens 2 gleichzeitige, klare Stresssignale
-• Oder 1 eindeutiges Beschwichtigungssignal in Reaktion auf erkennbaren Stressor
-• Oder: Stresssituation bekannt (z.B. unterwegs) aber keine klaren Signale sichtbar → Freeze möglich
-• Hund ist noch kontrolliert, aber nicht entspannt
-
-🟠 ORANGE – Deutlicher Stress / Angst:
-• Mehrere deutliche Angstsignale gleichzeitig
-• Freeze-Reaktion erkennbar ODER Freeze in Stresssituation (Tierarzt etc.) sehr wahrscheinlich
-• Hinweise auf Schmerz
-• Defensives Drohverhalten
-• Stresssituation bekannt + mindestens 1 sichtbares Stresssignal
-
-🔴 ROT – Hohes Stressniveau / Drohbereitschaft:
-• Offensives Drohverhalten (Fixieren + Zähneblecken + Körper nach vorne)
-• Extremer Stress mit mehreren Hochstress-Signalen gleichzeitig
-• Kombiniertes Auftreten von Kampf- und Angstreaktionen
-
-WICHTIGE AMPELREGEL: Im Zweifel IMMER die STRENGERE Stufe wählen! Ein Foto kann niemals die volle Wahrheit zeigen – besonders in Stresssituationen. Lieber ORANGE statt GELB wenn Unsicherheit besteht.
+WICHTIGE REGEL: Im Zweifel IMMER die STRENGERE Stufe wählen!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-AUSGABEFORMAT (STRIKT EINHALTEN)
+AUSGABEFORMAT – NUR REINES JSON, KEIN TEXT DAVOR ODER DANACH
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Antworte IMMER auf Deutsch. Strukturiere deine Antwort EXAKT so:
+Antworte AUSSCHLIESSLICH mit einem JSON-Objekt in exakt diesem Format:
 
-**AMPEL: [GRÜN / GELB / ORANGE / ROT]**
+{
+  "ampel": "GRUEN",
+  "mood": "Dein Hund wirkt entspannt und wohl.",
+  "beobachtung": "2-3 Sätze: Was siehst du konkret? Körperhaltung, Augen, Rute, Ohren usw.",
+  "bedeutung": "2-3 Sätze: Was bedeutet das? Welche Emotion steckt dahinter?",
+  "signals": [
+    { "icon": "😌", "text": "Kurze, konkrete Beobachtung 1" },
+    { "icon": "🐾", "text": "Kurze, konkrete Beobachtung 2" },
+    { "icon": "💚", "text": "Kurze, konkrete Beobachtung 3" }
+  ],
+  "freeze_hinweis": "Nur ausfüllen wenn Freeze-Verdacht besteht, sonst leerer String",
+  "rassen_hinweis": "Nur ausfüllen wenn rassenbedingte Einschränkungen relevant sind, sonst leerer String",
+  "tipp": "1-2 konkrete, praktische Handlungsempfehlungen für den Halter.",
+  "expertenwissen": "Kurzer Hinweis welche Expertenmethode die Analyse hauptsächlich gestützt hat."
+}
 
-**Was ich sehe:**
-[2-3 Sätze neutrale Beobachtung der wichtigsten sichtbaren Signale]
-
-**Was es bedeutet:**
-[2-3 Sätze Interpretation – welche Emotion/Zustand steckt dahinter, Kontext berücksichtigt]
-
-**Freeze-Hinweis:**
-[Nur wenn relevant: Hinweis dass der Hund möglicherweise im Freeze ist und das Foto nicht die wahre Stimmung zeigt. Weglassen wenn keine Stresssituation bekannt.]
-
-**Rassenhinweis:**
-[Nur wenn relevant: Welche Signale sind bei dieser Rasse eingeschränkt auswertbar? Weglassen wenn keine Besonderheiten]
-
-**Empfehlung:**
-[1-2 konkrete, praktische Handlungsempfehlungen für den Hundehalter]
-
-**Expertenwissen:**
-[1 kurzer Satz welche Quelle/Methode die Analyse hauptsächlich gestützt hat]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-QUALITÄTSREGELN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-✓ Sei konkret und spezifisch – keine vagen Aussagen wie "der Hund wirkt entspannt"
-✓ Benenne immer die konkreten sichtbaren Signale die zur Bewertung geführt haben
-✓ Berücksichtige IMMER den Kontext – ein regloser Hund beim Tierarzt ist fast nie entspannt!
-✓ Weise auf rassebedingte Einschränkungen hin wenn vorhanden
-✓ Unterscheide klar zwischen Beschwichtigungs- und Stresssignalen
-✓ Achte besonders auf Schmerzsignale – diese werden von Haltern am häufigsten übersehen
-✓ Verwende eine warme, einfühlsame Sprache – du sprichst mit Hundeliebhabern
-✓ Sei ehrlich – wenn das Bild zu unscharf oder der Winkel zu ungünstig ist, sage das klar
-✓ NIEMALS eine Diagnose stellen oder tierärztlichen Rat ersetzen
-✓ Bei ROT oder Schmerzverdacht: Empfehle immer einen Experten/Tierarzt
-✓ Wenn Kontext auf Stresssituation hindeutet: Weise explizit auf Freeze-Möglichkeit hin`;
+WICHTIGE JSON-REGELN:
+- ampel ist IMMER eines von: GRUEN, GELB, ORANGE, ROT
+- signals enthält IMMER 3 Einträge mit jeweils icon und text
+- text in signals ist IMMER eine kurze eigenständige Beobachtung (nicht der gleiche Text wie beobachtung!)
+- Kein Markdown, keine Codeblöcke, nur reines JSON`;
 
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -233,7 +112,7 @@ QUALITÄTSREGELN
               },
               {
                 type: "text",
-                text: `Bitte analysiere die Körpersprache dieses Hundes nach dem PawRead-Protokoll. ${breedContext} ${situationContext} Führe die Analyse streng nach dem vorgegebenen Protokoll durch und berücksichtige den Kontext besonders bei der Ampelbewertung.`,
+                text: `Analysiere die Körpersprache dieses Hundes. ${breedContext} ${situationContext} Antworte NUR mit dem JSON-Objekt, kein Text davor oder danach.`,
               },
             ],
           },
@@ -248,56 +127,63 @@ QUALITÄTSREGELN
     }
 
     const data = await response.json();
-    const rawText = data.content[0]?.text || "";
+    const rawText = (data.content[0]?.text || "").trim();
 
-    // Strukturiertes JSON aus dem Text parsen
-    const ampelMatch = rawText.match(/\*\*AMPEL:\s*(GRÜN|GELB|ORANGE|ROT)\*\*/i);
-    const ampelRaw = ampelMatch ? ampelMatch[1].toUpperCase() : "GRUEN";
-    const ampel = ampelRaw === "GRÜN" ? "GRUEN" : ampelRaw;
+    // JSON parsen – Codeblöcke entfernen falls vorhanden
+    let parsed;
+    try {
+      const clean = rawText.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
+      parsed = JSON.parse(clean);
+    } catch (e) {
+      console.error("JSON parse error:", e, "Raw:", rawText);
+      return res.status(500).json({ error: "Analyse konnte nicht verarbeitet werden. Bitte erneut versuchen." });
+    }
 
-    const wasIchSeheMatch = rawText.match(/\*\*Was ich sehe:\*\*\s*([\s\S]*?)(?=\*\*Was es bedeutet)/i);
-    const wasEsBedeutetMatch = rawText.match(/\*\*Was es bedeutet:\*\*\s*([\s\S]*?)(?=\*\*(?:Freeze|Rassen|Empfehlung|Experten))/i);
-    const empfehlungMatch = rawText.match(/\*\*Empfehlung:\*\*\s*([\s\S]*?)(?=\*\*Expertenwissen|$)/i);
-    const freezeMatch = rawText.match(/\*\*Freeze-Hinweis:\*\*\s*([\s\S]*?)(?=\*\*(?:Rassen|Empfehlung|Experten))/i);
-
-    const summary = (wasIchSeheMatch?.[1] || "").trim() + " " + (wasEsBedeutetMatch?.[1] || "").trim();
-    const tip = (empfehlungMatch?.[1] || "").trim();
-    const freezeHinweis = (freezeMatch?.[1] || "").trim();
+    // Ampel normalisieren
+    const ampelRaw = (parsed.ampel || "GRUEN").toUpperCase().replace("Ü", "U");
+    const ampel = ["GRUEN", "GELB", "ORANGE", "ROT"].includes(ampelRaw) ? ampelRaw : "GRUEN";
 
     const ampelEmojis = { GRUEN: "😊", GELB: "😐", ORANGE: "😟", ROT: "😨" };
     const ampelTexts = {
       GRUEN: "Dein Hund wirkt entspannt und wohl.",
       GELB: "Dein Hund ist leicht angespannt – beobachte ihn.",
       ORANGE: "Dein Hund zeigt deutlichen Stress oder Angst.",
-      ROT: "Dein Hund zeigt starken Stress oder Drohverhalten."
+      ROT: "Dein Hund zeigt starken Stress oder Drohverhalten.",
     };
 
-    const signals = [];
-    const signalIcons = { GRUEN: ["💚", "😌", "🐾"], GELB: ["⚠️", "👁️", "😤"], ORANGE: ["🧊", "😰", "⬇️"], ROT: ["🔴", "⚡", "🚨"] };
-    const lines = rawText.split("\n").filter(l => l.trim().length > 10);
-    let collecting = false;
-    for (const line of lines) {
-      if (line.includes("Was ich sehe") || line.includes("Was es bedeutet")) { collecting = true; continue; }
-      if (line.includes("**") && collecting && !line.includes("Was ich sehe") && !line.includes("Was es bedeutet")) { collecting = false; }
-      if (collecting && line.trim() && !line.includes("**")) {
-        signals.push({ icon: signalIcons[ampel]?.[signals.length % 3] || "🐾", text: line.trim().replace(/^[-•]\s*/, "") });
-        if (signals.length >= 4) break;
-      }
-    }
-    if (signals.length === 0) {
-      signals.push({ icon: "🐾", text: summary.substring(0, 120) });
-    }
+    // Signals sicherstellen
+    const signals = Array.isArray(parsed.signals) && parsed.signals.length > 0
+      ? parsed.signals.slice(0, 4).map(s => ({
+          icon: s.icon || "🐾",
+          text: s.text || ""
+        }))
+      : [{ icon: "🐾", text: "Keine spezifischen Signale erkennbar." }];
+
+    // ampelText: Freeze-Hinweis bevorzugt, sonst Standard
+    const ampelText = parsed.freeze_hinweis || ampelTexts[ampel];
+
+    // summary = beobachtung + bedeutung (getrennt, nicht doppelt)
+    const summary = [parsed.beobachtung, parsed.bedeutung]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+
+    // Tipp zusammenbauen
+    let tip = parsed.tipp || "Beobachte deinen Hund aufmerksam und vertraue deinem Bauchgefühl.";
+    if (parsed.rassen_hinweis) tip += " " + parsed.rassen_hinweis;
+    if (parsed.expertenwissen) tip += "\n\n📚 " + parsed.expertenwissen;
 
     return res.status(200).json({
-      mood: ampelTexts[ampel] || "Analyse abgeschlossen",
-      emoji: ampelEmojis[ampel] || "🐶",
+      mood: parsed.mood || ampelTexts[ampel],
+      emoji: ampelEmojis[ampel],
       ampel,
-      ampelText: freezeHinweis || ampelTexts[ampel],
-      summary: summary.trim() || rawText.substring(0, 300),
+      ampelText,
+      summary,
       signals,
-      tip: tip || "Beobachte deinen Hund aufmerksam und vertraue deinem Bauchgefühl.",
-      disclaimer: "KI-Analyse – kein Ersatz für Tierarzt oder Verhaltensexperten."
+      tip,
+      disclaimer: "KI-Analyse – kein Ersatz für Tierarzt oder Verhaltensexperten.",
     });
+
   } catch (err) {
     console.error("Server error:", err);
     return res.status(500).json({ error: "Serverfehler", details: err.message });
