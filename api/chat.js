@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message } = req.body || {};
+    const { message, history } = req.body || {};
     const cleanMessage = typeof message === 'string' ? message.trim() : '';
 
     if (!cleanMessage) {
@@ -85,7 +85,29 @@ OFFENSIVES vs DEFENSIVES DROHVERHALTEN (Feddersen-Petersen):
 Offensiv: Direktes Fixieren, Zaehneblecken mit kurzen runden Mundwinkeln, gerunzelte Stirn, Koerper nach vorne, erhobener Kopf, gestraeubt Rueckenhaare
 Defensiv: Zaehneblecken mit weit zurueckgezogenen Mundwinkeln (Angstgrinsen), angelegte Ohren, Koerper tief/geduckt, Rute eingezogen
 
-Bei ernsthaften Problemen, Aggressionsverhalten oder Schmerzverdacht immer einen Tierarzt oder zertifizierten Hundetrainer empfehlen.`;
+Bei ernsthaften Problemen, Aggressionsverhalten oder Schmerzverdacht immer einen Tierarzt oder zertifizierten Hundetrainer empfehlen.
+
+KONVERSATIONSGEDAECHTNIS:
+Du erinnerst dich an den gesamten bisherigen Gespraechsverlauf und kannst auf frueheren Nachrichten aufbauen. Wenn jemand auf eine vorherige Antwort Bezug nimmt, beziehe dich ebenfalls darauf.`;
+
+    // Build messages array with conversation history
+    const messages = [];
+
+    // Add conversation history if provided (max last 10 exchanges = 20 messages)
+    if (Array.isArray(history) && history.length > 0) {
+      const recentHistory = history.slice(-20);
+      for (const entry of recentHistory) {
+        if (entry.role && entry.content && typeof entry.content === 'string') {
+          messages.push({
+            role: entry.role === 'user' ? 'user' : 'assistant',
+            content: entry.content.trim()
+          });
+        }
+      }
+    }
+
+    // Add current message
+    messages.push({ role: 'user', content: cleanMessage });
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -95,10 +117,10 @@ Bei ernsthaften Problemen, Aggressionsverhalten oder Schmerzverdacht immer einen
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 400,
         system: systemPrompt,
-        messages: [{ role: 'user', content: cleanMessage }]
+        messages
       })
     });
 
