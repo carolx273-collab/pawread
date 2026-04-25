@@ -471,8 +471,86 @@
     .category-tabs::-webkit-scrollbar { display: none; }
     .cat-btn { flex-shrink: 0; padding: 0.45rem 1rem; border-radius: 50px; border: 2px solid var(--warm); background: white; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--soft); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
     .cat-btn.active { background: var(--brown); border-color: var(--brown); color: var(--cream); font-weight: 500; }
+    /* ===== SUCHE ===== */
+    .search-box {
+      position: relative; margin-bottom: 1rem;
+    }
+    .search-input {
+      width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem;
+      border: 2px solid var(--warm); border-radius: 14px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      color: var(--dark); background: white; outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--amber); }
+    .search-icon {
+      position: absolute; left: 0.9rem; top: 50%;
+      transform: translateY(-50%); font-size: 1rem; pointer-events: none;
+    }
+    .search-clear {
+      position: absolute; right: 0.9rem; top: 50%;
+      transform: translateY(-50%); background: none; border: none;
+      font-size: 1rem; cursor: pointer; color: var(--soft);
+      display: none; padding: 0; line-height: 1;
+    }
+    .search-results-info {
+      font-size: 0.78rem; color: var(--soft);
+      margin-bottom: 0.8rem; padding: 0 0.2rem;
+    }
+    .search-results-info strong { color: var(--brown); }
+    .no-results {
+      text-align: center; padding: 2rem 1rem;
+      color: var(--soft); font-size: 0.9rem;
+    }
+    .no-results span { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+    .guide-source {
+      font-size: 0.72rem; color: var(--soft);
+      margin-top: 0.8rem; padding-top: 0.8rem;
+      border-top: 1px solid var(--cream);
+      display: flex; align-items: center; gap: 5px;
+    }
     .guide-card { background: white; border-radius: 20px; margin-bottom: 1rem; overflow: hidden; box-shadow: 0 2px 12px rgba(107,76,42,0.08); cursor: pointer; transition: all 0.25s; }
     .guide-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(107,76,42,0.14); }
+    /* Tipp des Tages */
+    .tip-of-day {
+      background: linear-gradient(135deg, #6B4C2A 0%, #8B6340 100%);
+      border-radius: 20px; padding: 1.2rem 1.4rem;
+      margin-bottom: 1.2rem; color: var(--cream);
+      box-shadow: 0 4px 20px rgba(107,76,42,0.25);
+    }
+    .tip-of-day-label {
+      font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 2px; opacity: 0.75;
+      margin-bottom: 0.4rem; display: flex; align-items: center; gap: 6px;
+    }
+    .tip-of-day-text {
+      font-size: 0.92rem; line-height: 1.6;
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Verknüpfte Artikel */
+    .related-articles {
+      margin-top: 1rem; padding-top: 0.8rem;
+      border-top: 1px solid var(--cream);
+    }
+    .related-label {
+      font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--soft);
+      font-weight: 600; margin-bottom: 0.5rem;
+    }
+    .related-list {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .related-item {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--cream); border-radius: 10px;
+      padding: 0.5rem 0.8rem; cursor: pointer;
+      font-size: 0.82rem; color: var(--brown);
+      transition: background 0.2s; border: none;
+      text-align: left; font-family: 'DM Sans', sans-serif;
+      width: 100%;
+    }
+    .related-item:hover { background: var(--warm); }
     .guide-card-header { display: flex; align-items: center; gap: 14px; padding: 1.1rem 1.2rem; }
     .guide-emoji { font-size: 2rem; flex-shrink: 0; }
     .guide-card-header h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--brown); margin-bottom: 0.15rem; }
@@ -560,20 +638,32 @@
         <div style="background:white;border-radius:14px;padding:0.8rem 1rem;margin-top:0.8rem;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(107,76,42,0.08);">
           <span style="font-size:1.3rem;">🔒</span>
           <div>
-            <p style="font-size:0.8rem;font-weight:600;color:var(--brown);margin-bottom:2px;">3 von 15 Artikeln kostenlos</p>
+            <p style="font-size:0.8rem;font-weight:600;color:var(--brown);margin-bottom:2px;">3 von 20 Artikeln kostenlos</p>
             <p style="font-size:0.75rem;color:var(--soft);">Alle Artikel freischalten für 2,99€/Monat</p>
           </div>
           <button onclick="showGuidePaywall()" style="margin-left:auto;background:var(--amber);color:white;border:none;border-radius:10px;padding:0.4rem 0.8rem;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">Premium</button>
         </div>
       </div>
-      <div class="category-tabs">
+      <!-- TIPP DES TAGES -->
+      <div class="tip-of-day" id="tip-of-day-box">
+        <div class="tip-of-day-label">☀️ Tipp des Tages</div>
+        <div class="tip-of-day-text" id="tip-of-day-text"></div>
+
+      </div>
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="ratgeber-search" placeholder="Artikel suchen… z.B. Walauge, Stress, Rute" oninput="searchGuides(this.value)" />
+        <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+      </div>
+      <div class="search-results-info" id="search-info" style="display:none;"></div>
+      <div class="category-tabs" id="category-tabs">
         <button class="cat-btn active" onclick="filterGuides('alle', this)">Alle</button>
         <button class="cat-btn" onclick="filterGuides('koerper', this)">🏹 Körpersprache</button>
         <button class="cat-btn" onclick="filterGuides('calming', this)">🌿 Calming Signals</button>
         <button class="cat-btn" onclick="filterGuides('emotion', this)">❤️ Emotionen</button>
         <button class="cat-btn" onclick="filterGuides('alltag', this)">🏠 Alltag</button>
         <button class="cat-btn" onclick="filterGuides('training', this)">🎓 Training</button>
-      </div>
+      </div><!-- end category-tabs -->
       <div id="guides-container"></div>
     </div>
   </div>
@@ -719,6 +809,9 @@
     <button class="nav-btn" id="nav-notfall" onclick="showPage('notfall', this)" style="flex:1;padding:0.9rem 0.5rem 0.7rem;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#A0856A;">
       <span style="font-size:1.4rem;">🚨</span>Notfall
     </button>
+    <a href="https://www.google.com/maps/search/tierarzt+notdienst+in+der+nähe" target="_blank" style="flex:1;padding:0.9rem 0.5rem 0.7rem;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:#A0856A;text-decoration:none;">
+      <span style="font-size:1.4rem;">📍</span>Tierarzt
+    </a>
   </div>
   </div><!-- end app-wrapper -->
 
@@ -901,71 +994,194 @@
 
     // ===== GUIDES =====
     const guides = [
-      { id: 1, cat: 'koerper', emoji: '🏹', title: 'Das Pfeil-Prinzip', preview: 'Die wichtigste Methode um Hundekörpersprache zu lesen', content: 'Das Pfeil-Prinzip ist das wichtigste Werkzeug um Hundekörpersprache schnell einzuschaetzen: Wohin zeigen die Koerperteile des Hundes? Vorne und oben bedeutet Selbstsicherheit und Annaeherung. Hinten und unten bedeutet Rueckzug, Angst oder Unterwerfung.', signals: [{ icon: '⬆️', text: 'Pfeile nach vorne/oben: Selbstsicherheit' }, { icon: '⬇️', text: 'Pfeile nach hinten/unten: Angst/Rueckzug' }, { icon: '🔀', text: 'Gemischte Pfeile: Innerer Konflikt' }, { icon: '👁️', text: 'Immer das Gesamtbild bewerten!' }], tag: 'Grundlagen' },
-      { id: 2, cat: 'koerper', emoji: '😌', title: 'Der entspannte Hund', preview: 'So sieht echte Entspannung aus', content: 'Um Veraenderungen in der Koerpersprache zu erkennen musst du zuerst wissen wie dein Hund entspannt aussieht. Diese Grundhaltung ist bei jedem Hund individuell.', signals: [{ icon: '💫', text: 'Geringe Koerperspannung, weiche Bewegungen' }, { icon: '👀', text: 'Weiches mandelfoermiges Auge' }, { icon: '👄', text: 'Fang locker' }, { icon: '🐾', text: 'Rute locker in Grundstellung' }], tag: 'Körpersprache' },
-      { id: 3, cat: 'koerper', emoji: '🔍', title: 'Aufmerksam und neugierig', preview: 'Wenn dein Hund etwas Interessantes entdeckt', content: 'Aufmerksam durch die Welt zu gehen ist fuer Hunde voellig normal. Im Gegensatz zum entspannten Ausdruck fokussiert sich der Hund jetzt staerker.', signals: [{ icon: '👂', text: 'Ohren leicht nach vorne' }, { icon: '👀', text: 'Augen etwas weiter geoeffnet' }, { icon: '🫱', text: 'Koerper leicht nach vorne geneigt' }, { icon: '👃', text: 'Schnueffeln in der Luft' }], tag: 'Körpersprache' },
-      { id: 4, cat: 'koerper', emoji: '🎮', title: 'Play Bow vs. Prey Bow', preview: 'Zwei aehnliche Haltungen mit sehr unterschiedlicher Bedeutung', content: 'Der Play Bow und der Prey Bow sehen aehnlich aus aber bedeuten etwas voellig anderes.', signals: [{ icon: '🎯', text: 'PLAY BOW: Vorderkörper tief, Mimik locker' }, { icon: '🏹', text: 'PREY BOW: Wirbelsaeule gerade, starrer Blick' }, { icon: '🐕', text: 'Play Bow: Rute wedelt, offenes Gesicht' }, { icon: '⚠️', text: 'Prey Bow: Rute gestreckt, kein Spiel!' }], tag: 'Körpersprache' },
-      { id: 5, cat: 'calming', emoji: '🌿', title: 'Calming Signals', preview: 'Die subtilste Kommunikation', content: 'Calming Signals sind die subtilste Kommunikationsform von Hunden. Sie dienen dazu Konflikte zu vermeiden.', signals: [{ icon: '🥱', text: 'Gaehnen ohne Muedigkeit' }, { icon: '👅', text: 'Nasenlecken ohne Futter' }, { icon: '👁️', text: 'Blick abwenden' }, { icon: '🐛', text: 'Schuetteln ohne nass zu sein' }], tag: 'Calming' },
-      { id: 6, cat: 'calming', emoji: '🚶', title: 'Weitere Calming Signals', preview: 'Diese werden besonders haeufig uebersehen', content: 'Hunde haben etwa 30 Calming Signals. Wenn wir diese ignorieren riskieren wir ernsthaften Schaden.', signals: [{ icon: '🐌', text: 'Langsam werden' }, { icon: '🔄', text: 'Bogenlaufen' }, { icon: '🪨', text: 'Einfrieren kurz' }, { icon: '👃', text: 'Plotzliches Schnueffeln' }], tag: 'Calming' },
-      { id: 7, cat: 'emotion', emoji: '😰', title: 'Stress erkennen', preview: 'Ampel Gelb - jetzt handeln', content: 'Stress zeigt sich oft subtil. Siehst du sehr oft Stressanzeichen kann das auf Dauer krank machen.', signals: [{ icon: '😤', text: 'Hecheln ohne Hitze' }, { icon: '💪', text: 'Hohe Koerperspannung' }, { icon: '👁️', text: 'Augen schlitzfoermig' }, { icon: '🐕', text: 'Staksiger Gang' }], tag: 'Emotionen' },
-      { id: 8, cat: 'emotion', emoji: '😨', title: 'Angst verstehen', preview: 'Ampel Orange - so hilfst du', content: 'Angst zeigt sich nicht immer deutlich. Einen aengstlichen Hund durch Situationen zu zwingen macht es schlimmer.', signals: [{ icon: '⬇️', text: 'Alle Koerperteile nach hinten/unten' }, { icon: '👁️', text: 'White-Eye-Response' }, { icon: '🔒', text: 'Rute eingeklemmt' }, { icon: '🧊', text: 'Freeze - niemals anfassen!' }], tag: 'Emotionen' },
-      { id: 9, cat: 'emotion', emoji: '⚠️', title: 'Angst-Aggression', preview: 'Ampel Rot - dieser Hund braucht Hilfe', content: 'Ein unsicher drohender Hund ist nicht boes - er hat Angst! Er braucht dringend deine Hilfe.', signals: [{ icon: '😬', text: 'Mundwinkel nach hinten gezogen' }, { icon: '⬇️', text: 'Koerperschwerpunkt hinten' }, { icon: '🔊', text: 'Hochtoenige Lautaeusserungen' }, { icon: '🚨', text: 'Abstand aufbauen, nie bestrafen!' }], tag: 'Emotionen' },
-      { id: 10, cat: 'emotion', emoji: '🔴', title: 'Offensives Drohen', preview: 'Ampel Rot - den Unterschied erkennen', content: 'Der sicher drohende Hund zeigt alle Koerperteile nach vorne. Bei Deeskalation zieht er sich zurueck.', signals: [{ icon: '😤', text: 'Mundwinkel nach vorne, Nasenruecken kraeuselnd' }, { icon: '⬆️', text: 'Alle Pfeile nach vorne/oben' }, { icon: '🔊', text: 'Tiefes Knurren' }, { icon: '↩️', text: 'Zieht sich zurueck bei Deeskalation' }], tag: 'Emotionen' },
-      { id: 11, cat: 'alltag', emoji: '🛏️', title: 'Schlafposition', preview: 'Was sie ueber Wohlbefinden verraet', content: 'Die Schlafposition zeigt wie sicher sich dein Hund fuehlt.', signals: [{ icon: '🙃', text: 'Auf dem Ruecken: Maximales Vertrauen' }, { icon: '🦁', text: 'Auf der Seite: Tiefe Entspannung' }, { icon: '🍩', text: 'Zusammengerollt: Leicht wachsam' }, { icon: '🦸', text: 'Superman: Halbwach, bereit' }], tag: 'Alltag' },
-      { id: 12, cat: 'alltag', emoji: '🌿', title: 'Seltsame Verhaltensweisen', preview: 'Instinkt hat immer Gruende', content: 'Viele Verhaltensweisen wirken komisch haben aber einen tiefen evolutionaeren Hintergrund.', signals: [{ icon: '🔄', text: 'Kreisdrehen: Nest bauen' }, { icon: '🌿', text: 'Im Gras rollen: Duftmarkierung' }, { icon: '🐾', text: 'Scharren nach dem Klo: Reviermarkierung' }, { icon: '🐕', text: 'Po zeigen: Totales Vertrauen' }], tag: 'Alltag' },
-      { id: 13, cat: 'training', emoji: '⚡', title: 'Timing ist alles', preview: 'Der wichtigste Grundsatz im Training', content: 'Das groesste Missverstaendnis: Lob zu spaet geben. Lob innerhalb 1-2 Sekunden!', signals: [{ icon: '⚡', text: 'Lob innerhalb 1-2 Sekunden' }, { icon: '🎯', text: 'Taeglich 5 Min. besser als 1x/Woche 1h' }, { icon: '😊', text: 'Froehlicher Ton wirkt oft staerker als Leckerli' }, { icon: '🚫', text: 'Nie im Aerger trainieren' }], tag: 'Training' },
-      { id: 14, cat: 'training', emoji: '🤝', title: 'Bindung', preview: 'Basis fuer alles', content: 'Starke Bindung entsteht durch taeglich kleine Momente, nicht grosse Gesten.', signals: [{ icon: '⏰', text: 'Routinen schaffen' }, { icon: '📖', text: 'Koerpersprache lernen' }, { icon: '🛡️', text: 'Da sein bei Angst' }, { icon: '🌟', text: 'Kleine Momente zaehlen' }], tag: 'Training' },
-      { id: 15, cat: 'training', emoji: '🏥', title: 'Verhalten als Gesundheitssignal', preview: 'Schmerz erkennen bevor es zu spaet ist', content: 'Hunde koennen nicht sagen wenn sie Schmerzen haben. Ihr Verhalten veraendert sich.', signals: [{ icon: '😶', text: 'Ploetzliche Wesensveraenderung: Schmerz' }, { icon: '🦶', text: 'Lecken/Hinken: Tierarzt aufsuchen' }, { icon: '😬', text: 'Aggressiv bei Beruehrung: Schmerz dort' }, { icon: '🍽️', text: 'Futterverweigerung >24h: Abklaeren' }], tag: 'Training' },
+      { id: 1, cat: 'koerper', emoji: '🏹', title: 'Das Pfeil-Prinzip', preview: 'Die wichtigste Methode um Hundekörpersprache zu lesen', content: 'Das Pfeil-Prinzip ist das wichtigste Werkzeug um Hundekörpersprache schnell einzuschätzen: Wohin zeigen die Körperteile des Hundes? Vorne und oben bedeutet Selbstsicherheit und Annäherung. Hinten und unten bedeutet Rückzug, Angst oder Unterwerfung. Erst wenn du das Gesamtbild aller Pfeile betrachtest erkennst du die wahre Stimmung.', signals: [{ icon: '⬆️', text: 'Pfeile nach vorne/oben: Kopf hoch, Ohren vor, Rute hoch, Gewicht nach vorne – Selbstsicherheit' }, { icon: '⬇️', text: 'Pfeile nach hinten/unten: Kopf gesenkt, Ohren angelegt, Rute unten, Gewicht zurück – Angst/Rückzug' }, { icon: '🔀', text: 'Gemischte Pfeile: Einige nach vorne, andere nach hinten – Hund ist im inneren Konflikt' }, { icon: '👁️', text: 'Immer das Gesamtbild bewerten – niemals ein einzelnes Signal isoliert deuten!' }], tag: 'Grundlagen', source: 'Christiane Jacobs / sprichhund.de' },
+      { id: 2, cat: 'koerper', emoji: '😌', title: 'Der entspannte Hund', preview: 'So sieht echte Entspannung aus – die wichtige Basis', content: 'Um Veränderungen in der Körpersprache zu erkennen musst du zuerst wissen wie dein Hund entspannt aussieht. Diese Grundhaltung ist bei jedem Hund individuell und wird von Rasse und Erfahrungen beeinflusst. Mache Fotos von deinem entspannten Hund als Referenz – das hilft dir später bei der Einschätzung.', signals: [{ icon: '💫', text: 'Geringe Körperspannung – weiche, flüssige Bewegungen, kein staksiger Gang' }, { icon: '👀', text: 'Weiches, mandelförmiges Auge – leicht geblinzelt, kein Starren' }, { icon: '👄', text: 'Fang locker leicht geöffnet oder entspannt geschlossen – keine Anspannung sichtbar' }, { icon: '🐾', text: 'Rute locker in Grundstellung – bei Spitz/Pudel/Akita anatomisch bedingt hoch – kein Stresszeichen!' }], tag: 'Körpersprache', source: 'Dr. Dorit Feddersen-Petersen' },
+      { id: 3, cat: 'koerper', emoji: '🔍', title: 'Aufmerksam und neugierig', preview: 'Wenn dein Hund etwas Interessantes entdeckt', content: 'Aufmerksam durch die Welt zu gehen ist für Hunde völlig normal und ein wesentlicher Teil ihrer Neugier. Im Gegensatz zum entspannten Ausdruck fokussiert sich der Hund jetzt stärker auf das, was sein Interesse geweckt hat. Achte darauf, dass er dabei weniger auf seine Umgebung achtet – z.B. heranfahrende Autos.', signals: [{ icon: '👂', text: 'Ohren leicht nach vorne/oben ausgerichtet – aktives Zuhören und Interesse' }, { icon: '👀', text: 'Augen etwas weiter geöffnet, auf das Objekt gerichtet – aber noch weich' }, { icon: '🫱', text: 'Körper leicht nach vorne geneigt, ausgeglichen – Rute leicht über Rückenlinie' }, { icon: '👃', text: 'Beginnt zu schnüffeln am Boden oder in der Luft – sammelt Informationen' }], tag: 'Körpersprache', source: 'Dr. Patricia McConnell' },
+      { id: 4, cat: 'koerper', emoji: '🎮', title: 'Play Bow vs. Prey Bow', preview: 'Zwei ähnliche Haltungen mit sehr unterschiedlicher Bedeutung', content: 'Der Play Bow (Spielaufforderung) und der Prey Bow (Beuteinstinkt/Lauern) sehen ähnlich aus, bedeuten aber etwas völlig anderes. Diesen Unterschied zu kennen kann in Hundebegegnungen sehr wichtig sein – besonders wenn Kinder dabei sind!', signals: [{ icon: '🎯', text: 'PLAY BOW: Vorderkörper tief, Ellenbogen fast am Boden, Kopf vom Gegenüber abgewandt, Wirbelsäule kurvig' }, { icon: '🏹', text: 'PREY BOW: Wirbelsäule gerade, Ellenbogen nicht am Boden, Blick direkt auf Gegenüber fixiert' }, { icon: '🐕', text: 'Play Bow: Rute mit Bogen unterhalb Rückenlinie, Mundwinkel nach hinten, wirkt „verrückt" – das ist positiv!' }, { icon: '⚠️', text: 'Prey Bow: Rute oberhalb Rückenlinie zeigt auf Gegenüber – Hund belauert, kein Spiel!' }], tag: 'Körpersprache', source: 'Christiane Jacobs / sprichhund.de' },
+      { id: 5, cat: 'calming', emoji: '🌿', title: 'Calming Signals – die Friedenssprache', preview: 'Die subtilste und häufig übersehene Kommunikation', content: 'Calming Signals sind die subtilste Kommunikationsform von Hunden. Sie dienen dazu Konflikte zu vermeiden und Stress abzubauen. Viele Hundebesitzer ignorieren oder bestrafen diese Signale unwissentlich – das kann ernsthafte Folgen haben. Was man nicht kennt, sieht man auch nicht!', signals: [{ icon: '🥱', text: 'Gähnen ohne Müdigkeit: Aktives Beschwichtigungssignal – kein Zeichen von Langeweile!' }, { icon: '👅', text: 'Nasenlecken ohne Futter in der Nähe: Unsicherheit oder Unwohlsein – bitte ernst nehmen' }, { icon: '👁️', text: 'Blick abwenden oder wegschauen: Aktive Deeskalation – sehr friedliches und wichtiges Signal' }, { icon: '🐛', text: 'Schütteln ohne nass zu sein: Stress buchstäblich abschütteln nach einer Anspannung' }], tag: 'Calming Signals', source: 'Turid Rugaas' },
+      { id: 6, cat: 'calming', emoji: '🚶', title: 'Weitere Calming Signals', preview: 'Diese Signale werden besonders häufig übersehen', content: 'Hunde haben etwa 30 Calming Signals. Wenn wir diese ignorieren oder den Hund dafür bestrafen, riskieren wir ernsthaften Schaden. Manche Hunde hören einfach auf, Calming Signals zu verwenden – auch gegenüber anderen Hunden. Das kann langfristig zu Aggression führen.', signals: [{ icon: '🐌', text: 'Langsam werden oder stoppen: Hund deeskaliert aktiv die Situation' }, { icon: '🔄', text: 'Bogenlaufen statt gerader Annäherung: Freundliche, höfliche Annäherung an andere Hunde' }, { icon: '🪨', text: 'Einfrieren kurz: Kann Calming Signal sein – immer Kontext beachten!' }, { icon: '👃', text: 'Plötzliches Schnüffeln am Boden (Fiddle About): Ablenkungsverhalten um Stress abzubauen' }], tag: 'Calming Signals', source: 'Turid Rugaas' },
+      { id: 7, cat: 'emotion', emoji: '😰', title: 'Stress erkennen bevor es eskaliert', preview: 'Ampel Gelb – jetzt handeln', content: 'Stress zeigt sich oft subtil, und viele Signale laufen im Inneren des Hundes ab, bevor man sie äußerlich sieht. Siehst du sehr oft viele Stressanzeichen bei deinem Hund und er kommt nicht zur Ruhe, kann das auf Dauer krank machen. Ziehe dir dann einen guten Trainer zur Seite.', signals: [{ icon: '😤', text: 'Hecheln ohne Hitze oder Anstrengung: Innere Anspannung – Stresshormon erhöht' }, { icon: '💪', text: 'Hohe Körperspannung sichtbar: Muskeln angespannt, kein weicher flüssiger Gang mehr' }, { icon: '👁️', text: 'Augen schlitzförmig, Mundwinkel spitz nach hinten: Klassische Stressgesichts-Signale' }, { icon: '🐕', text: 'Rute kraftlos hängend, staksiger steifer Gang: Körper unter Anspannung' }], tag: 'Emotionen', source: 'Dr. Patricia McConnell' },
+      { id: 8, cat: 'emotion', emoji: '😨', title: 'Angst verstehen und richtig reagieren', preview: 'Ampel Orange – so hilfst du deinem Hund wirklich', content: 'Angst zeigt sich nicht immer so deutlich wie man denkt. Manchmal sieht man nur wenige, feine Anzeichen. Wichtig: Einen ängstlichen Hund nicht durch Situationen zu zwingen macht es schlimmer – die Angst kann stärker werden! Steh ihm bei und sucht gemeinsam einen Weg.', signals: [{ icon: '⬇️', text: 'Alle Körperteile nach hinten/unten: Kopf gesenkt, Ohren angelegt, Läufe eingeknickt' }, { icon: '👁️', text: 'Walauge (Whale Eye): Weißes im Auge sichtbar – Reflex bei starker Angst oder Bedrohung' }, { icon: '🔒', text: 'Rute fest zwischen die Hinterläufe eingeklemmt: Starke Angst oder extreme Unterwerfung' }, { icon: '🧊', text: 'Freeze/Einfrieren: Hund ist handlungsunfähig – NIEMALS jetzt anfassen oder ziehen!' }], tag: 'Emotionen', source: 'Dr. Patricia McConnell' },
+      { id: 9, cat: 'emotion', emoji: '⚠️', title: 'Unsicher drohend – Angst-Aggression', preview: 'Ampel Rot – dieser Hund braucht Hilfe, nicht Strafe', content: 'Ein unsicher drohender Hund ist nicht böse – er hat Angst! Er will Abstand und hat gelernt, dass nach vorne gehen die einzige Strategie ist, die funktioniert. Dieser Hund ist so im Tunnel, dass er auch nachsetzen kann wenn der andere sich entfernt. Er braucht dringend deine Hilfe.', signals: [{ icon: '😬', text: 'Zähne sichtbar aber Mundwinkel nach hinten gezogen: Unsicher-defensiv, nicht offensiv' }, { icon: '⬇️', text: 'Körperschwerpunkt nach hinten, obwohl Hund nach vorne geht: Konflikt sichtbar' }, { icon: '🔊', text: 'Lautäußerungen hochtönig: Angst hinter der Bedrohung erkennbar' }, { icon: '🚨', text: 'WICHTIG: Abstand aufbauen, nicht bestrafen, Trainer hinzuziehen – Angst ist die Ursache!' }], tag: 'Emotionen', source: 'Christiane Jacobs / sprichhund.de' },
+      { id: 10, cat: 'emotion', emoji: '🔴', title: 'Sicher drohend – offensives Drohen', preview: 'Ampel Rot – so erkennst du den Unterschied', content: 'Im Gegensatz zum unsicher drohenden Hund zeigt der sicher drohende Hund alle Körperteile nach vorne und oben. Er ist bereit zur Auseinandersetzung. Wichtig: Wenn du deeskalierst und Abstand aufbaust, zieht sich dieser Hund in der Regel zurück – das ist der große Unterschied zum unsicher drohenden Hund.', signals: [{ icon: '😤', text: 'Mundwinkel nach vorne geschoben, Nasenrücken kräuselnd: Offensiv, selbstsicher' }, { icon: '⬆️', text: 'Alle Pfeile nach vorne/oben: Kopf hoch, Ohren vor, Rute hoch, Gewicht nach vorne' }, { icon: '🔊', text: 'Knurren tief und geräuschhaft: Klare Warnung – bitte immer ernst nehmen!' }, { icon: '↩️', text: 'Zieht sich zurück wenn du deeskalierst: Daher Abstand aufbauen und ruhig bleiben' }], tag: 'Emotionen', source: 'Dr. Dorit Feddersen-Petersen' },
+      { id: 11, cat: 'alltag', emoji: '🛏️', title: 'Schlafposition verrät Wohlbefinden', preview: 'Was die Schlafposition über das Sicherheitsgefühl verrät', content: 'Die Schlafposition zeigt, wie sicher sich dein Hund in seiner Umgebung fühlt. Ein Hund, der auf dem Rücken schläft, zeigt maximales Vertrauen – er ist in der verletzlichsten Position möglich. Das ist das größte Kompliment, das er dir machen kann!', signals: [{ icon: '🙃', text: 'Auf dem Rücken mit Pfoten in der Luft: Maximales Vertrauen und Sicherheit – top!' }, { icon: '🦁', text: 'Auf der Seite ausgestreckt: Tiefe Entspannung, fühlt sich sicher' }, { icon: '🍩', text: 'Zusammengerollt: Wärme sparen, Organe schützen – leicht wachsam aber okay' }, { icon: '🦸', text: 'Flach auf dem Bauch (Superman): Bereit sofort aufzuspringen – halbwach' }], tag: 'Alltag', source: 'Dr. Dorit Feddersen-Petersen' },
+      { id: 12, cat: 'alltag', emoji: '🌿', title: 'Seltsame Verhaltensweisen erklärt', preview: 'Warum Hunde tun was sie tun – Instinkt hat Gründe', content: 'Viele Verhaltensweisen wirken auf uns komisch, haben aber einen tiefen evolutionären Hintergrund. Dein Hund ist kein Rätsel – er folgt uraltem Instinkt. Das Verständnis dieser Verhaltensweisen stärkt eure Beziehung.', signals: [{ icon: '🔄', text: 'Kreisdrehen vor dem Schlafen: Aus der Wildnis – Nest bauen und Gefahren prüfen' }, { icon: '🌿', text: 'Im Gras rollen: Duftmarkierung oder Überdecken fremder Gerüche – völlig normal' }, { icon: '🐾', text: 'Scharren nach dem Klo: Reviermarkierung durch Duftdrüsen in den Pfoten' }, { icon: '🐕', text: 'Po zeigen beim Spielen: Einladung und totales Vertrauen – großes Kompliment!' }], tag: 'Alltag', source: 'Dr. Patricia McConnell' },
+      { id: 13, cat: 'training', emoji: '⚡', title: 'Timing ist alles', preview: 'Der wichtigste Grundsatz im Hundetraining', content: 'Das größte Missverständnis im Hundetraining: Lob zu spät zu geben. Dein Hund verbindet Belohnung immer mit dem, was er jetzt gerade tut – nicht was er vor 3 Sekunden getan hat. Lob innerhalb von 1–2 Sekunden nach dem erwünschten Verhalten!', signals: [{ icon: '⚡', text: 'Lob innerhalb 1–2 Sekunden: Nur so entsteht echte Verknüpfung im Gehirn' }, { icon: '🎯', text: 'Konsequenz schlägt Intensität: Täglich 5 Min. besser als einmal pro Woche 1 Stunde' }, { icon: '😊', text: 'Deine Energie ist Belohnung: Fröhlicher Ton wirkt oft stärker als Leckerli' }, { icon: '🚫', text: 'Nie im Ärger trainieren: Hunde lernen nur in entspannter, positiver Atmosphäre' }], tag: 'Training', source: 'Dr. Patricia McConnell' },
+      { id: 14, cat: 'training', emoji: '🤝', title: 'Bindung – die Basis für alles', preview: 'Wie echtes Vertrauen zwischen Mensch und Hund entsteht', content: 'Eine starke Bindung entsteht nicht durch große Gesten, sondern durch tägliche kleine Momente. Je besser du die Körpersprache deines Hundes verstehst, desto tiefer wird eure Verbindung. Dein Hund will gesehen werden – genau das macht PawRead möglich.', signals: [{ icon: '⏰', text: 'Routinen schaffen: Hunde lieben Vorhersehbarkeit – sie gibt Sicherheit' }, { icon: '📖', text: 'Körpersprache lernen: Verstehen ist der Anfang von Vertrauen' }, { icon: '🛡️', text: 'Da sein bei Angst: Nicht ignorieren – Schutz bieten und beruhigen' }, { icon: '🌟', text: 'Kleine Momente zählen: Ein ruhiger Blick, ein Streicheln, ein gemeinsames Sitzen' }], tag: 'Training', source: 'Turid Rugaas' },
+      { id: 15, cat: 'training', emoji: '🏥', title: 'Verhalten als Gesundheitssignal', preview: 'Wann zum Tierarzt? Schmerz erkennen bevor es zu spät ist', content: 'Hunde können nicht sagen, wenn sie Schmerzen haben. Aber ihr Verhalten verändert sich. Eine plötzliche Wesensveränderung ohne erklärbaren Grund ist fast immer ein Zeichen, dass etwas nicht stimmt – körperlich oder emotional.', signals: [{ icon: '😶', text: 'Plötzliche Wesensveränderung ohne Grund: Häufig erstes Zeichen von Schmerz' }, { icon: '🦶', text: 'Lecken an einer Stelle oder Hinken: Lokaler Schmerz – Tierarzt aufsuchen' }, { icon: '😬', text: 'Aggressiv bei Berührung einer Stelle: Schmerz an dieser Stelle sehr wahrscheinlich' }, { icon: '🍽️', text: 'Futter- oder Wasserverweigerung über 24h: Immer ernst nehmen und abklären lassen' }], tag: 'Training', source: 'Dr. Dorit Feddersen-Petersen' },
+      // NEUE ARTIKEL – Hallgren, Coren, Sophia Yin, Karen Pryor
+      { id: 16, cat: 'emotion', emoji: '🧠', title: 'Sozialer Stress – die unsichtbare Belastung', preview: 'Anders Hallgren: Warum anhaltender Stress krank macht', content: 'Anders Hallgren betont in seinem Werk, dass Hunde als Sozialwesen existenziell auf gute Beziehungen angewiesen sind. Sozialer Stress – durch Konflikte, Isolation, Strafe oder häufig wechselnde Bezugspersonen – kann sich langfristig auf Gesundheit und Verhalten auswirken. Hunde die dauerhaft gestresst sind entwickeln oft Verhaltensauffälligkeiten die eigentlich Hilferufe sind.', signals: [{ icon: '😔', text: 'Rückzug und Apathie: Hund sucht keine Nähe mehr – mögliches Zeichen chronischen Stresses' }, { icon: '🔄', text: 'Häufig wechselnde Bezugspersonen erhöhen Stresslevel deutlich – Kontinuität ist wichtig' }, { icon: '⚡', text: 'Auf Strafe basierendes Training erzeugt nachweislich dauerhaften Stress – positive Methoden sind überlegen' }, { icon: '💚', text: 'Gemeinsame positive Erlebnisse bauen Stresshormone ab und stärken die Bindung' }], tag: 'Emotionen', source: 'Anders Hallgren', related: [7, 8, 14] },
+      { id: 17, cat: 'training', emoji: '🎯', title: 'Clickertraining – warum positive Verstärkung wirkt', preview: 'Karen Pryor: Der wissenschaftliche Hintergrund', content: 'Karen Pryor, Pionierin des modernen Clickertrainings, hat gezeigt dass positive Verstärkung nicht nur effektiver ist als Strafe – sie schafft auch eine vertrauensvolle Beziehung. Der Clicker markiert exakt den richtigen Moment, sodass der Hund sofort versteht was er richtig gemacht hat. Das Gehirn des Hundes verknüpft die Belohnung mit dem Verhalten – Lernen wird zur Freude.', signals: [{ icon: '🎯', text: 'Click = Brücke: Der Clicker markiert den exakten Moment des richtigen Verhaltens' }, { icon: '🧠', text: 'Positive Verstärkung aktiviert das Belohnungssystem im Gehirn – Lernen macht Spaß' }, { icon: '🚫', text: 'Strafe unterdrückt Verhalten nur – sie lehrt nicht was der Hund stattdessen tun soll' }, { icon: '⏱️', text: 'Timing ist alles: Lob oder Click muss innerhalb 1-2 Sekunden nach dem Verhalten kommen' }], tag: 'Training', source: 'Karen Pryor', related: [13, 14, 16] },
+      { id: 18, cat: 'alltag', emoji: '🏥', title: 'Stressfrei zum Tierarzt – Low Stress Handling', preview: 'Dr. Sophia Yin: So wird der Tierarztbesuch erträglicher', content: 'Dr. Sophia Yin hat das Konzept des „Low Stress Handling" entwickelt – eine Methode um Tierarztbesuche für Hunde so stressfrei wie möglich zu gestalten. Viele Hunde entwickeln echte Traumata durch überfordernde Praxisbesuche. Mit der richtigen Vorbereitung und Technik kann man das verhindern – für ein entspannteres Leben für Hund und Halter.', signals: [{ icon: '🏠', text: 'Vorbereitung zuhause: Praxisgegenstände (Stethoskop, Handschuhe) zu Hause zeigen und positiv verknüpfen' }, { icon: '🧊', text: 'Freeze beim Tierarzt: Ein ruhig wirkender Hund ist oft eingefroren – nicht entspannt!' }, { icon: '🍖', text: 'Hochwertige Leckerlis in der Praxis einsetzen: Nur dort gibt es die absolute Lieblingsbelohnung' }, { icon: '📅', text: 'Übungsbesuche ohne Behandlung: Einfach reingehen, Leckerli bekommen, wieder gehen' }], tag: 'Alltag', source: 'Dr. Sophia Yin', related: [8, 7, 15] },
+      { id: 19, cat: 'koerper', emoji: '🧩', title: 'Wie intelligent ist mein Hund wirklich?', preview: 'Stanley Coren: Drei Arten von Hunde-Intelligenz', content: 'Stanley Coren, Psychologieprofessor und Hundewissenschaftler, unterscheidet drei Arten von Intelligenz beim Hund: Instinktive Intelligenz (was die Rasse von Natur aus kann), Adaptive Intelligenz (Problemlösung und Lernfähigkeit) und Arbeitsintelligenz (Folgen von Kommandos). Kein Hund ist „dumm" – aber jeder Hund ist anders intelligent.', signals: [{ icon: '🐕', text: 'Instinktive Intelligenz: Border Collie hütet, Retriever apportiert – rassentypische Stärken' }, { icon: '🧩', text: 'Adaptive Intelligenz: Hund öffnet Türen, umgeht Hindernisse – individuelle Problemlösung' }, { icon: '📚', text: 'Arbeitsintelligenz: Schnelles Lernen von Kommandos – oft überbewertet als einzige Intelligenzform' }, { icon: '💡', text: 'Den Lernstil deines Hundes kennen hilft beim Training enorm – nicht jeder Hund lernt gleich' }], tag: 'Körpersprache', source: 'Stanley Coren', related: [13, 17, 14] },
+      { id: 20, cat: 'alltag', emoji: '🐺', title: 'Was Wölfe uns über Hunde lehren', preview: 'Anders Hallgren: Uralte Instinkte im Alltag verstehen', content: 'Anders Hallgren zieht immer wieder Parallelen zwischen Wolf und Hund um Verhaltensweisen besser zu verstehen. Hunde sind zwar domestiziert, tragen aber uralte soziale Instinkte in sich. Das Verständnis dieser Wurzeln hilft uns, ihr Verhalten nicht zu vermenschlichen – sondern wirklich zu verstehen.', signals: [{ icon: '🐺', text: 'Rudel = Sicherheit: Hunde suchen sozialen Zusammenhalt – Isolation ist echter Stress' }, { icon: '🔄', text: 'Konfliktlösung: Wölfe und Hunde lösen Konflikte meist gewaltfrei – Calming Signals sind uralte Sprache' }, { icon: '🏠', text: 'Revierverhalten: Markieren ist Kommunikation, kein Trotz – ein Missverständnis das zu Frustration führt' }, { icon: '❤️', text: 'Zusammenhalt stärken: Gemeinsames Spielen, Erkunden und Ruhen festigt die Bindung' }], tag: 'Alltag', source: 'Anders Hallgren', related: [12, 11, 14] },
     ];
     let activeFilter = 'alle';
-    function filterGuides(cat, btn) { activeFilter = cat; document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderGuides(); }
-    const FREE_GUIDES = 3;
+    let activeSearch = '';
+
+    function filterGuides(cat, btn) {
+      activeFilter = cat;
+      activeSearch = '';
+      document.getElementById('ratgeber-search').value = '';
+      document.getElementById('search-clear').style.display = 'none';
+      document.getElementById('search-info').style.display = 'none';
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('category-tabs').style.display = 'flex';
+      renderGuides();
+    }
+
+    function searchGuides(query) {
+      activeSearch = query.trim().toLowerCase();
+      const clearBtn = document.getElementById('search-clear');
+      const infoEl = document.getElementById('search-info');
+      const tabs = document.getElementById('category-tabs');
+      clearBtn.style.display = activeSearch ? 'block' : 'none';
+      if (activeSearch) {
+        tabs.style.display = 'none';
+        infoEl.style.display = 'block';
+      } else {
+        tabs.style.display = 'flex';
+        infoEl.style.display = 'none';
+      }
+      renderGuides();
+    }
+
+    function clearSearch() {
+      document.getElementById('ratgeber-search').value = '';
+      searchGuides('');
+    }
+
+    // ===== TIPP DES TAGES =====
+    const dailyTips = [
+      { text: 'Ein Hund der beim Tierarzt reglos wirkt, ist meist nicht entspannt – sondern eingefroren. Das Freeze-Phänomen wird häufig als Ruhe missgedeutet.', source: 'Dr. Patricia McConnell' },
+      { text: 'Gähnen ohne Müdigkeit, Nasenlecken ohne Futter – das sind aktive Beschwichtigungssignale. Dein Hund kommuniziert gerade mit dir oder seinem Gegenüber.', source: 'Turid Rugaas' },
+      { text: 'Wohin zeigen die Körperteile deines Hundes? Vorne und oben bedeutet Selbstsicherheit, hinten und unten bedeutet Rückzug oder Angst.', source: 'Christiane Jacobs / sprichhund.de' },
+      { text: 'Ein entspannter Hund auf dem Rücken zeigt maximales Vertrauen – er ist in der verletzlichsten Position möglich. Das ist das größte Kompliment.', source: 'Dr. Dorit Feddersen-Petersen' },
+      { text: 'Sozialer Stress durch häufig wechselnde Bezugspersonen, Strafe oder Isolation kann langfristig die Gesundheit deines Hundes beeinträchtigen.', source: 'Anders Hallgren' },
+      { text: 'Positive Verstärkung ist nicht nur netter – sie ist wissenschaftlich effektiver. Dein Hund lernt schneller und vertraut dir mehr.', source: 'Karen Pryor' },
+      { text: 'Hunde haben drei Arten von Intelligenz. Kein Hund ist dumm – aber jeder Hund ist anders intelligent. Lerne den Lernstil deines Hundes kennen.', source: 'Stanley Coren' },
+      { text: 'Piloerektion am gesamten Rücken zeigt sehr hohe Erregung. Dauerhaft an einer Stelle? Das könnte ein Schmerzpunkt sein – Tierarzt aufsuchen!', source: 'Dr. Dorit Feddersen-Petersen' },
+      { text: 'Übungsbesuche beim Tierarzt ohne Behandlung – einfach reingehen, Leckerli bekommen, wieder gehen – können das Praxistrauma langfristig auflösen.', source: 'Dr. Sophia Yin' },
+      { text: 'Bogenlaufen statt gerader Annäherung ist kein Umweg – es ist höfliche Hundekommunikation. Dieser Hund macht alles richtig.', source: 'Turid Rugaas' },
+      { text: 'Play Bow oder Prey Bow? Lockere Mimik und wedelnde Rute = Spieleinladung. Starre Augen und gespannte Muskulatur = Beutefangmotivation – kein Spiel!', source: 'Christiane Jacobs / sprichhund.de' },
+      { text: 'Kleine tägliche Momente stärken die Bindung mehr als große Gesten. Ein ruhiger Blick, ein Streicheln, gemeinsames Sitzen – das zählt.', source: 'Anders Hallgren' },
+      { text: 'Dein Hund verbindet Belohnung immer mit dem was er gerade tut – nicht mit dem was er vor 3 Sekunden tat. Timing ist beim Training alles.', source: 'Dr. Patricia McConnell' },
+      { text: 'Walauge: Der Hund dreht den Kopf weg aber die Augen bleiben auf die Bedrohung gerichtet. Innerer Konflikt – er will Abstand, behält die Situation im Blick.', source: 'Dr. Dorit Feddersen-Petersen' },
+    ];
+
+    function initTipOfDay() {
+      const today = new Date();
+      const dayIndex = (today.getFullYear() * 365 + today.getMonth() * 30 + today.getDate()) % dailyTips.length;
+      const tip = dailyTips[dayIndex];
+      document.getElementById('tip-of-day-text').textContent = tip.text;
+      // Quelle ausgeblendet
+    }
+    initTipOfDay();
+
+    const FREE_GUIDES = 3; // Artikel 1-3 kostenlos, Rest Premium
+
+    function getFilteredGuides() {
+      if (activeSearch) {
+        return guides.filter(g =>
+          g.title.toLowerCase().includes(activeSearch) ||
+          g.preview.toLowerCase().includes(activeSearch) ||
+          g.content.toLowerCase().includes(activeSearch) ||
+          g.tag.toLowerCase().includes(activeSearch) ||
+          g.signals.some(s => s.text.toLowerCase().includes(activeSearch))
+        );
+      }
+      return activeFilter === 'alle' ? guides : guides.filter(g => g.cat === activeFilter);
+    }
+
+    function highlight(text, query) {
+      if (!query) return text;
+      try {
+        const safe = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return text.replace(new RegExp('(' + safe + ')', 'gi'), '<mark style="background:#FFF3C4;border-radius:3px;padding:0 2px;">$1</mark>');
+      } catch(e) {
+        return text;
+      }
+    }
+
     function renderGuides() {
       const container = document.getElementById('guides-container');
-      const filtered = activeFilter === 'alle' ? guides : guides.filter(g => g.cat === activeFilter);
-      const freeIds = guides.slice(0, FREE_GUIDES).map(g => g.id);
-      container.innerHTML = filtered.map(g => {
-        const locked = !isPremium() && !freeIds.includes(g.id);
-        return `<div class="guide-card" onclick="${locked ? 'showGuidePaywall()' : `toggleGuide(${g.id})`}">
-          <div class="guide-card-header">
-            <span class="guide-emoji">${locked ? '🔒' : g.emoji}</span>
-            <div><h3 style="${locked ? 'color:var(--soft)' : ''}">${g.title}</h3><p>${locked ? 'Nur für Premium-Mitglieder 🐾' : g.preview}</p></div>
-            <span class="guide-tag" style="${locked ? 'background:#F5F0E8;color:var(--soft)' : ''}">${locked ? 'Premium' : g.tag}</span>
-          </div>
-          ${!locked ? `<div class="guide-body" id="guide-${g.id}"><p style="margin-top:0.8rem">${g.content}</p><div class="guide-signals">${g.signals.map(s => `<div class="guide-signal"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}</div></div>` : ''}
-        </div>`;
+      const infoEl = document.getElementById('search-info');
+      const filtered = getFilteredGuides();
+      const freeGuideIds = guides.slice(0, FREE_GUIDES).map(g => g.id);
+
+      if (activeSearch && infoEl) {
+        infoEl.innerHTML = filtered.length > 0
+          ? '<strong>' + filtered.length + '</strong> Ergebnis' + (filtered.length !== 1 ? 'se' : '') + ' für „' + activeSearch + '"'
+          : '';
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="no-results"><span>🔍</span>Kein Artikel gefunden für „' + activeSearch + '".<br>Versuche einen anderen Begriff.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(function(g) {
+        const locked = !isPremium() && !freeGuideIds.includes(g.id);
+        const q = activeSearch;
+        const hl = function(t) { return highlight(t, q); };
+        return '<div class="guide-card" onclick="' + (locked ? 'showGuidePaywall()' : 'toggleGuide(' + g.id + ')') + '">'
+          + '<div class="guide-card-header">'
+          + '<span class="guide-emoji">' + (locked ? '🔒' : g.emoji) + '</span>'
+          + '<div>'
+          + '<h3 style="' + (locked ? 'color:var(--soft)' : '') + '">' + (locked ? g.title : hl(g.title)) + '</h3>'
+          + '<p>' + (locked ? 'Nur für Premium-Mitglieder 🐾' : hl(g.preview)) + '</p>'
+          + '</div>'
+          + '<span class="guide-tag" style="' + (locked ? 'background:#F5F0E8;color:var(--soft)' : '') + '">' + (locked ? 'Premium' : g.tag) + '</span>'
+          + '</div>'
+          + (!locked
+            ? '<div class="guide-body" id="guide-' + g.id + '">'
+              + '<p style="margin-top:0.8rem">' + g.content + '</p>'
+              + '<div class="guide-signals">'
+              + g.signals.map(function(s) {
+                  return '<div class="guide-signal"><span>' + s.icon + '</span><span>' + (q ? hl(s.text) : s.text) + '</span></div>';
+                }).join('')
+              + '</div>'
+
+              + (g.related && g.related.length > 0
+                ? '<div class="related-articles"><div class="related-label">📖 Lies auch</div><div class="related-list">'
+                  + g.related.map(function(rid) {
+                      const rel = guides.find(function(x) { return x.id === rid; });
+                      if (!rel) return '';
+                      return '<button class="related-item" onclick="openRelatedGuide(' + rid + ')">'
+                        + '<span>' + rel.emoji + '</span><span>' + rel.title + '</span>'
+                        + '</button>';
+                    }).join('')
+                  + '</div></div>'
+                : '')
+              + '</div>'
+            : '')
+          + '</div>';
       }).join('');
     }
-    function showGuidePaywall() { document.getElementById('paywall-overlay').classList.add('active'); }
-    function toggleGuide(id) { document.getElementById('guide-' + id).classList.toggle('open'); }
-    renderGuides();
 
-    // ===== NOTFALL =====
-    const notfaelle = [
-      { id:1, icon:'☠️', iconColor:'red', title:'Giftköder gefressen', preview:'Verdacht auf Vergiftung – keine Zeit verlieren', desc:'Wenn dein Hund etwas Verdächtiges gefressen hat oder Vergiftungszeichen zeigt, zählt jede Minute.', steps:[{icon:'📞',text:'Sofort Tierarzt oder Tiergiftzentrale: 0900 1 99 2 99 0'},{icon:'🕐',text:'Zeit und Menge notieren'},{icon:'🚫',text:'NICHT selbst erbrechen auslösen'},{icon:'📸',text:'Foto des Giftköders machen'},{icon:'🚗',text:'Sofort zur Tierklinik fahren'}], warn:[{icon:'⚠️',text:'Zittern, Krämpfe oder Bewusstlosigkeit'},{icon:'⚠️',text:'Erbrechen, Schaum'},{icon:'⚠️',text:'Taumeln oder Kollaps'}] },
-      { id:2, icon:'🤢', iconColor:'orange', title:'Hund erbricht ständig', preview:'Wann ist Erbrechen ein Notfall?', desc:'Einmaliges Erbrechen ist oft harmlos. Anhaltendes Erbrechen kann auf etwas Ernstes hinweisen.', steps:[{icon:'💧',text:'Wasser anbieten, nicht erzwingen'},{icon:'🍖',text:'Futter 2-4h weglassen'},{icon:'👀',text:'Beobachten: Wie oft? Blut?'},{icon:'😴',text:'Für Ruhe sorgen'},{icon:'📞',text:'Nach 3x Erbrechen sofort Tierarzt'}], warn:[{icon:'⚠️',text:'Blut im Erbrochenen'},{icon:'⚠️',text:'Mehr als 3x in einer Stunde'},{icon:'⚠️',text:'Aufgeblähter harter Bauch'}] },
-      { id:3, icon:'😮‍💨', iconColor:'red', title:'Atemprobleme', preview:'Atemnot ist immer ein Notfall', desc:'Atemprobleme sind immer ernst zu nehmen. Hecheln nach Anstrengung ist normal – in Ruhe nicht.', steps:[{icon:'😌',text:'Beruhigen, kühle frische Luft'},{icon:'🚫',text:'Keinen Stress'},{icon:'🌡️',text:'Bei Hitze kühlen: nasse Tücher auf Pfoten'},{icon:'🐕',text:'Halsband lockern'},{icon:'🚗',text:'Sofort zum Tierarzt'}], warn:[{icon:'⚠️',text:'Blaue oder weiße Zunge'},{icon:'⚠️',text:'Hecheln in Ruhe'},{icon:'⚠️',text:'Hals strecken um Luft zu bekommen'}] },
-      { id:4, icon:'⚡', iconColor:'red', title:'Krampfanfall', preview:'Was tun wenn dein Hund einen Anfall hat?', desc:'Ein Krampfanfall sieht erschreckend aus, hört meist von selbst auf. Ruhe bewahren!', steps:[{icon:'🛡️',text:'Vor Verletzungen schützen, Kopf polstern'},{icon:'🚫',text:'NICHT in den Mund greifen'},{icon:'🤫',text:'Nicht schreien oder anfassen'},{icon:'⏱️',text:'Dauer messen – wichtig für Tierarzt'},{icon:'📞',text:'Danach sofort Tierarzt'}], warn:[{icon:'⚠️',text:'Anfall dauert länger als 5 Minuten'},{icon:'⚠️',text:'Mehrere Anfälle hintereinander'},{icon:'⚠️',text:'Hund kommt nicht zu sich'}] },
-      { id:5, icon:'🩸', iconColor:'red', title:'Verletzung / Blutung', preview:'Erste Hilfe bei Wunden', desc:'Kleine Schnitte kann man erstversorgen. Bei starken Blutungen sofort zum Tierarzt.', steps:[{icon:'🤲',text:'Ruhe ausstrahlen'},{icon:'🩹',text:'Sauberes Tuch drücken und halten'},{icon:'🚫',text:'KEIN Desinfektionsmittel für Menschen'},{icon:'🔍',text:'Fremdkörper NICHT selbst entfernen'},{icon:'🚗',text:'Bei tiefen Wunden sofort Tierarzt'}], warn:[{icon:'⚠️',text:'Blutung hört nach 5 Min nicht auf'},{icon:'⚠️',text:'Wunde klafft auseinander'},{icon:'⚠️',text:'Fremdkörper steckt in der Wunde'}] },
-    ];
-    function renderNotfaelle() {
-      const container = document.getElementById('notfall-grid');
-      container.innerHTML = notfaelle.map(n => `
-        <div class="notfall-card" onclick="toggleNotfall(${n.id})">
-          <div class="notfall-card-header">
-            <div class="notfall-icon ${n.iconColor}">${n.icon}</div>
-            <div><h3>${n.title}</h3><p>${n.preview}</p></div>
-            <span class="notfall-arrow" id="arrow-${n.id}">›</span>
-          </div>
-          <div class="notfall-detail" id="notfall-${n.id}">
-            <p class="notfall-desc">${n.desc}</p>
-            <p class="notfall-section-title gruen">✅ Was du tun kannst</p>
-            <div class="notfall-steps">${n.steps.map(s => `<div class="notfall-step"><span>${s.icon}</span><span>${s.text}</span></div>`).join('')}</div>
-            <p class="notfall-section-title rot">🚨 Sofort zum Tierarzt wenn:</p>
-            <div class="notfall-steps">${n.warn.map(w => `<div class="notfall-step warn"><span>${w.icon}</span><span>${w.text}</span></div>`).join('')}</div>
-            <a class="tierarzt-btn" href="https://www.google.com/maps/search/tierarzt+notdienst+in+der+nähe" target="_blank">📍 Tierarzt in der Nähe finden</a>
-          </div>
-        </div>`).join('');
+    function showGuidePaywall() {
+      document.getElementById('paywall-overlay').classList.add('active');
+    }
+    function toggleGuide(id) {
+      document.getElementById('guide-' + id).classList.toggle('open');
+    }
+    function openRelatedGuide(id) {
+      // Alle anderen schließen, dann den gewünschten öffnen und hinscrollen
+      document.querySelectorAll('.guide-body').forEach(b => b.classList.remove('open'));
+      activeSearch = '';
+      activeFilter = 'alle';
+      document.getElementById('ratgeber-search').value = '';
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.cat-btn').classList.add('active');
+      renderGuides();
+      setTimeout(function() {
+        const el = document.getElementById('guide-' + id);
+        if (el) {
+          el.classList.add('open');
+          el.closest('.guide-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
     }
     function toggleNotfall(id) {
       const detail = document.getElementById('notfall-' + id);
