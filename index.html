@@ -1403,6 +1403,40 @@
         }
       }, 100);
     }
+    // ===== NOTFALL DATA & FUNKTIONEN =====
+    const notfaelle = [
+      { id: 1, icon: '☠️', iconColor: 'red', title: 'Giftköder gefressen', preview: 'Verdacht auf Vergiftung – keine Zeit verlieren', desc: 'Wenn dein Hund etwas Verdächtiges gefressen hat oder Vergiftungszeichen zeigt, zählt jede Minute. Ruhig bleiben und sofort handeln.', steps: [{ icon: '📞', text: 'Sofort Tierarzt oder Tiergiftzentrale anrufen: 0900 1 99 2 99 0' }, { icon: '🕐', text: 'Zeit und Menge notieren: Wann und wie viel könnte er gefressen haben?' }, { icon: '🚫', text: 'NICHT selbst erbrechen auslösen – nur auf Anweisung des Tierarztes' }, { icon: '📸', text: 'Wenn möglich Foto des Giftköders machen und mitnehmen' }, { icon: '🚗', text: 'Sofort in die nächste Tierarztpraxis oder Tierklinik fahren' }], warn: [{ icon: '⚠️', text: 'Zittern, Krämpfe oder Bewusstlosigkeit' }, { icon: '⚠️', text: 'Erbrechen, starker Speichelfluss oder Schaum' }, { icon: '⚠️', text: 'Taumeln, Schwäche oder Kollaps' }] },
+      { id: 2, icon: '🤢', iconColor: 'orange', title: 'Hund erbricht ständig', preview: 'Wann ist Erbrechen ein Notfall?', desc: 'Einmaliges Erbrechen ist oft harmlos. Aber anhaltendes Erbrechen kann auf etwas Ernstes hinweisen und dehydriert deinen Hund schnell.', steps: [{ icon: '💧', text: 'Wasser anbieten aber nicht erzwingen – kleine Mengen häufig' }, { icon: '🍖', text: 'Futter für 2-4 Stunden weglassen um den Magen zu entlasten' }, { icon: '👀', text: 'Beobachten: Wie oft? Blut? Fremdkörper im Erbrochenen?' }, { icon: '😴', text: 'Für Ruhe sorgen – keinen Stress und keine Aufregung' }, { icon: '📞', text: 'Nach 2-3x Erbrechen oder bei Blut sofort Tierarzt anrufen' }], warn: [{ icon: '⚠️', text: 'Blut im Erbrochenen – sofort zum Tierarzt' }, { icon: '⚠️', text: 'Mehr als 3x in einer Stunde erbrochen' }, { icon: '⚠️', text: 'Aufgeblähter harter Bauch – kann lebensbedrohlich sein' }] },
+      { id: 3, icon: '😮‍💨', iconColor: 'red', title: 'Atemprobleme', preview: 'Atemnot ist immer ein Notfall', desc: 'Atemprobleme beim Hund sind immer ernst zu nehmen. Hecheln nach Anstrengung ist normal – ungewöhnliche Atemnot in Ruhe nicht.', steps: [{ icon: '😌', text: 'Hund beruhigen und in kühle frische Luft bringen' }, { icon: '🚫', text: 'Keinen Stress machen – Aufregung verschlimmert Atemnot' }, { icon: '🌡️', text: 'Bei Hitze sofort kühlen: nasse Tücher auf Pfoten und Bauch' }, { icon: '🐕', text: 'Halsband lockern oder abnehmen falls zu eng' }, { icon: '🚗', text: 'Sofort zum Tierarzt – Atemnot ist immer ein Notfall' }], warn: [{ icon: '⚠️', text: 'Blaue oder weiße Zunge oder Zahnfleisch – sofort Notfall' }, { icon: '⚠️', text: 'Hecheln in Ruhe ohne vorherige Anstrengung' }, { icon: '⚠️', text: 'Streckung des Halses um Luft zu bekommen' }] },
+      { id: 4, icon: '⚡', iconColor: 'red', title: 'Krampfanfall', preview: 'Was tun wenn dein Hund einen Anfall hat?', desc: 'Ein Krampfanfall sieht erschreckend aus aber in den meisten Fällen hört er von selbst auf. Das Wichtigste: Ruhe bewahren und deinen Hund schützen.', steps: [{ icon: '🛡️', text: 'Hund vor Verletzungen schützen: Möbel wegräumen, Kopf polstern' }, { icon: '🚫', text: 'NICHT in den Mund greifen – Hunde verschlucken die Zunge NICHT' }, { icon: '🤫', text: 'Ruhe bewahren – nicht schreien oder anfassen während des Anfalls' }, { icon: '⏱️', text: 'Dauer des Anfalls messen – wichtig für den Tierarzt' }, { icon: '📞', text: 'Nach dem Anfall sofort Tierarzt anrufen und hinfahren' }], warn: [{ icon: '⚠️', text: 'Anfall dauert länger als 5 Minuten – sofortiger Notfall' }, { icon: '⚠️', text: 'Mehrere Anfälle hintereinander ohne Erholung dazwischen' }, { icon: '⚠️', text: 'Hund kommt nach dem Anfall nicht zu sich' }] },
+      { id: 5, icon: '🩸', iconColor: 'red', title: 'Verletzung / Blutung', preview: 'Erste Hilfe bei Wunden und Blutungen', desc: 'Kleine Schnitte und Schürfwunden kann man erstversorgen. Bei starken Blutungen oder tiefen Wunden ist der Tierarzt gefragt.', steps: [{ icon: '🤲', text: 'Ruhe ausstrahlen – ein ruhiger Hund lässt sich besser behandeln' }, { icon: '🩹', text: 'Sauberes Tuch auf die Wunde drücken und Druck halten' }, { icon: '🚫', text: 'KEIN Desinfektionsmittel für Menschen – hautreizend für Hunde' }, { icon: '🔍', text: 'Fremdkörper in der Wunde NICHT selbst entfernen' }, { icon: '🚗', text: 'Bei tiefen Wunden oder starker Blutung sofort zum Tierarzt' }], warn: [{ icon: '⚠️', text: 'Blutung lässt nach 5 Minuten Druck nicht nach' }, { icon: '⚠️', text: 'Wunde ist tief oder klafft auseinander' }, { icon: '⚠️', text: 'Fremdkörper steckt in der Wunde' }] },
+    ];
+
+    function renderNotfaelle() {
+      const container = document.getElementById('notfall-grid');
+      container.innerHTML = notfaelle.map(function(n) {
+        return '<div class="notfall-card" onclick="toggleNotfall(' + n.id + ')">'
+          + '<div class="notfall-card-header">'
+          + '<div class="notfall-icon ' + n.iconColor + '">' + n.icon + '</div>'
+          + '<div><h3>' + n.title + '</h3><p>' + n.preview + '</p></div>'
+          + '<span class="notfall-arrow" id="arrow-' + n.id + '">›</span>'
+          + '</div>'
+          + '<div class="notfall-detail" id="notfall-' + n.id + '">'
+          + '<p class="notfall-desc">' + n.desc + '</p>'
+          + '<p class="notfall-section-title gruen">✅ Was du tun kannst</p>'
+          + '<div class="notfall-steps">'
+          + n.steps.map(function(s) { return '<div class="notfall-step"><span>' + s.icon + '</span><span>' + s.text + '</span></div>'; }).join('')
+          + '</div>'
+          + '<p class="notfall-section-title rot">🚨 Sofort zum Tierarzt wenn:</p>'
+          + '<div class="notfall-steps">'
+          + n.warn.map(function(w) { return '<div class="notfall-step warn"><span>' + w.icon + '</span><span>' + w.text + '</span></div>'; }).join('')
+          + '</div>'
+          + '<a class="tierarzt-btn" href="https://www.google.com/maps/search/tierarzt+notdienst+in+der+nähe" target="_blank">📍 Tierarzt in der Nähe finden</a>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+    }
+
     function toggleNotfall(id) {
       const detail = document.getElementById('notfall-' + id);
       const arrow = document.getElementById('arrow-' + id);
