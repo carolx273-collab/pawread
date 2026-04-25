@@ -38,10 +38,10 @@ KONTEXTBASIERTE STRESSVERSTÄRKUNG:
 EXPERTENQUELLEN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. TURID RUGAAS – Calming Signals
-2. DR. PATRICIA McCONNELL – 4-F-System (Fight/Flight/Freeze/Fawn)
-3. CHRISTIANE JACOBS / sprichhund.de – Pfeil-Prinzip & Drohverhalten
-4. DR. DORIT FEDDERSEN-PETERSEN – Ausdrucksverhalten & Rassenbesonderheiten
+1. VERHALTENSEXPERTEN – Calming Signals & Beschwichtigungssignale
+2. VERHALTENSFORSCHUNG – 4-F-System (Fight/Flight/Freeze/Fawn)
+3. ANGEWANDTE HUNDEVERHALTENSKUNDE – Pfeil-Prinzip & Drohverhalten
+4. UNIVERSITÄRE VERHALTENSFORSCHUNG – Ausdrucksverhalten & Rassenbesonderheiten
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 AMPELBEWERTUNG
