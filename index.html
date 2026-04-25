@@ -166,6 +166,68 @@
     }
     .retry-btn:hover { border-color: var(--amber); color: var(--amber); }
 
+    /* ===== ONBOARDING ===== */
+    .onboarding-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(28,20,9,0.92);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: flex-end; justify-content: center;
+      padding: 1rem;
+      animation: fadeIn 0.4s ease;
+    }
+    .onboarding-overlay.hidden { display: none; }
+    .onboarding-card {
+      background: var(--cream);
+      border-radius: 28px 28px 20px 20px;
+      width: 100%; max-width: 440px;
+      padding: 2rem 1.8rem 1.8rem;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    .onboarding-emoji { font-size: 3.5rem; display: block; margin-bottom: 0.8rem; }
+    .onboarding-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; color: var(--brown);
+      line-height: 1.2; margin-bottom: 0.6rem;
+    }
+    .onboarding-card h2 span { color: var(--amber); }
+    .onboarding-card p {
+      font-size: 0.9rem; color: var(--soft);
+      line-height: 1.7; margin-bottom: 1.4rem;
+    }
+    .onboarding-features {
+      display: flex; flex-direction: column; gap: 0.6rem;
+      margin-bottom: 1.5rem; text-align: left;
+    }
+    .onboarding-feature {
+      display: flex; align-items: center; gap: 12px;
+      background: white; border-radius: 14px;
+      padding: 0.7rem 1rem; font-size: 0.88rem; color: var(--dark);
+    }
+    .onboarding-feature-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .onboarding-dots {
+      display: flex; justify-content: center; gap: 6px; margin-bottom: 1.2rem;
+    }
+    .onboarding-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--warm); transition: all 0.3s;
+    }
+    .onboarding-dot.active { background: var(--brown); width: 24px; border-radius: 4px; }
+    .onboarding-next {
+      width: 100%; padding: 1rem;
+      background: var(--brown); color: var(--cream);
+      border: none; border-radius: 16px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .onboarding-next:hover { background: var(--amber); transform: translateY(-2px); }
+    .onboarding-skip {
+      margin-top: 0.8rem; background: none; border: none;
+      color: var(--soft); font-size: 0.82rem;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      text-decoration: underline; display: block; width: 100%;
+    }
     /* ===== CHATBOT – NEU GESTALTET ===== */
     .chat-fab {
       position: fixed;
@@ -813,9 +875,111 @@
       <span style="font-size:1.4rem;">📍</span>Tierarzt
     </a>
   </div>
+  <!-- ONBOARDING OVERLAY -->
+  <div class="onboarding-overlay hidden" id="onboarding-overlay">
+    <div class="onboarding-card">
+      <!-- Dots -->
+      <div class="onboarding-dots">
+        <div class="onboarding-dot active" id="dot-0"></div>
+        <div class="onboarding-dot" id="dot-1"></div>
+        <div class="onboarding-dot" id="dot-2"></div>
+      </div>
+      <!-- Screen content -->
+      <div id="onboarding-screen"></div>
+      <!-- Buttons -->
+      <button class="onboarding-next" id="onboarding-next" onclick="nextOnboarding()">Weiter →</button>
+      <button class="onboarding-skip" onclick="finishOnboarding()">Überspringen</button>
+    </div>
+  </div>
+
   </div><!-- end app-wrapper -->
 
   <script>
+    // ===== ONBOARDING =====
+    const onboardingScreens = [
+      {
+        emoji: '🐾',
+        title: 'Willkommen bei <span>PawRead</span>',
+        text: 'Verstehe in Sekunden wie sich dein Hund wirklich fühlt – mit wissenschaftlich fundierten Methoden von führenden Hundeexperten.',
+        features: [
+          { icon: '📸', text: 'Foto hochladen – KI analysiert die Körpersprache' },
+          { icon: '🚦', text: 'Ampel-System: Grün, Gelb, Orange oder Rot' },
+          { icon: '💡', text: 'Konkrete Tipps für jede Situation' },
+        ],
+        btn: 'Los geht's →'
+      },
+      {
+        emoji: '🚦',
+        title: 'Das <span>Ampel-System</span>',
+        text: 'Jede Analyse bewertet den emotionalen Zustand deines Hundes in vier Stufen – basierend auf Expertenwissen von Turid Rugaas, Dr. McConnell und weiteren.',
+        features: [
+          { icon: '🟢', text: 'Grün – Entspannt und wohl' },
+          { icon: '🟡', text: 'Gelb – Leicht angespannt, beobachten' },
+          { icon: '🟠', text: 'Orange – Stress oder Angst erkennbar' },
+          { icon: '🔴', text: 'Rot – Hohes Stressniveau, handeln' },
+        ],
+        btn: 'Weiter →'
+      },
+      {
+        emoji: '💬',
+        title: 'Dein <span>KI-Assistent</span>',
+        text: 'Hast du Fragen zur Körpersprache deines Hundes? Dein persönlicher KI-Experte steht immer bereit – einfach auf den Chat-Button tippen.',
+        features: [
+          { icon: '🤖', text: 'KI-Assistent mit Gedächtnis für den ganzen Chat' },
+          { icon: '📖', text: '20 Ratgeber-Artikel von führenden Experten' },
+          { icon: '🚨', text: 'Notfallhilfe und Tierarzt-Finder immer verfügbar' },
+        ],
+        btn: 'App starten 🐾'
+      }
+    ];
+    let currentOnboardingStep = 0;
+
+    function renderOnboardingScreen(step) {
+      const s = onboardingScreens[step];
+      document.getElementById('onboarding-screen').innerHTML =
+        '<span class="onboarding-emoji">' + s.emoji + '</span>'
+        + '<h2>' + s.title + '</h2>'
+        + '<p>' + s.text + '</p>'
+        + '<div class="onboarding-features">'
+        + s.features.map(function(f) {
+            return '<div class="onboarding-feature">'
+              + '<span class="onboarding-feature-icon">' + f.icon + '</span>'
+              + '<span>' + f.text + '</span>'
+              + '</div>';
+          }).join('')
+        + '</div>';
+      document.getElementById('onboarding-next').textContent = s.btn;
+      // Dots updaten
+      for (let i = 0; i < 3; i++) {
+        document.getElementById('dot-' + i).className = 'onboarding-dot' + (i === step ? ' active' : '');
+      }
+    }
+
+    function nextOnboarding() {
+      currentOnboardingStep++;
+      if (currentOnboardingStep >= onboardingScreens.length) {
+        finishOnboarding();
+      } else {
+        renderOnboardingScreen(currentOnboardingStep);
+      }
+    }
+
+    function finishOnboarding() {
+      document.getElementById('onboarding-overlay').classList.add('hidden');
+      try { localStorage.setItem('pawread_onboarded', 'true'); } catch(e) {}
+    }
+
+    function initOnboarding() {
+      try {
+        const done = localStorage.getItem('pawread_onboarded');
+        if (!done) {
+          renderOnboardingScreen(0);
+          document.getElementById('onboarding-overlay').classList.remove('hidden');
+        }
+      } catch(e) {}
+    }
+    initOnboarding();
+
     // ===== PAYWALL LOGIC =====
     const MAX_FREE = 3;
     const OWNER_CODE = 'Coco2026';
